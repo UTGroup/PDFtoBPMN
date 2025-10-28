@@ -1,0 +1,409 @@
+"""
+Native Extractor - нативное извлечение контента из PDF
+
+Использует:
+- PyMuPDF (fitz) для текста, изображений, векторной графики
+- pdfplumber для таблиц (опционально)
+
+Извлекает контент как набор блоков (TextBlock, ImageBlock, DrawingBlock, TableBlock)
+для последующей сборки в IR.
+
+Принципы SOLID:
+- Single Responsibility: Только нативное извлечение (не OCR, не IR)
+- Dependency Inversion: Зависимость от абстракций (BBox, ContentType)
+"""
+
+import fitz  # PyMuPDF
+from typing import List, Optional, Dict, Any
+import io
+from PIL import Image
+
+try:
+    import pdfplumber
+    PDFPLUMBER_AVAILABLE = True
+except ImportError:
+    PDFPLUMBER_AVAILABLE = False
+
+from ..models.data_models import (
+    TextBlock,
+    ImageBlock,
+    DrawingBlock,
+    TableBlock,
+    BBox,
+    ContentType
+)
+
+
+class NativeExtractor:
+    """
+    Нативный экстрактор контента из PDF
+    
+    Ответственность:
+    - Извлечение текстовых блоков (с font info)
+    - Извлечение растровых изображений
+    - Извлечение векторной графики
+    - Извлечение таблиц (если pdfplumber доступен)
+    
+    Не отвечает за:
+    - OCR (это делает OCRClient)
+    - Построение IR (это делает IRBuilder)
+    - Анализ структуры (это делает StructureAnalyzer)
+    """
+    
+    def __init__(self, extract_images: bool = True, 
+                 extract_drawings: bool = True,
+                 extract_tables: bool = True,
+                 min_text_length: int = 1):
+        """
+        Инициализация экстрактора
+        
+        Args:
+            extract_images: Извлекать растровые изображения
+            extract_drawings: Извлекать векторную графику
+            extract_tables: Извлекать таблицы (требует pdfplumber)
+            min_text_length: Минимальная длина текста в блоке
+        """
+        self.extract_images = extract_images
+        self.extract_drawings = extract_drawings
+        self.extract_tables = extract_tables and PDFPLUMBER_AVAILABLE
+        self.min_text_length = min_text_length
+        
+        if extract_tables and not PDFPLUMBER_AVAILABLE:
+            print("⚠️  pdfplumber не установлен, таблицы не будут извлекаться")
+    
+    def extract_page(self, page: fitz.Page, 
+                     pdf_path: Optional[str] = None) -> Dict[str, List]:
+        """
+        Извлечь весь контент со страницы
+        
+        Args:
+            page: Объект страницы PyMuPDF
+            pdf_path: Путь к PDF (для pdfplumber)
+        
+        Returns:
+            Dict с ключами: text_blocks, image_blocks, drawing_blocks, table_blocks
+        """
+        page_num = page.number
+        
+        result = {
+            "text_blocks": [],
+            "image_blocks": [],
+            "drawing_blocks": [],
+            "table_blocks": []
+        }
+        
+        # 1. Извлечение текстовых блоков
+        result["text_blocks"] = self.extract_text_blocks(page)
+        
+        # 2. Извлечение изображений
+        if self.extract_images:
+            result["image_blocks"] = self.extract_image_blocks(page)
+        
+        # 3. Извлечение векторной графики
+        if self.extract_drawings:
+            result["drawing_blocks"] = self.extract_drawing_blocks(page)
+        
+        # 4. Извлечение таблиц
+        if self.extract_tables and pdf_path:
+            result["table_blocks"] = self.extract_table_blocks(page, pdf_path)
+        
+        return result
+    
+    def extract_text_blocks(self, page: fitz.Page) -> List[TextBlock]:
+        """
+        Извлечь текстовые блоки со страницы
+        
+        Использует page.get_text("dict") для получения структурированного текста
+        с информацией о шрифтах и координатах.
+        
+        Args:
+            page: Объект страницы
+        
+        Returns:
+            Список TextBlock
+        """
+        text_blocks = []
+        page_num = page.number
+        
+        # Получаем структурированный текст
+        text_dict = page.get_text("dict")
+        blocks = text_dict.get("blocks", [])
+        
+        for block_idx, block in enumerate(blocks):
+            # Только текстовые блоки (type=0)
+            if block.get("type") != 0:
+                continue
+            
+            # Извлекаем bbox
+            bbox_tuple = block.get("bbox")
+            if not bbox_tuple:
+                continue
+            
+            bbox = BBox(*bbox_tuple)
+            
+            # Извлекаем текст из всех линий блока
+            lines = block.get("lines", [])
+            text_parts = []
+            font_sizes = []
+            font_names = []
+            is_bold = False
+            is_italic = False
+            
+            for line in lines:
+                for span in line.get("spans", []):
+                    span_text = span.get("text", "")
+                    text_parts.append(span_text)
+                    
+                    # Информация о шрифте
+                    font_size = span.get("size", 0)
+                    font_name = span.get("font", "")
+                    flags = span.get("flags", 0)
+                    
+                    font_sizes.append(font_size)
+                    font_names.append(font_name)
+                    
+                    # Флаги: 16=bold, 2=italic (битовая маска)
+                    if flags & 16:
+                        is_bold = True
+                    if flags & 2:
+                        is_italic = True
+            
+            # Собираем текст
+            full_text = " ".join(text_parts).strip()
+            
+            # Фильтруем слишком короткие блоки
+            if len(full_text) < self.min_text_length:
+                continue
+            
+            # Определяем преобладающий шрифт и размер
+            avg_font_size = sum(font_sizes) / len(font_sizes) if font_sizes else None
+            most_common_font = max(set(font_names), key=font_names.count) if font_names else None
+            
+            text_block = TextBlock(
+                bbox=bbox,
+                text=full_text,
+                page_num=page_num,
+                font_name=most_common_font,
+                font_size=avg_font_size,
+                is_bold=is_bold,
+                is_italic=is_italic,
+                metadata={"block_idx": block_idx}
+            )
+            
+            text_blocks.append(text_block)
+        
+        return text_blocks
+    
+    def extract_image_blocks(self, page: fitz.Page) -> List[ImageBlock]:
+        """
+        Извлечь растровые изображения со страницы
+        
+        Args:
+            page: Объект страницы
+        
+        Returns:
+            Список ImageBlock
+        """
+        image_blocks = []
+        page_num = page.number
+        
+        # Получаем список изображений
+        images = page.get_images(full=True)
+        
+        for img_idx, img_info in enumerate(images):
+            xref = img_info[0]
+            
+            try:
+                # Получаем bbox изображения
+                bbox_rect = page.get_image_bbox(xref)
+                if not bbox_rect:
+                    continue
+                
+                bbox = BBox(bbox_rect.x0, bbox_rect.y0, bbox_rect.x1, bbox_rect.y1)
+                
+                # Извлекаем данные изображения
+                base_image = page.parent.extract_image(xref)
+                image_bytes = base_image["image"]
+                image_ext = base_image["ext"]  # png, jpeg, etc.
+                
+                # Определяем размеры
+                try:
+                    pil_image = Image.open(io.BytesIO(image_bytes))
+                    width, height = pil_image.size
+                except Exception:
+                    width, height = None, None
+                
+                image_block = ImageBlock(
+                    bbox=bbox,
+                    image_data=image_bytes,
+                    format=image_ext,
+                    page_num=page_num,
+                    width=width,
+                    height=height,
+                    xref=xref,
+                    metadata={"img_idx": img_idx}
+                )
+                
+                image_blocks.append(image_block)
+                
+            except Exception as e:
+                # Некоторые изображения могут не извлекаться (встроенные шрифты и т.д.)
+                continue
+        
+        return image_blocks
+    
+    def extract_drawing_blocks(self, page: fitz.Page) -> List[DrawingBlock]:
+        """
+        Извлечь векторную графику со страницы
+        
+        Векторная графика включает: линии, прямоугольники, круги, пути.
+        Полезно для диаграмм, формул, схем.
+        
+        Args:
+            page: Объект страницы
+        
+        Returns:
+            Список DrawingBlock
+        """
+        drawing_blocks = []
+        page_num = page.number
+        
+        # Получаем все векторные объекты
+        drawings = page.get_drawings()
+        
+        for draw_idx, drawing in enumerate(drawings):
+            rect_tuple = drawing.get("rect")
+            if not rect_tuple:
+                continue
+            
+            bbox = BBox(*rect_tuple)
+            
+            # Сохраняем векторные данные
+            drawing_data = {
+                "type": drawing.get("type"),  # "l" (line), "re" (rect), "c" (curve)
+                "items": drawing.get("items", []),
+                "color": drawing.get("color"),
+                "width": drawing.get("width"),
+                "fill": drawing.get("fill")
+            }
+            
+            drawing_block = DrawingBlock(
+                bbox=bbox,
+                drawing_data=drawing_data,
+                page_num=page_num,
+                metadata={"draw_idx": draw_idx}
+            )
+            
+            drawing_blocks.append(drawing_block)
+        
+        return drawing_blocks
+    
+    def extract_table_blocks(self, page: fitz.Page, pdf_path: str) -> List[TableBlock]:
+        """
+        Извлечь таблицы со страницы (используя pdfplumber)
+        
+        Args:
+            page: Объект страницы PyMuPDF
+            pdf_path: Путь к PDF файлу
+        
+        Returns:
+            Список TableBlock
+        """
+        if not PDFPLUMBER_AVAILABLE:
+            return []
+        
+        table_blocks = []
+        page_num = page.number
+        
+        try:
+            # Открываем PDF через pdfplumber
+            with pdfplumber.open(pdf_path) as pdf:
+                plumber_page = pdf.pages[page_num]
+                
+                # Извлекаем таблицы
+                tables = plumber_page.find_tables()
+                
+                for table_idx, table in enumerate(tables):
+                    # Bbox таблицы
+                    bbox_tuple = table.bbox
+                    bbox = BBox(*bbox_tuple)
+                    
+                    # Данные таблицы
+                    table_data = table.extract()
+                    if not table_data:
+                        continue
+                    
+                    rows = len(table_data)
+                    cols = len(table_data[0]) if table_data else 0
+                    
+                    # Конвертируем в HTML (простой формат)
+                    html = self._table_to_html(table_data)
+                    
+                    table_block = TableBlock(
+                        bbox=bbox,
+                        html=html,
+                        rows=rows,
+                        cols=cols,
+                        page_num=page_num,
+                        data=table_data,
+                        source="native",
+                        metadata={"table_idx": table_idx}
+                    )
+                    
+                    table_blocks.append(table_block)
+        
+        except Exception as e:
+            # pdfplumber может падать на некоторых PDF
+            pass
+        
+        return table_blocks
+    
+    def _table_to_html(self, table_data: List[List[str]]) -> str:
+        """
+        Преобразовать табличные данные в HTML
+        
+        Args:
+            table_data: Двумерный массив строк
+        
+        Returns:
+            HTML строка
+        """
+        if not table_data:
+            return ""
+        
+        html_parts = ["<table>"]
+        
+        # Первая строка как заголовок
+        html_parts.append("<thead><tr>")
+        for cell in table_data[0]:
+            cell_text = str(cell) if cell else ""
+            html_parts.append(f"<th>{cell_text}</th>")
+        html_parts.append("</tr></thead>")
+        
+        # Остальные строки
+        html_parts.append("<tbody>")
+        for row in table_data[1:]:
+            html_parts.append("<tr>")
+            for cell in row:
+                cell_text = str(cell) if cell else ""
+                html_parts.append(f"<td>{cell_text}</td>")
+            html_parts.append("</tr>")
+        html_parts.append("</tbody>")
+        
+        html_parts.append("</table>")
+        
+        return "".join(html_parts)
+    
+    def __repr__(self) -> str:
+        """Строковое представление"""
+        features = []
+        if self.extract_images:
+            features.append("images")
+        if self.extract_drawings:
+            features.append("drawings")
+        if self.extract_tables:
+            features.append("tables")
+        
+        return f"NativeExtractor(features={', '.join(features)})"
+
+
