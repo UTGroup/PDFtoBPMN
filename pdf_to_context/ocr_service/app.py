@@ -1,393 +1,253 @@
+#!/usr/bin/env python3
 """
-DeepSeek-OCR Microservice - vLLM + FastAPI
-
-HTTP API для OCR обработки с использованием DeepSeek-OCR модели.
-
-Endpoints:
-- POST /ocr/page - OCR всей страницы
-- POST /ocr/figure - OCR отдельного графического элемента
-- GET /health - Проверка здоровья сервиса
-
-Использует vLLM для inference с custom NGramPerReqLogitsProcessor.
+FastAPI микросервис для DeepSeek-OCR
+Использует официальный HuggingFace API для загрузки модели
 """
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from typing import Optional, List, Dict, Any
+from typing import List, Optional
+import torch
+from transformers import AutoModel, AutoTokenizer
 import base64
 import io
 from PIL import Image
-import uuid
+import os
+import uvicorn
+import tempfile
+import logging
 
-# vLLM imports (будут доступны в окружении с vLLM)
-try:
-    from vllm import LLM, SamplingParams
-    from vllm.sampling_params import LogitsProcessor
-    VLLM_AVAILABLE = True
-except ImportError:
-    VLLM_AVAILABLE = False
-    print("⚠️  vLLM не установлен. Микросервис работает в stub-режиме.")
+# Настройка логирования
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
+# Настройки CUDA
+os.environ["CUDA_VISIBLE_DEVICES"] = '0'
 
-# ============================================================================
-# Pydantic Models
-# ============================================================================
+app = FastAPI(title="DeepSeek-OCR Service", version="1.0.0")
 
-class OCRRequest(BaseModel):
-    """Запрос на OCR"""
-    image: str  # base64 encoded image
-    mode: str = "Base"  # Tiny, Small, Base, Large, Gundam
-    prompt: str = "Convert the entire page/image into Markdown format."
-    page_id: int = 0
-    bbox: Optional[List[float]] = None
+# Глобальные переменные для модели
+model = None
+tokenizer = None
+model_loaded = False
 
 
-class OCRBlockResponse(BaseModel):
-    """Блок в ответе OCR"""
+class BBox(BaseModel):
+    x0: float
+    y0: float
+    x1: float
+    y1: float
+
+
+class OCRBlock(BaseModel):
     id: str
     type: str
     content: str
-    bbox: List[float]
-    confidence: float
-    metadata: Dict[str, Any] = {}
+    bbox: BBox
+    confidence: float = 1.0
+    metadata: dict = {}
 
 
 class OCRResponse(BaseModel):
-    """Ответ от OCR"""
+    blocks: List[OCRBlock]
     markdown: str
-    blocks: List[OCRBlockResponse]
-    page_id: int
-    vision_tokens: int
-    text_tokens: int
-    mode: str
+    raw_output: str
 
 
-# ============================================================================
-# FastAPI App
-# ============================================================================
-
-app = FastAPI(
-    title="DeepSeek-OCR Microservice",
-    description="OCR сервис на базе vLLM + DeepSeek-OCR",
-    version="0.1.0"
-)
-
-
-# ============================================================================
-# DeepSeek-OCR Engine
-# ============================================================================
-
-class DeepSeekOCREngine:
-    """
-    Движок для DeepSeek-OCR на базе vLLM
+def load_model():
+    """Загрузка модели DeepSeek-OCR"""
+    global model, tokenizer, model_loaded
     
-    Загружает модель DeepSeek-OCR и обрабатывает запросы.
-    """
+    if model_loaded:
+        logger.info("✅ Модель уже загружена")
+        return
     
-    # Vision tokens по режимам (из DeepSeek-OCR README)
-    MODE_TOKENS = {
-        "Tiny": 64,
-        "Small": 100,
-        "Base": 256,
-        "Large": 400,
-        "Gundam": None  # Dynamic
-    }
-    
-    def __init__(self, model_path: str = "deepseek-ai/deepseek-ocr"):
-        """
-        Инициализация движка
+    try:
+        logger.info("🔄 Загрузка DeepSeek-OCR...")
+        model_name = 'deepseek-ai/DeepSeek-OCR'
         
-        Args:
-            model_path: Путь к модели DeepSeek-OCR
-        """
-        self.model_path = model_path
-        self.llm = None
+        # Загрузка токенизатора
+        logger.info("   Загрузка токенизатора...")
+        tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
         
-        if VLLM_AVAILABLE:
-            self._load_model()
-        else:
-            print("⚠️  Stub режим: OCR будет возвращать заглушки")
-    
-    def _load_model(self):
-        """Загрузка модели через vLLM"""
-        try:
-            print(f"🔄 Загрузка модели: {self.model_path}")
-            
-            self.llm = LLM(
-                model=self.model_path,
-                trust_remote_code=True,  # Требуется для DeepSeek-OCR
-                gpu_memory_utilization=0.9,
-                max_model_len=4096,
-            )
-            
-            print("✅ Модель загружена")
-        except Exception as e:
-            print(f"❌ Ошибка загрузки модели: {e}")
-            raise
-    
-    def process_image(self, image_bytes: bytes, mode: str, prompt: str) -> Dict[str, Any]:
-        """
-        Обработка изображения через OCR
+        # Загрузка модели
+        logger.info("   Загрузка модели (это может занять время при первом запуске)...")
+        model = AutoModel.from_pretrained(
+            model_name,
+            _attn_implementation='eager',
+            trust_remote_code=True,
+            use_safetensors=True
+        )
+        model = model.eval().cuda().to(torch.bfloat16)
         
-        Args:
-            image_bytes: Байты изображения
-            mode: Режим OCR (Tiny/Small/Base/Large/Gundam)
-            prompt: Промпт для модели
+        model_loaded = True
+        logger.info("✅ DeepSeek-OCR успешно загружен!")
         
-        Returns:
-            Dict с результатами OCR
-        """
-        if not VLLM_AVAILABLE or not self.llm:
-            # Stub режим
-            return self._stub_ocr(image_bytes, mode)
-        
-        try:
-            # Загружаем изображение
-            image = Image.open(io.BytesIO(image_bytes))
-            
-            # Формируем inputs для vLLM
-            # (точный формат зависит от реализации DeepSeek-OCR)
-            
-            # Sampling parameters с custom logits processor
-            sampling_params = SamplingParams(
-                temperature=0.0,  # Детерминированный вывод для OCR
-                max_tokens=2048,  # Максимум токенов для вывода
-                # logits_processors=[NGramPerReqLogitsProcessor(...)],  # Если доступен
-            )
-            
-            # Inference
-            outputs = self.llm.generate(
-                prompts=[prompt],
-                sampling_params=sampling_params,
-                # image=image,  # Передача изображения (API vLLM)
-            )
-            
-            # Извлекаем результат
-            generated_text = outputs[0].outputs[0].text
-            
-            # Парсим Markdown и создаем блоки
-            blocks = self._parse_markdown_to_blocks(generated_text)
-            
-            # Подсчет токенов
-            vision_tokens = self.MODE_TOKENS.get(mode, 256)
-            text_tokens = len(outputs[0].outputs[0].token_ids)
-            
-            return {
-                "markdown": generated_text,
-                "blocks": blocks,
-                "vision_tokens": vision_tokens,
-                "text_tokens": text_tokens,
-                "mode": mode
-            }
-        
-        except Exception as e:
-            print(f"❌ Ошибка OCR: {e}")
-            raise
-    
-    def _stub_ocr(self, image_bytes: bytes, mode: str) -> Dict[str, Any]:
-        """
-        Заглушка для OCR (когда vLLM недоступен)
-        
-        Возвращает минимальный валидный ответ для тестирования.
-        """
-        # Извлекаем базовую информацию об изображении
-        image = Image.open(io.BytesIO(image_bytes))
-        width, height = image.size
-        
-        stub_markdown = f"""# Stub OCR Result
+    except Exception as e:
+        logger.error(f"❌ Ошибка загрузки модели: {e}")
+        raise
 
-This is a stub response (vLLM not available).
-
-Image size: {width}x{height}
-Mode: {mode}
-
-**Note:** This is placeholder text. Deploy vLLM with DeepSeek-OCR for actual OCR.
-"""
-        
-        blocks = [
-            {
-                "id": f"stub_{uuid.uuid4().hex[:8]}",
-                "type": "paragraph",
-                "content": "Stub OCR content",
-                "bbox": [0, 0, float(width), float(height)],
-                "confidence": 1.0,
-                "metadata": {"stub": True}
-            }
-        ]
-        
-        return {
-            "markdown": stub_markdown,
-            "blocks": blocks,
-            "vision_tokens": self.MODE_TOKENS.get(mode, 256),
-            "text_tokens": len(stub_markdown.split()),
-            "mode": mode
-        }
-    
-    def _parse_markdown_to_blocks(self, markdown: str) -> List[Dict[str, Any]]:
-        """
-        Парсинг Markdown в структурированные блоки
-        
-        Простая эвристика для разбиения на блоки.
-        Для продакшена можно использовать markdown parser.
-        
-        Args:
-            markdown: Markdown текст
-        
-        Returns:
-            Список блоков
-        """
-        blocks = []
-        lines = markdown.split('\n')
-        
-        block_counter = 0
-        for line in lines:
-            if not line.strip():
-                continue
-            
-            block_counter += 1
-            block_id = f"block_{block_counter}_{uuid.uuid4().hex[:8]}"
-            
-            # Определяем тип блока
-            if line.startswith('#'):
-                block_type = "heading"
-            elif line.startswith('- ') or line.startswith('* '):
-                block_type = "list"
-            elif line.startswith('|'):
-                block_type = "table"
-            else:
-                block_type = "paragraph"
-            
-            blocks.append({
-                "id": block_id,
-                "type": block_type,
-                "content": line,
-                "bbox": [0, 0, 0, 0],  # TODO: Extract from OCR if available
-                "confidence": 0.95,
-                "metadata": {}
-            })
-        
-        return blocks
-
-
-# ============================================================================
-# Global Engine Instance
-# ============================================================================
-
-# Инициализируем движок при старте
-ocr_engine = None
 
 @app.on_event("startup")
 async def startup_event():
     """Загрузка модели при старте сервиса"""
-    global ocr_engine
-    
-    # TODO: Получить model_path из environment variables
-    model_path = "deepseek-ai/deepseek-ocr"
-    
-    try:
-        ocr_engine = DeepSeekOCREngine(model_path=model_path)
-    except Exception as e:
-        print(f"❌ Не удалось загрузить модель: {e}")
-        print("⚠️  Сервис будет работать в stub-режиме")
-        ocr_engine = DeepSeekOCREngine(model_path="stub")
+    load_model()
 
 
-# ============================================================================
-# API Endpoints
-# ============================================================================
+@app.get("/")
+async def root():
+    """Проверка работоспособности сервиса"""
+    return {
+        "service": "DeepSeek-OCR Service",
+        "version": "1.0.0",
+        "status": "running",
+        "model_loaded": model_loaded
+    }
+
 
 @app.get("/health")
 async def health_check():
     """Проверка здоровья сервиса"""
+    if not model_loaded:
+        raise HTTPException(status_code=503, detail="Model not loaded")
+    
     return {
         "status": "healthy",
-        "vllm_available": VLLM_AVAILABLE,
-        "model_loaded": ocr_engine is not None and ocr_engine.llm is not None
+        "model_loaded": True,
+        "cuda_available": torch.cuda.is_available(),
+        "cuda_device": torch.cuda.get_device_name(0) if torch.cuda.is_available() else None
     }
 
 
-@app.post("/ocr/page", response_model=OCRResponse)
-async def ocr_page(request: OCRRequest):
+@app.post("/ocr/figure", response_model=OCRResponse)
+async def ocr_figure(file: UploadFile = File(...)):
     """
-    OCR всей страницы PDF
+    Обработка изображения через DeepSeek-OCR
     
     Args:
-        request: OCRRequest с base64 изображением
+        file: Изображение в формате PNG/JPEG
     
     Returns:
-        OCRResponse с Markdown и блоками
+        OCRResponse с распознанными блоками и markdown
     """
-    if not ocr_engine:
-        raise HTTPException(status_code=503, detail="OCR engine not initialized")
+    if not model_loaded:
+        raise HTTPException(status_code=503, detail="Model not loaded")
     
     try:
-        # Декодируем base64
-        image_bytes = base64.b64decode(request.image)
+        # Читаем изображение
+        image_data = await file.read()
+        image = Image.open(io.BytesIO(image_data))
         
-        # Обрабатываем через OCR
-        result = ocr_engine.process_image(
-            image_bytes=image_bytes,
-            mode=request.mode,
-            prompt=request.prompt
-        )
+        # Сохраняем во временный файл (модель требует путь к файлу)
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as tmp_file:
+            image.save(tmp_file.name)
+            temp_path = tmp_file.name
         
-        # Формируем ответ
-        return OCRResponse(
-            markdown=result["markdown"],
-            blocks=[OCRBlockResponse(**b) for b in result["blocks"]],
-            page_id=request.page_id,
-            vision_tokens=result["vision_tokens"],
-            text_tokens=result["text_tokens"],
-            mode=result["mode"]
-        )
+        try:
+            # Создаем временную папку для результатов
+            with tempfile.TemporaryDirectory() as tmp_output:
+                # Prompt для OCR
+                prompt = "<image>\n<|grounding|>Convert the document to markdown."
+                
+                # Обработка через DeepSeek-OCR
+                logger.info(f"📄 Обработка изображения {image.size}")
+                
+                res = model.infer(
+                    tokenizer,
+                    prompt=prompt,
+                    image_file=temp_path,
+                    output_path=tmp_output,
+                    base_size=1024,
+                    image_size=1024,
+                    crop_mode=False,
+                    save_results=False,  # Не сохраняем файлы
+                    test_compress=False
+                )
+                
+                # Парсим результат
+                raw_output = res if isinstance(res, str) else str(res)
+                
+                # Извлекаем markdown (упрощенный парсинг)
+                markdown_text = ""
+                blocks = []
+                
+                # Парсим вывод модели
+                lines = raw_output.split('\n')
+                current_block = None
+                block_counter = 0
+                
+                for line in lines:
+                    # Детектируем ref и det теги
+                    if '<|ref|>' in line:
+                        # Начало нового блока
+                        if current_block:
+                            blocks.append(current_block)
+                        
+                        # Извлекаем тип
+                        block_type = line.split('<|ref|>')[1].split('<|/ref|>')[0]
+                        
+                        # Извлекаем bbox если есть
+                        bbox_data = [0, 0, 100, 100]  # default
+                        if '<|det|>' in line:
+                            det_str = line.split('<|det|>')[1].split('<|/det|>')[0]
+                            try:
+                                import ast
+                                bbox_list = ast.literal_eval(det_str)
+                                if bbox_list and len(bbox_list) > 0:
+                                    bbox_data = bbox_list[0]
+                            except:
+                                pass
+                        
+                        current_block = {
+                            'id': f'ocr_block_{block_counter}',
+                            'type': block_type,
+                            'content': '',
+                            'bbox': {
+                                'x0': bbox_data[0],
+                                'y0': bbox_data[1],
+                                'x1': bbox_data[2],
+                                'y1': bbox_data[3]
+                            },
+                            'confidence': 1.0,
+                            'metadata': {}
+                        }
+                        block_counter += 1
+                    
+                    elif current_block and not line.startswith('<|') and line.strip():
+                        # Добавляем контент к текущему блоку
+                        if current_block['content']:
+                            current_block['content'] += '\n'
+                        current_block['content'] += line
+                        markdown_text += line + '\n'
+                
+                # Добавляем последний блок
+                if current_block:
+                    blocks.append(current_block)
+                
+                logger.info(f"✅ Распознано {len(blocks)} блоков")
+                
+                return OCRResponse(
+                    blocks=[OCRBlock(**block) for block in blocks],
+                    markdown=markdown_text.strip(),
+                    raw_output=raw_output
+                )
+        
+        finally:
+            # Удаляем временный файл
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
     
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"OCR processing error: {str(e)}")
+        logger.error(f"❌ Ошибка OCR: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
-
-@app.post("/ocr/figure", response_model=OCRResponse)
-async def ocr_figure(request: OCRRequest):
-    """
-    OCR отдельной фигуры/изображения
-    
-    Аналогичен /ocr/page, но с другим дефолтным промптом.
-    """
-    if not ocr_engine:
-        raise HTTPException(status_code=503, detail="OCR engine not initialized")
-    
-    try:
-        image_bytes = base64.b64decode(request.image)
-        
-        result = ocr_engine.process_image(
-            image_bytes=image_bytes,
-            mode=request.mode,
-            prompt=request.prompt
-        )
-        
-        return OCRResponse(
-            markdown=result["markdown"],
-            blocks=[OCRBlockResponse(**b) for b in result["blocks"]],
-            page_id=request.page_id,
-            vision_tokens=result["vision_tokens"],
-            text_tokens=result["text_tokens"],
-            mode=result["mode"]
-        )
-    
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"OCR processing error: {str(e)}")
-
-
-# ============================================================================
-# Main (для локального запуска)
-# ============================================================================
 
 if __name__ == "__main__":
-    import uvicorn
-    
+    # Запуск сервиса
     uvicorn.run(
         app,
         host="0.0.0.0",
         port=8000,
         log_level="info"
     )
-

@@ -53,7 +53,9 @@ class NativeExtractor:
     def __init__(self, extract_images: bool = True, 
                  extract_drawings: bool = True,
                  extract_tables: bool = True,
-                 min_text_length: int = 1):
+                 min_text_length: int = 1,
+                 render_vectors_to_image: bool = False,
+                 vector_render_dpi: int = 300):
         """
         Инициализация экстрактора
         
@@ -62,11 +64,15 @@ class NativeExtractor:
             extract_drawings: Извлекать векторную графику
             extract_tables: Извлекать таблицы (требует pdfplumber)
             min_text_length: Минимальная длина текста в блоке
+            render_vectors_to_image: Рендерить векторную графику в PNG для OCR
+            vector_render_dpi: DPI для рендеринга векторной графики (по умолчанию 300)
         """
         self.extract_images = extract_images
         self.extract_drawings = extract_drawings
         self.extract_tables = extract_tables and PDFPLUMBER_AVAILABLE
         self.min_text_length = min_text_length
+        self.render_vectors_to_image = render_vectors_to_image
+        self.vector_render_dpi = vector_render_dpi
         
         if extract_tables and not PDFPLUMBER_AVAILABLE:
             print("⚠️  pdfplumber не установлен, таблицы не будут извлекаться")
@@ -101,7 +107,11 @@ class NativeExtractor:
         
         # 3. Извлечение векторной графики
         if self.extract_drawings:
-            result["drawing_blocks"] = self.extract_drawing_blocks(page)
+            result["drawing_blocks"] = self.extract_drawing_blocks(
+                page,
+                render_to_image=self.render_vectors_to_image,
+                render_dpi=self.vector_render_dpi
+            )
         
         # 4. Извлечение таблиц
         if self.extract_tables and pdf_path:
@@ -241,6 +251,7 @@ class NativeExtractor:
                     width=width,
                     height=height,
                     xref=xref,
+                    needs_ocr=True,  # Флаг для StructurePreserver
                     metadata={"img_idx": img_idx}
                 )
                 
@@ -252,7 +263,9 @@ class NativeExtractor:
         
         return image_blocks
     
-    def extract_drawing_blocks(self, page: fitz.Page) -> List[DrawingBlock]:
+    def extract_drawing_blocks(self, page: fitz.Page,
+                              render_to_image: bool = False,
+                              render_dpi: int = 300) -> List[DrawingBlock]:
         """
         Извлечь векторную графику со страницы
         
@@ -261,6 +274,8 @@ class NativeExtractor:
         
         Args:
             page: Объект страницы
+            render_to_image: Рендерить векторные блоки в PNG для OCR
+            render_dpi: DPI для рендеринга (по умолчанию 300 для качества)
         
         Returns:
             Список DrawingBlock
@@ -287,16 +302,68 @@ class NativeExtractor:
                 "fill": drawing.get("fill")
             }
             
+            # Рендерим в изображение если требуется
+            image_data = None
+            needs_ocr = False
+            
+            if render_to_image:
+                image_data = self._render_region_to_image(page, bbox, dpi=render_dpi)
+                needs_ocr = True if image_data else False
+                
+                # Отладочный вывод для страницы 54
+                if page_num == 53:  # Индекс 53 = страница 54
+                    print(f"  [DEBUG] Векторный блок #{draw_idx}: area={bbox.area():.0f}px², rendered={image_data is not None}, needs_ocr={needs_ocr}")
+            
             drawing_block = DrawingBlock(
                 bbox=bbox,
                 drawing_data=drawing_data,
                 page_num=page_num,
+                image_data=image_data,
+                needs_ocr=needs_ocr,
                 metadata={"draw_idx": draw_idx}
             )
             
             drawing_blocks.append(drawing_block)
         
         return drawing_blocks
+    
+    def _render_region_to_image(self, page: fitz.Page, bbox: BBox, dpi: int = 300) -> Optional[bytes]:
+        """
+        Рендерить область страницы в PNG изображение
+        
+        Args:
+            page: Объект страницы
+            bbox: Область для рендеринга
+            dpi: DPI для рендеринга (влияет на качество)
+        
+        Returns:
+            PNG изображение в байтах или None при ошибке
+        """
+        try:
+            # Создаем Rect из bbox
+            clip_rect = fitz.Rect(bbox.x0, bbox.y0, bbox.x1, bbox.y1)
+            
+            # Проверяем, что область валидна
+            if clip_rect.is_empty or clip_rect.width < 10 or clip_rect.height < 10:
+                return None
+            
+            # Рассчитываем zoom для требуемого DPI
+            # Стандартное разрешение PDF = 72 DPI
+            zoom = dpi / 72.0
+            mat = fitz.Matrix(zoom, zoom)
+            
+            # Рендерим область в pixmap
+            pix = page.get_pixmap(matrix=mat, clip=clip_rect)
+            
+            # Конвертируем в PNG bytes
+            png_bytes = pix.tobytes("png")
+            
+            return png_bytes
+        
+        except Exception as e:
+            # Логируем ошибку, но не падаем
+            print(f"⚠️  Ошибка рендеринга векторной графики: {e}")
+            return None
     
     def extract_table_blocks(self, page: fitz.Page, pdf_path: str) -> List[TableBlock]:
         """

@@ -126,25 +126,56 @@ class OCRClient:
         Returns:
             OCRResponse: Результат OCR
         """
-        # Кодируем в base64
-        img_base64 = base64.b64encode(image_data).decode('utf-8')
+        # Новый API использует multipart/form-data вместо JSON
+        url = f"{self.base_url}/ocr/figure"
         
-        # Формируем запрос
-        payload = {
-            "image": img_base64,
-            "mode": mode.value,
-            "prompt": prompt or self.PROMPT_FIGURE_PARSING,
-            "page_id": page_num
+        # Подготавливаем файл
+        files = {
+            'file': ('image.png', io.BytesIO(image_data), 'image/png')
         }
         
-        if bbox:
-            payload["bbox"] = bbox.to_tuple()
+        last_error = None
+        for attempt in range(self.max_retries):
+            try:
+                response = self._session.post(
+                    url,
+                    files=files,
+                    timeout=self.timeout
+                )
+                
+                # Проверяем статус
+                response.raise_for_status()
+                
+                # Парсим JSON ответ
+                response_data = response.json()
+                
+                # Парсим ответ
+                return self._parse_ocr_response(response_data, page_num)
+            
+            except requests.exceptions.Timeout as e:
+                last_error = f"Timeout после {self.timeout}s"
+                continue
+            
+            except requests.exceptions.ConnectionError as e:
+                last_error = f"Connection error: {e}"
+                continue
+            
+            except requests.exceptions.HTTPError as e:
+                status_code = e.response.status_code
+                if status_code >= 500:
+                    last_error = f"Server error {status_code}"
+                    continue
+                else:
+                    raise RuntimeError(f"OCR request failed: {e}")
+            
+            except Exception as e:
+                last_error = f"Unexpected error: {e}"
+                continue
         
-        # Отправляем запрос
-        response_data = self._make_request("/ocr/figure", payload)
-        
-        # Парсим ответ
-        return self._parse_ocr_response(response_data, page_num)
+        raise RuntimeError(
+            f"OCR request failed after {self.max_retries} attempts. "
+            f"Last error: {last_error}"
+        )
     
     def ocr_region(self, page: fitz.Page, bbox: BBox,
                    mode: OCRMode = OCRMode.BASE,
@@ -239,22 +270,21 @@ class OCRClient:
         """
         Парсинг ответа от OCR сервиса
         
-        Ожидаемый формат (из архитектурного анализа):
+        Новый формат (FastAPI с DeepSeek-OCR):
         {
-            "markdown": "...",
             "blocks": [
                 {
-                    "id": "block_1",
-                    "type": "heading",
+                    "id": "ocr_block_0",
+                    "type": "sub_title",
                     "content": "...",
-                    "bbox": [x0, y0, x1, y1],
-                    "confidence": 0.95
+                    "bbox": {"x0": 127, "y0": 134, "x1": 483, "y1": 147},
+                    "confidence": 1.0,
+                    "metadata": {}
                 },
                 ...
             ],
-            "vision_tokens": 256,
-            "text_tokens": 1024,
-            "mode": "Base"
+            "markdown": "...",
+            "raw_output": "..."
         }
         
         Args:
@@ -267,15 +297,7 @@ class OCRClient:
         # Извлекаем основные поля
         markdown = response_data.get("markdown", "")
         blocks_data = response_data.get("blocks", [])
-        vision_tokens = response_data.get("vision_tokens", 0)
-        text_tokens = response_data.get("text_tokens", 0)
-        mode_str = response_data.get("mode", "Base")
-        
-        # Парсим режим
-        try:
-            mode = OCRMode(mode_str)
-        except ValueError:
-            mode = OCRMode.BASE
+        raw_output = response_data.get("raw_output", "")
         
         # Парсим блоки
         ocr_blocks = []
@@ -285,16 +307,25 @@ class OCRClient:
             block_id = block_data.get("id", "")
             type_str = block_data.get("type", "paragraph")
             content = block_data.get("content", "")
-            bbox_tuple = block_data.get("bbox", [0, 0, 0, 0])
+            bbox_data = block_data.get("bbox", {})
             confidence = block_data.get("confidence", 1.0)
+            
+            # Парсим bbox (может быть dict или tuple)
+            if isinstance(bbox_data, dict):
+                bbox = BBox(
+                    x0=bbox_data.get("x0", 0),
+                    y0=bbox_data.get("y0", 0),
+                    x1=bbox_data.get("x1", 0),
+                    y1=bbox_data.get("y1", 0)
+                )
+            else:
+                bbox = BBox(*bbox_data)
             
             # Парсим тип контента
             try:
                 content_type = ContentType(type_str)
             except ValueError:
                 content_type = ContentType.PARAGRAPH
-            
-            bbox = BBox(*bbox_tuple)
             
             ocr_block = OCRBlock(
                 id=block_id,
@@ -313,15 +344,35 @@ class OCRClient:
         # Средняя уверенность
         avg_confidence = sum(confidences) / len(confidences) if confidences else 1.0
         
+        # Оценка токенов из raw_output
+        vision_tokens = len(raw_output.split()) // 2  # примерная оценка
+        text_tokens = len(markdown.split())
+        
         return OCRResponse(
             markdown=markdown,
             blocks=ocr_blocks,
             page_id=page_num,
             vision_tokens_used=vision_tokens,
             text_tokens_generated=text_tokens,
-            mode=mode,
+            mode=OCRMode.BASE,
             confidence_avg=avg_confidence
         )
+    
+    def ocr_figure(self, image_data: bytes,
+                   page_num: int,
+                   bbox: Optional[BBox] = None) -> OCRResponse:
+        """
+        Алиас для ocr_image для совместимости с StructurePreserver
+        
+        Args:
+            image_data: Байты изображения
+            page_num: Номер страницы
+            bbox: BBox элемента (опционально)
+        
+        Returns:
+            OCRResponse
+        """
+        return self.ocr_image(image_data, page_num, bbox)
     
     def health_check(self) -> bool:
         """

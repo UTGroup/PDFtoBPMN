@@ -139,6 +139,7 @@ class ImageBlock:
     width: Optional[int] = None
     height: Optional[int] = None
     xref: Optional[int] = None  # PyMuPDF reference
+    needs_ocr: bool = False  # Флаг: нужно ли обработать через OCR
     metadata: Dict[str, Any] = field(default_factory=dict)
 
 
@@ -149,6 +150,8 @@ class DrawingBlock:
     drawing_data: Dict[str, Any]  # Векторные команды из PyMuPDF
     page_num: int
     type: ContentType = ContentType.VECTOR
+    image_data: Optional[bytes] = None  # Отрендеренное изображение (для OCR)
+    needs_ocr: bool = False  # Флаг: нужно ли обработать через OCR
     metadata: Dict[str, Any] = field(default_factory=dict)
 
 

@@ -151,9 +151,12 @@ pip install --upgrade pip
 
 ### Шаг 4: Установка PyTorch с CUDA
 
+**КРИТИЧЕСКИ ВАЖНО для RTX 5080 (Blackwell, sm_120)!**
+
 ```bash
-# PyTorch 2.5.1 + CUDA 12.1 (~7GB, 5-10 минут)
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+# PyTorch 2.9.0 + CUDA 12.8 (~2.5GB, 5-10 минут)
+# ОБЯЗАТЕЛЬНО для RTX 5080! Более старые версии НЕ РАБОТАЮТ!
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
 ```
 
 **Проверка установки PyTorch:**
@@ -163,11 +166,15 @@ python3 -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA A
 
 **Ожидаемый вывод:**
 ```
-PyTorch: 2.5.1+cu121
+PyTorch: 2.9.0+cu128
 CUDA Available: True
-CUDA Version: 12.1
+CUDA Version: 12.8
 GPU: NVIDIA GeForce RTX 5080
 ```
+
+**Поддерживаемые архитектуры:**
+- PyTorch 2.9.0 поддерживает: sm_50, sm_60, sm_70, sm_75, sm_80, sm_86, sm_90, **sm_120 (Blackwell)**
+- PyTorch 2.7.x и старше: **НЕ поддерживают sm_120** → RTX 5080 не работает!
 
 ### Шаг 5: Установка зависимостей DeepSeek-OCR
 
@@ -546,48 +553,91 @@ MAX_CONCURRENCY = 100  # если хватает VRAM
 tensor_parallel_size = 2  # для 2 GPU
 ```
 
-### Проблема 7: Несовместимость API vLLM 0.11.0 (ВАЖНО!)
+### Проблема 7: RTX 5080 (Blackwell, sm_120) не работает с PyTorch (КРИТИЧНО!)
 
 **Симптом:**
-```python
-ImportError: cannot import name 'SamplingMetadata' from 'vllm.model_executor'
+```
+RuntimeError: CUDA error: no kernel image is available for execution on the device
+NVIDIA GeForce RTX 5080 with CUDA capability sm_120 is not compatible with the current PyTorch installation.
+The current PyTorch install supports CUDA capabilities sm_50 sm_60 sm_70 sm_75 sm_80 sm_86 sm_37 sm_90.
 ```
 
 **Причина:**  
-Оригинальные скрипты DeepSeek-OCR (`deepseek_ocr.py`, `run_dpsk_ocr_*.py`) написаны под старый API vLLM. В vLLM 0.11.0 изменился API - `SamplingMetadata` и другие классы перемещены в другие модули.
+RTX 5080 использует новейшую архитектуру **Blackwell (compute capability sm_120)**, которую НЕ поддерживает PyTorch 2.7.x и старше. PyTorch 2.7.1 собран под CUDA 11.8 и поддерживает только до sm_90 (Ada Lovelace).
 
-**✅ РЕШЕНИЕ (РЕКОМЕНДУЕТСЯ):**
+**✅ РЕШЕНИЕ:**
 
-Используйте **наш OCR микросервис**, который написан под новый API vLLM 0.11.0:
+Установите **PyTorch 2.9.0+ с CUDA 12.8**:
 
 ```bash
-# Запуск OCR микросервиса
-cd /mnt/c/Users/YOUR_USERNAME/Obligations/pdf_to_context/ocr_service
-source ../../DeepSeek-OCR/venv/bin/activate
-uvicorn app:app --host 0.0.0.0 --port 8000
+cd ~/Obligations/DeepSeek-OCR
+source venv/bin/activate
+
+# Удалить старую версию
+pip uninstall -y torch torchvision torchaudio
+
+# Установить PyTorch 2.9.0 + CUDA 12.8
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
 ```
 
-Или используйте `PDFToContextPipeline` напрямую:
-
-```python
-from pdf_to_context import PDFToContextPipeline
-
-pipeline = PDFToContextPipeline(
-    ocr_base_url="http://localhost:8000",  # Если микросервис запущен
-    prioritize_accuracy=True
-)
-
-markdown = pipeline.process("input_data/document.pdf", output_path="output/result.md")
+**Проверка:**
+```bash
+python3 -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'GPU: {torch.cuda.get_device_name(0)}'); print(f'CUDA Available: {torch.cuda.is_available()}')"
 ```
 
-**Преимущества нашего микросервиса:**
-- ✅ Работает с vLLM 0.11.0
+**Ожидаемый вывод:**
+```
+PyTorch: 2.9.0+cu128
+GPU: NVIDIA GeForce RTX 5080
+CUDA Available: True
+```
+
+**Совместимость:**
+- ✅ PyTorch 2.9.0+: поддерживает sm_120 (Blackwell)
+- ✅ PyTorch 2.8.0+: частичная поддержка Blackwell
+- ❌ PyTorch 2.7.x и старше: НЕ поддерживают sm_120
+
+### Проблема 8: Несовместимость vLLM (устарело - больше не используем)
+
+**ВАЖНО:** Мы **отказались от vLLM** и используем **HuggingFace Transformers API** напрямую.
+
+**Причина отказа:**
+- Сложные зависимости и частые breaking changes в vLLM
+- Проблемы совместимости с новейшими GPU (RTX 5080)
+- Избыточная сложность для нашего use-case
+
+**✅ ТЕКУЩЕЕ РЕШЕНИЕ:**
+
+Используйте **наш FastAPI микросервис с HuggingFace API**:
+
+```bash
+# Запуск OCR микросервиса (без vLLM!)
+cd ~/Obligations
+source DeepSeek-OCR/venv/bin/activate
+python -m uvicorn pdf_to_context.ocr_service.app:app --host 0.0.0.0 --port 8000
+```
+
+**Проверка:**
+```bash
+curl http://localhost:8000/health
+```
+
+**Ожидаемый ответ:**
+```json
+{
+  "status": "healthy",
+  "model_loaded": true,
+  "cuda_available": true,
+  "cuda_device": "NVIDIA GeForce RTX 5080"
+}
+```
+
+**Преимущества нашего подхода:**
+- ✅ Простая установка (только transformers + PyTorch)
+- ✅ Работает с RTX 5080 и PyTorch 2.9.0
 - ✅ HTTP API для интеграции
 - ✅ Автоматическая обработка ошибок
-- ✅ Stub-режим для тестирования без модели
-
-**Альтернатива:**  
-Патчить оригинальные скрипты DeepSeek-OCR под новый API (не рекомендуется - много изменений).
+- ✅ Без зависимости от vLLM
 
 ---
 
