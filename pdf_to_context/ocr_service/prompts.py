@@ -77,14 +77,66 @@ class OCRPrompts:
         """
         return "<image>\n<|grounding|>OCR this image."
     
+    # ==================== РУССКИЕ ПРОМПТЫ ====================
+    # Добавлено: 31.10.2025 - Эксперимент с явным указанием языка
+    
+    @staticmethod
+    def get_russian_layout_ocr_prompt() -> str:
+        """
+        Промпт для русского текста с координатами (layout OCR)
+        
+        ГИПОТЕЗА: Явное указание "Language: Russian" заставит модель
+        корректно обрабатывать кириллицу без транслитерации
+        """
+        return "<image>\n<|grounding|>Language: Russian. Extract all text with coordinates."
+    
+    @staticmethod
+    def get_russian_bpmn_prompt() -> str:
+        """
+        Промпт для русских BPMN диаграмм
+        
+        Комбинирует: указание языка + тип контента + требование координат
+        """
+        return "<image>\n<|grounding|>Language: Russian. This is a BPMN diagram. Extract all text from diagram elements with coordinates."
+    
+    @staticmethod
+    def get_russian_preserve_cyrillic_prompt() -> str:
+        """
+        Промпт с явным требованием сохранить кириллицу
+        
+        Более агрессивная формулировка для критичных случаев
+        """
+        return "<image>\n<|grounding|>Russian text (Cyrillic). Preserve characters exactly. Extract with coordinates."
+    
+    @staticmethod
+    def get_russian_diagram_full_prompt() -> str:
+        """
+        Максимально детальный промпт для русских диаграмм
+        
+        Включает: язык + тип + инструкции + координаты
+        """
+        return "<image>\n<|grounding|>Language: Russian (Cyrillic). BPMN diagram. Extract text from boxes, circles, arrows. Provide coordinates."
+    
+    @staticmethod
+    def get_russian_simple_prompt() -> str:
+        """
+        Простейший промпт с указанием языка
+        
+        KISS принцип - минимум слов, максимум эффект
+        """
+        return "<image>\n<|grounding|>Russian. OCR with coordinates."
+    
     @staticmethod
     def get_prompt_by_type(content_type: str) -> str:
         """
         Выбор промпта по типу контента
         
         Args:
-            content_type: 'bpmn', 'complex_diagram', 'table', 'text_graphics', 'default',
-                         'parse_figure', 'free_ocr', 'describe' (официальные)
+            content_type: 
+                Базовые: 'bpmn', 'complex_diagram', 'table', 'text_graphics', 'default'
+                Официальные: 'parse_figure', 'free_ocr', 'describe', 'ocr_simple'
+                РУССКИЕ (NEW!): 'russian_layout', 'russian_bpmn', 'russian_preserve', 
+                                'russian_full', 'russian_simple'
         
         Returns:
             Appropriate prompt string
@@ -102,6 +154,13 @@ class OCRPrompts:
             'free_ocr': OCRPrompts.get_free_ocr_prompt(),
             'describe': OCRPrompts.get_describe_prompt(),
             'ocr_simple': OCRPrompts.get_ocr_simple_prompt(),
+            
+            # РУССКИЕ промпты (Эксперимент 31.10.2025):
+            'russian_layout': OCRPrompts.get_russian_layout_ocr_prompt(),       # ⭐⭐⭐⭐ Базовый
+            'russian_bpmn': OCRPrompts.get_russian_bpmn_prompt(),               # ⭐⭐⭐⭐⭐ Для BPMN
+            'russian_preserve': OCRPrompts.get_russian_preserve_cyrillic_prompt(),  # ⭐⭐⭐ Агрессивный
+            'russian_full': OCRPrompts.get_russian_diagram_full_prompt(),       # ⭐⭐⭐ Детальный
+            'russian_simple': OCRPrompts.get_russian_simple_prompt(),           # ⭐⭐⭐⭐ KISS
         }
         
         return prompts.get(content_type, OCRPrompts.get_default_prompt())
