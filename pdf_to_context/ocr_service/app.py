@@ -249,14 +249,14 @@ async def ocr_figure(
                 while i < len(lines):
                     line = lines[i]
                     
-                    # Детектируем ref и det теги
+                    # Детектируем ref и det теги (для ocr_simple)
                     if '<|ref|>' in line:
                         # Сохраняем предыдущий блок
                         if current_block and current_block['content'].strip():
                             blocks.append(current_block)
                         
-                        # Извлекаем тип
-                        block_type = line.split('<|ref|>')[1].split('<|/ref|>')[0]
+                        # Извлекаем текст элемента из <|ref|>...<|/ref|>
+                        ref_text = line.split('<|ref|>')[1].split('<|/ref|>')[0]
                         
                         # Извлекаем bbox если есть
                         bbox_data = [0, 0, 100, 100]  # default
@@ -272,8 +272,8 @@ async def ocr_figure(
                         
                         current_block = {
                             'id': f'ocr_block_{block_counter}',
-                            'type': block_type,
-                            'content': '',
+                            'type': 'text',  # Для ocr_simple всегда text
+                            'content': ref_text,  # ИСПРАВЛЕНО: Текст элемента из <|ref|>
                             'bbox': {
                                 'x0': float(bbox_data[0]),
                                 'y0': float(bbox_data[1]),
@@ -284,13 +284,11 @@ async def ocr_figure(
                             'metadata': {}
                         }
                         block_counter += 1
+                        markdown_text += ref_text + '\n'
                         
-                        # Извлекаем текст после тегов на той же строке
-                        if '<|/det|>' in line:
-                            text_after_tags = line.split('<|/det|>')[1].strip()
-                            if text_after_tags:
-                                current_block['content'] = text_after_tags
-                                markdown_text += text_after_tags + '\n'
+                        # Добавляем блок сразу (каждый элемент - отдельный блок)
+                        blocks.append(current_block)
+                        current_block = None
                     
                     elif current_block and not line.startswith('<|') and not line.startswith('===') and line.strip():
                         # Добавляем контент к текущему блоку (текст на следующих строках)

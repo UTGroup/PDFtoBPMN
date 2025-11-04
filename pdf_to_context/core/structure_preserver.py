@@ -131,12 +131,13 @@ class StructurePreserver:
         
         try:
             # Отправляем в OCR с правильными параметрами для распознавания схем/диаграмм
+            # ОБНОВЛЕНО: ocr_simple дает русский текст + координаты каждого элемента BPMN
             ocr_response = self.ocr_client.ocr_figure(
                 image_data=image_block.image_data,
                 page_num=page_num,
                 bbox=image_block.bbox,
-                prompt_type="parse_figure",  # Детальное описание диаграмм
-                base_size=1024,              # Оптимальный размер для BPMN схем
+                prompt_type="ocr_simple",  # ЛУЧШИЙ промпт для BPMN: текст + координаты элементов
+                base_size=1024,            # Оптимальный размер для BPMN схем
                 image_size=1024
             )
             
