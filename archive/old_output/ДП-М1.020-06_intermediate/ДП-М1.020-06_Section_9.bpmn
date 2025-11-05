@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" 
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI" 
+                  id="Definitions_Section_9" 
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+  
+  <bpmn:collaboration id="Collaboration_Section_9">
+    <bpmn:participant id="Participant_Section_9" name="Раздел 9: Системный мониторинг агентов" processRef="Process_Section_9" />
+  </bpmn:collaboration>
+  
+  <bpmn:process id="Process_Section_9" name="Системный мониторинг агентов" isExecutable="true">
+    
+    <bpmn:laneSet id="LaneSet_9">
+      <bpmn:lane id="Lane_9_Managers" name="Менеджеры ООНО">
+        <bpmn:flowNodeRef>Start_9</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_9_4</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_9_5</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_9_6</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_9_7_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_9_7_2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_9</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    
+    <!-- START -->
+    <bpmn:startEvent id="Start_9" name="Постоянный системный мониторинг" isInterrupting="false">
+      <bpmn:outgoing>Flow_9_1</bpmn:outgoing>
+      <bpmn:timerEventDefinition />
+    </bpmn:startEvent>
+    
+    <!-- TASKS -->
+    <bpmn:serviceTask id="Task_9_4" name="Мониторинг уровня регулярности полетов по НО">
+      <bpmn:incoming>Flow_9_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_9_2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    
+    <bpmn:userTask id="Task_9_5" name="Контроль операций супервайзерами">
+      <bpmn:incoming>Flow_9_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_9_3</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <bpmn:userTask id="Task_9_6" name="Проверка актуальности сертификата агента">
+      <bpmn:incoming>Flow_9_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_9_4</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <bpmn:userTask id="Task_9_7_1" name="Проверка обучения персонала агента">
+      <bpmn:incoming>Flow_9_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_9_5</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <bpmn:userTask id="Task_9_7_2" name="Проверка наличия исправного оборудования">
+      <bpmn:incoming>Flow_9_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_9_6</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <!-- END -->
+    <bpmn:endEvent id="End_9" name="Цикл мониторинга завершен">
+      <bpmn:incoming>Flow_9_6</bpmn:incoming>
+    </bpmn:endEvent>
+    
+    <!-- FLOWS -->
+    <bpmn:sequenceFlow id="Flow_9_1" sourceRef="Start_9" targetRef="Task_9_4" />
+    <bpmn:sequenceFlow id="Flow_9_2" sourceRef="Task_9_4" targetRef="Task_9_5" />
+    <bpmn:sequenceFlow id="Flow_9_3" sourceRef="Task_9_5" targetRef="Task_9_6" />
+    <bpmn:sequenceFlow id="Flow_9_4" sourceRef="Task_9_6" targetRef="Task_9_7_1" />
+    <bpmn:sequenceFlow id="Flow_9_5" sourceRef="Task_9_7_1" targetRef="Task_9_7_2" />
+    <bpmn:sequenceFlow id="Flow_9_6" sourceRef="Task_9_7_2" targetRef="End_9" />
+    
+  </bpmn:process>
+  
+  <!-- VISUALIZATION -->
+  <bpmndi:BPMNDiagram id="Diagram_Section_9">
+    <bpmndi:BPMNPlane id="Plane_9" bpmnElement="Collaboration_Section_9">
+      
+      <bpmndi:BPMNShape id="Participant_Section_9_di" bpmnElement="Participant_Section_9" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="1600" height="250" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Lane_9_Managers_di" bpmnElement="Lane_9_Managers" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="1570" height="250" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Start -->
+      <bpmndi:BPMNShape id="Start_9_di" bpmnElement="Start_9">
+        <dc:Bounds x="252" y="187" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="226" y="230" width="88" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <!-- Tasks -->
+      <bpmndi:BPMNShape id="Task_9_4_di" bpmnElement="Task_9_4">
+        <dc:Bounds x="340" y="165" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_9_5_di" bpmnElement="Task_9_5">
+        <dc:Bounds x="520" y="165" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_9_6_di" bpmnElement="Task_9_6">
+        <dc:Bounds x="700" y="165" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_9_7_1_di" bpmnElement="Task_9_7_1">
+        <dc:Bounds x="880" y="165" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_9_7_2_di" bpmnElement="Task_9_7_2">
+        <dc:Bounds x="1060" y="165" width="130" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="End_9_di" bpmnElement="End_9">
+        <dc:Bounds x="1242" y="187" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1225" y="230" width="70" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <!-- Edges -->
+      <bpmndi:BPMNEdge id="Flow_9_1_di" bpmnElement="Flow_9_1">
+        <di:waypoint x="288" y="205" />
+        <di:waypoint x="340" y="205" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_9_2_di" bpmnElement="Flow_9_2">
+        <di:waypoint x="470" y="205" />
+        <di:waypoint x="520" y="205" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_9_3_di" bpmnElement="Flow_9_3">
+        <di:waypoint x="650" y="205" />
+        <di:waypoint x="700" y="205" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_9_4_di" bpmnElement="Flow_9_4">
+        <di:waypoint x="830" y="205" />
+        <di:waypoint x="880" y="205" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_9_5_di" bpmnElement="Flow_9_5">
+        <di:waypoint x="1010" y="205" />
+        <di:waypoint x="1060" y="205" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_9_6_di" bpmnElement="Flow_9_6">
+        <di:waypoint x="1190" y="205" />
+        <di:waypoint x="1242" y="205" />
+      </bpmndi:BPMNEdge>
+      
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+
+

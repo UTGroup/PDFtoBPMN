@@ -1,0 +1,747 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" 
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI" 
+                  id="Definitions_AllInOne" 
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+  
+  <bpmn:collaboration id="Collaboration_Main">
+    <bpmn:participant id="Participant_Main" name="ПАО «ЮТэйр» - Мониторинг агентов (Главная)" processRef="Process_Main" />
+  </bpmn:collaboration>
+  
+  <bpmn:collaboration id="Collaboration_Section_7">
+    <bpmn:participant id="Participant_Section_7" name="Раздел 7: Подготовка аудиторов" processRef="Process_Section_7" />
+  </bpmn:collaboration>
+  
+  <bpmn:collaboration id="Collaboration_Section_8">
+    <bpmn:participant id="Participant_Section_8" name="Раздел 8: Мониторинг аэродромов" processRef="Process_Section_8" />
+  </bpmn:collaboration>
+  
+  <bpmn:collaboration id="Collaboration_Section_9">
+    <bpmn:participant id="Participant_Section_9" name="Раздел 9: Системный мониторинг" processRef="Process_Section_9" />
+  </bpmn:collaboration>
+  
+  <bpmn:collaboration id="Collaboration_Section_10">
+    <bpmn:participant id="Participant_Section_10" name="Раздел 10: Выборочные проверки" processRef="Process_Section_10" />
+  </bpmn:collaboration>
+  
+  <bpmn:collaboration id="Collaboration_Section_11">
+    <bpmn:participant id="Participant_Section_11" name="Раздел 11: Плановые аудиты" processRef="Process_Section_11" />
+  </bpmn:collaboration>
+  
+  <!-- ============================================ -->
+  <!-- ГЛАВНЫЙ ПРОЦЕСС -->
+  <!-- ============================================ -->
+  <bpmn:process id="Process_Main" name="Мониторинг агентов" isExecutable="true">
+    
+    <bpmn:laneSet id="LaneSet_Main">
+      <bpmn:lane id="Lane_Main_1" name="Подготовка">
+        <bpmn:flowNodeRef>Start_Process</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>CallActivity_7</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Main_2" name="Мониторинг">
+        <bpmn:flowNodeRef>Gateway_Split</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>CallActivity_8</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>CallActivity_9</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Join</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Main_3" name="Проверки">
+        <bpmn:flowNodeRef>Gateway_Check</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>CallActivity_10</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>CallActivity_11</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_Merge</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Process</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    
+    <bpmn:startEvent id="Start_Process" name="Начало">
+      <bpmn:outgoing>F1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:callActivity id="CallActivity_7" name="Раздел 7: Подготовка аудиторов" calledElement="Process_Section_7">
+      <bpmn:incoming>F1</bpmn:incoming>
+      <bpmn:outgoing>F2</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:parallelGateway id="Gateway_Split">
+      <bpmn:incoming>F2</bpmn:incoming>
+      <bpmn:outgoing>F3a</bpmn:outgoing>
+      <bpmn:outgoing>F3b</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:callActivity id="CallActivity_8" name="Раздел 8: Мониторинг аэродромов" calledElement="Process_Section_8">
+      <bpmn:incoming>F3a</bpmn:incoming>
+      <bpmn:outgoing>F4a</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:callActivity id="CallActivity_9" name="Раздел 9: Системный мониторинг" calledElement="Process_Section_9">
+      <bpmn:incoming>F3b</bpmn:incoming>
+      <bpmn:outgoing>F4b</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:parallelGateway id="Gateway_Join">
+      <bpmn:incoming>F4a</bpmn:incoming>
+      <bpmn:incoming>F4b</bpmn:incoming>
+      <bpmn:outgoing>F5</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:exclusiveGateway id="Gateway_Check" name="Проблемы?">
+      <bpmn:incoming>F5</bpmn:incoming>
+      <bpmn:outgoing>F6</bpmn:outgoing>
+      <bpmn:outgoing>F7</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:callActivity id="CallActivity_10" name="Раздел 10: Выборочные проверки" calledElement="Process_Section_10">
+      <bpmn:incoming>F6</bpmn:incoming>
+      <bpmn:outgoing>F8</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:callActivity id="CallActivity_11" name="Раздел 11: Плановые аудиты" calledElement="Process_Section_11">
+      <bpmn:incoming>F7</bpmn:incoming>
+      <bpmn:outgoing>F9</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:exclusiveGateway id="Gateway_Merge">
+      <bpmn:incoming>F8</bpmn:incoming>
+      <bpmn:incoming>F9</bpmn:incoming>
+      <bpmn:outgoing>F10</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="End_Process" name="Завершено">
+      <bpmn:incoming>F10</bpmn:incoming>
+    </bpmn:endEvent>
+    
+    <bpmn:sequenceFlow id="F1" sourceRef="Start_Process" targetRef="CallActivity_7" />
+    <bpmn:sequenceFlow id="F2" sourceRef="CallActivity_7" targetRef="Gateway_Split" />
+    <bpmn:sequenceFlow id="F3a" sourceRef="Gateway_Split" targetRef="CallActivity_8" />
+    <bpmn:sequenceFlow id="F3b" sourceRef="Gateway_Split" targetRef="CallActivity_9" />
+    <bpmn:sequenceFlow id="F4a" sourceRef="CallActivity_8" targetRef="Gateway_Join" />
+    <bpmn:sequenceFlow id="F4b" sourceRef="CallActivity_9" targetRef="Gateway_Join" />
+    <bpmn:sequenceFlow id="F5" sourceRef="Gateway_Join" targetRef="Gateway_Check" />
+    <bpmn:sequenceFlow id="F6" name="Да" sourceRef="Gateway_Check" targetRef="CallActivity_10" />
+    <bpmn:sequenceFlow id="F7" name="Нет" sourceRef="Gateway_Check" targetRef="CallActivity_11" />
+    <bpmn:sequenceFlow id="F8" sourceRef="CallActivity_10" targetRef="Gateway_Merge" />
+    <bpmn:sequenceFlow id="F9" sourceRef="CallActivity_11" targetRef="Gateway_Merge" />
+    <bpmn:sequenceFlow id="F10" sourceRef="Gateway_Merge" targetRef="End_Process" />
+  </bpmn:process>
+  
+  <!-- ============================================ -->
+  <!-- РАЗДЕЛ 7: ПОДГОТОВКА АУДИТОРОВ -->
+  <!-- ============================================ -->
+  <bpmn:process id="Process_Section_7" name="Подготовка аудиторов" isExecutable="false">
+    
+    <bpmn:laneSet id="LaneSet_7">
+      <bpmn:lane id="Lane_7_Director" name="Руководитель ДОНО">
+        <bpmn:flowNodeRef>Start_7</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_7_1_2</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_7_Chief" name="Начальник ОООД">
+        <bpmn:flowNodeRef>Task_7_3</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_7_5</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_7_7</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_7_Lead" name="Ведущий менеджер ОООД">
+        <bpmn:flowNodeRef>Task_7_4</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_7_Deputy" name="Зам. ген. директора - СОД">
+        <bpmn:flowNodeRef>Task_7_6</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_7_Review</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_7</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    
+    <bpmn:startEvent id="Start_7" name="Актуализация требований">
+      <bpmn:outgoing>Flow_7_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:manualTask id="Task_7_1_2" name="Определение квалификационных требований">
+      <bpmn:incoming>Flow_7_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_7_2</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:userTask id="Task_7_3" name="Назначение аудиторов из ООНО">
+      <bpmn:incoming>Flow_7_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_7_3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_7_4" name="Внесение сведений в Реестр">
+      <bpmn:incoming>Flow_7_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_7_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_7_5" name="Подготовка итогового Реестра">
+      <bpmn:incoming>Flow_7_4</bpmn:incoming>
+      <bpmn:incoming>Flow_7_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_7_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_7_6" name="Утверждение Реестра приказом">
+      <bpmn:incoming>Flow_7_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_7_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_7_Review" name="Периодический пересмотр?">
+      <bpmn:incoming>Flow_7_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7_7_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_7_9_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_7_7" name="Ежегодный пересмотр Реестра">
+      <bpmn:incoming>Flow_7_7_Yes</bpmn:incoming>
+      <bpmn:outgoing>Flow_7_8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="End_7" name="Реестр утвержден">
+      <bpmn:incoming>Flow_7_9_No</bpmn:incoming>
+    </bpmn:endEvent>
+    
+    <bpmn:sequenceFlow id="Flow_7_1" sourceRef="Start_7" targetRef="Task_7_1_2" />
+    <bpmn:sequenceFlow id="Flow_7_2" sourceRef="Task_7_1_2" targetRef="Task_7_3" />
+    <bpmn:sequenceFlow id="Flow_7_3" sourceRef="Task_7_3" targetRef="Task_7_4" />
+    <bpmn:sequenceFlow id="Flow_7_4" sourceRef="Task_7_4" targetRef="Task_7_5" />
+    <bpmn:sequenceFlow id="Flow_7_5" sourceRef="Task_7_5" targetRef="Task_7_6" />
+    <bpmn:sequenceFlow id="Flow_7_6" sourceRef="Task_7_6" targetRef="Gateway_7_Review" />
+    <bpmn:sequenceFlow id="Flow_7_7_Yes" name="Да (ежегодно)" sourceRef="Gateway_7_Review" targetRef="Task_7_7" />
+    <bpmn:sequenceFlow id="Flow_7_8" name="Есть изменения" sourceRef="Task_7_7" targetRef="Task_7_5" />
+    <bpmn:sequenceFlow id="Flow_7_9_No" name="Нет" sourceRef="Gateway_7_Review" targetRef="End_7" />
+  </bpmn:process>
+  
+  <!-- ============================================ -->
+  <!-- РАЗДЕЛ 8: МОНИТОРИНГ АЭРОДРОМОВ -->
+  <!-- ============================================ -->
+  <bpmn:process id="Process_Section_8" name="Мониторинг аэродромов" isExecutable="false">
+    
+    <bpmn:laneSet id="LaneSet_8">
+      <bpmn:lane id="Lane_8_Crew" name="Экипажи / EFB">
+        <bpmn:flowNodeRef>Start_8</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_8_3_5</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_8_Risk" name="Инженер по анализу рисков">
+        <bpmn:flowNodeRef>Task_8_3_6_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_8_Risk</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_8_Manager" name="Менеджер ООНО">
+        <bpmn:flowNodeRef>Task_8_Request</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_8_Receive</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_8_Check</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_8_Report</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_8_Normal</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_8_Emergency" name="Красный риск">
+        <bpmn:flowNodeRef>Task_8_Red</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_8_Correct</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_8_Red</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    
+    <bpmn:startEvent id="Start_8" name="Сбор данных">
+      <bpmn:outgoing>Flow_8_1</bpmn:outgoing>
+      <bpmn:timerEventDefinition />
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_8_3_5" name="Сбор данных (EFB)">
+      <bpmn:incoming>Flow_8_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_8_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Task_8_3_6_1" name="Ранжирование по рискам">
+      <bpmn:incoming>Flow_8_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_8_3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_8_Risk" name="Риск?">
+      <bpmn:incoming>Flow_8_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_8_Red</bpmn:outgoing>
+      <bpmn:outgoing>Flow_8_Normal</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_8_Red" name="Незамедлительные действия (КРАСНЫЙ)">
+      <bpmn:incoming>Flow_8_Red</bpmn:incoming>
+      <bpmn:outgoing>Flow_8_Correct</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_8_Correct" name="Корректирующие мероприятия">
+      <bpmn:incoming>Flow_8_Correct</bpmn:incoming>
+      <bpmn:outgoing>Flow_8_End_Red</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="End_8_Red" name="Риск снижен">
+      <bpmn:incoming>Flow_8_End_Red</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sendTask id="Task_8_Request" name="Информирование агента">
+      <bpmn:incoming>Flow_8_Normal</bpmn:incoming>
+      <bpmn:outgoing>Flow_8_4</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:receiveTask id="Task_8_Receive" name="Получение информации">
+      <bpmn:incoming>Flow_8_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_8_5</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:userTask id="Task_8_Check" name="Выездная проверка">
+      <bpmn:incoming>Flow_8_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_8_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_8_Report" name="Доведение до ДУБП">
+      <bpmn:incoming>Flow_8_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_8_End</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="End_8_Normal" name="Завершено">
+      <bpmn:incoming>Flow_8_End</bpmn:incoming>
+    </bpmn:endEvent>
+    
+    <bpmn:sequenceFlow id="Flow_8_1" sourceRef="Start_8" targetRef="Task_8_3_5" />
+    <bpmn:sequenceFlow id="Flow_8_2" sourceRef="Task_8_3_5" targetRef="Task_8_3_6_1" />
+    <bpmn:sequenceFlow id="Flow_8_3" sourceRef="Task_8_3_6_1" targetRef="Gateway_8_Risk" />
+    <bpmn:sequenceFlow id="Flow_8_Red" name="КРАСНЫЙ" sourceRef="Gateway_8_Risk" targetRef="Task_8_Red" />
+    <bpmn:sequenceFlow id="Flow_8_Normal" name="Допустимый" sourceRef="Gateway_8_Risk" targetRef="Task_8_Request" />
+    <bpmn:sequenceFlow id="Flow_8_Correct" sourceRef="Task_8_Red" targetRef="Task_8_Correct" />
+    <bpmn:sequenceFlow id="Flow_8_End_Red" sourceRef="Task_8_Correct" targetRef="End_8_Red" />
+    <bpmn:sequenceFlow id="Flow_8_4" sourceRef="Task_8_Request" targetRef="Task_8_Receive" />
+    <bpmn:sequenceFlow id="Flow_8_5" sourceRef="Task_8_Receive" targetRef="Task_8_Check" />
+    <bpmn:sequenceFlow id="Flow_8_6" sourceRef="Task_8_Check" targetRef="Task_8_Report" />
+    <bpmn:sequenceFlow id="Flow_8_End" sourceRef="Task_8_Report" targetRef="End_8_Normal" />
+  </bpmn:process>
+  
+  <!-- ============================================ -->
+  <!-- РАЗДЕЛ 9: СИСТЕМНЫЙ МОНИТОРИНГ -->
+  <!-- ============================================ -->
+  <bpmn:process id="Process_Section_9" name="Системный мониторинг" isExecutable="false">
+    
+    <bpmn:laneSet id="LaneSet_9">
+      <bpmn:lane id="Lane_9_Managers" name="Менеджеры ООНО">
+        <bpmn:flowNodeRef>Start_9</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_9_4</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_9_5</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_9_6</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_9_7_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_9_7_2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_9</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    
+    <bpmn:startEvent id="Start_9" name="Мониторинг">
+      <bpmn:outgoing>Flow_9_1</bpmn:outgoing>
+      <bpmn:timerEventDefinition />
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Task_9_4" name="Мониторинг регулярности">
+      <bpmn:incoming>Flow_9_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_9_2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_9_5" name="Контроль супервайзерами">
+      <bpmn:incoming>Flow_9_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_9_3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_9_6" name="Проверка сертификатов">
+      <bpmn:incoming>Flow_9_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_9_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_9_7_1" name="Проверка обучения">
+      <bpmn:incoming>Flow_9_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_9_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_9_7_2" name="Проверка оборудования">
+      <bpmn:incoming>Flow_9_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_9_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="End_9" name="Завершено">
+      <bpmn:incoming>Flow_9_6</bpmn:incoming>
+    </bpmn:endEvent>
+    
+    <bpmn:sequenceFlow id="Flow_9_1" sourceRef="Start_9" targetRef="Task_9_4" />
+    <bpmn:sequenceFlow id="Flow_9_2" sourceRef="Task_9_4" targetRef="Task_9_5" />
+    <bpmn:sequenceFlow id="Flow_9_3" sourceRef="Task_9_5" targetRef="Task_9_6" />
+    <bpmn:sequenceFlow id="Flow_9_4" sourceRef="Task_9_6" targetRef="Task_9_7_1" />
+    <bpmn:sequenceFlow id="Flow_9_5" sourceRef="Task_9_7_1" targetRef="Task_9_7_2" />
+    <bpmn:sequenceFlow id="Flow_9_6" sourceRef="Task_9_7_2" targetRef="End_9" />
+  </bpmn:process>
+  
+  <!-- ============================================ -->
+  <!-- РАЗДЕЛ 10: ВЫБОРОЧНЫЕ ПРОВЕРКИ -->
+  <!-- ============================================ -->
+  <bpmn:process id="Process_Section_10" name="Выборочные проверки" isExecutable="false">
+    
+    <bpmn:laneSet id="LaneSet_10">
+      <bpmn:lane id="Lane_10_Managers" name="Менеджеры ООНО">
+        <bpmn:flowNodeRef>Start_10</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_10_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_10</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_10_Exist</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_10_Create</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_10_Join</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_10_Check</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_10</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    
+    <bpmn:startEvent id="Start_10" name="Несоответствие">
+      <bpmn:outgoing>Flow_10_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_10_1" name="Выявление">
+      <bpmn:incoming>Flow_10_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_10_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_10" name="Чек-лист?">
+      <bpmn:incoming>Flow_10_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_10_Exist</bpmn:outgoing>
+      <bpmn:outgoing>Flow_10_Create</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_10_Exist" name="Применение чек-листа">
+      <bpmn:incoming>Flow_10_Exist</bpmn:incoming>
+      <bpmn:outgoing>Flow_10_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_10_Create" name="Создание чек-листа">
+      <bpmn:incoming>Flow_10_Create</bpmn:incoming>
+      <bpmn:outgoing>Flow_10_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_10_Join">
+      <bpmn:incoming>Flow_10_4</bpmn:incoming>
+      <bpmn:incoming>Flow_10_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_10_3</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_10_Check" name="Проверка">
+      <bpmn:incoming>Flow_10_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_10_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="End_10" name="Завершено">
+      <bpmn:incoming>Flow_10_6</bpmn:incoming>
+    </bpmn:endEvent>
+    
+    <bpmn:sequenceFlow id="Flow_10_1" sourceRef="Start_10" targetRef="Task_10_1" />
+    <bpmn:sequenceFlow id="Flow_10_2" sourceRef="Task_10_1" targetRef="Gateway_10" />
+    <bpmn:sequenceFlow id="Flow_10_Exist" name="Да" sourceRef="Gateway_10" targetRef="Task_10_Exist" />
+    <bpmn:sequenceFlow id="Flow_10_Create" name="Нет" sourceRef="Gateway_10" targetRef="Task_10_Create" />
+    <bpmn:sequenceFlow id="Flow_10_4" sourceRef="Task_10_Exist" targetRef="Gateway_10_Join" />
+    <bpmn:sequenceFlow id="Flow_10_5" sourceRef="Task_10_Create" targetRef="Gateway_10_Join" />
+    <bpmn:sequenceFlow id="Flow_10_3" sourceRef="Gateway_10_Join" targetRef="Task_10_Check" />
+    <bpmn:sequenceFlow id="Flow_10_6" sourceRef="Task_10_Check" targetRef="End_10" />
+  </bpmn:process>
+  
+  <!-- ============================================ -->
+  <!-- РАЗДЕЛ 11: ПЛАНОВЫЕ АУДИТЫ -->
+  <!-- ============================================ -->
+  <bpmn:process id="Process_Section_11" name="Плановые аудиты" isExecutable="false">
+    
+    <bpmn:laneSet id="LaneSet_11">
+      <bpmn:lane id="Lane_11_Management" name="Руководство ОООД/ООНО">
+        <bpmn:flowNodeRef>Start_11</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_11_Program</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_11_Assign</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_11_Deputy" name="Зам. ген. директора - СОД">
+        <bpmn:flowNodeRef>Task_11_Approve</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_11_Leader" name="Руководитель группы">
+        <bpmn:flowNodeRef>Task_11_Plan</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_11_Send</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_11_Report</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_11_SendReport</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_11_Auditors" name="Аудиторы">
+        <bpmn:flowNodeRef>Task_11_Audit</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_11_Checklist</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_11_Control" name="Контроль">
+        <bpmn:flowNodeRef>Task_11_Control</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_11</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    
+    <bpmn:startEvent id="Start_11" name="План">
+      <bpmn:outgoing>Flow_11_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_11_Program" name="Годовая программа">
+      <bpmn:incoming>Flow_11_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_11_Approve" name="Утверждение программы">
+      <bpmn:incoming>Flow_11_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_11_Assign" name="Назначение аудиторов">
+      <bpmn:incoming>Flow_11_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_11_Plan" name="План аудита">
+      <bpmn:incoming>Flow_11_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sendTask id="Task_11_Send" name="Направление плана агенту">
+      <bpmn:incoming>Flow_11_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_6</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:userTask id="Task_11_Audit" name="Аудит на месте">
+      <bpmn:incoming>Flow_11_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_11_Checklist" name="Чек-лист">
+      <bpmn:incoming>Flow_11_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_11_Report" name="Отчет (7 дней)">
+      <bpmn:incoming>Flow_11_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_9</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sendTask id="Task_11_SendReport" name="Направление отчета">
+      <bpmn:incoming>Flow_11_9</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_10</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:userTask id="Task_11_Control" name="Контроль корректирующих действий">
+      <bpmn:incoming>Flow_11_10</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_11</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="End_11" name="Завершено">
+      <bpmn:incoming>Flow_11_11</bpmn:incoming>
+    </bpmn:endEvent>
+    
+    <bpmn:sequenceFlow id="Flow_11_1" sourceRef="Start_11" targetRef="Task_11_Program" />
+    <bpmn:sequenceFlow id="Flow_11_2" sourceRef="Task_11_Program" targetRef="Task_11_Approve" />
+    <bpmn:sequenceFlow id="Flow_11_3" sourceRef="Task_11_Approve" targetRef="Task_11_Assign" />
+    <bpmn:sequenceFlow id="Flow_11_4" sourceRef="Task_11_Assign" targetRef="Task_11_Plan" />
+    <bpmn:sequenceFlow id="Flow_11_5" sourceRef="Task_11_Plan" targetRef="Task_11_Send" />
+    <bpmn:sequenceFlow id="Flow_11_6" sourceRef="Task_11_Send" targetRef="Task_11_Audit" />
+    <bpmn:sequenceFlow id="Flow_11_7" sourceRef="Task_11_Audit" targetRef="Task_11_Checklist" />
+    <bpmn:sequenceFlow id="Flow_11_8" sourceRef="Task_11_Checklist" targetRef="Task_11_Report" />
+    <bpmn:sequenceFlow id="Flow_11_9" sourceRef="Task_11_Report" targetRef="Task_11_SendReport" />
+    <bpmn:sequenceFlow id="Flow_11_10" sourceRef="Task_11_SendReport" targetRef="Task_11_Control" />
+    <bpmn:sequenceFlow id="Flow_11_11" sourceRef="Task_11_Control" targetRef="End_11" />
+  </bpmn:process>
+  
+  <!-- ВИЗУАЛИЗАЦИЯ (только главный процесс) -->
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Main">
+    <bpmndi:BPMNPlane id="BPMNPlane_Main" bpmnElement="Collaboration_Main">
+      
+      <bpmndi:BPMNShape id="Participant_Main_di" bpmnElement="Participant_Main" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="2200" height="600" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Lane_Main_1_di" bpmnElement="Lane_Main_1" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="2170" height="200" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Lane_Main_2_di" bpmnElement="Lane_Main_2" isHorizontal="true">
+        <dc:Bounds x="190" y="280" width="2170" height="200" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Lane_Main_3_di" bpmnElement="Lane_Main_3" isHorizontal="true">
+        <dc:Bounds x="190" y="480" width="2170" height="200" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Start_Process_di" bpmnElement="Start_Process">
+        <dc:Bounds x="252" y="162" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="CallActivity_7_di" bpmnElement="CallActivity_7" isExpanded="false">
+        <dc:Bounds x="340" y="140" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Gateway_Split_di" bpmnElement="Gateway_Split">
+        <dc:Bounds x="525" y="355" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="CallActivity_8_di" bpmnElement="CallActivity_8" isExpanded="false">
+        <dc:Bounds x="640" y="300" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="CallActivity_9_di" bpmnElement="CallActivity_9" isExpanded="false">
+        <dc:Bounds x="640" y="400" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Gateway_Join_di" bpmnElement="Gateway_Join">
+        <dc:Bounds x="845" y="355" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Gateway_Check_di" bpmnElement="Gateway_Check" isMarkerVisible="true">
+        <dc:Bounds x="985" y="555" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="CallActivity_10_di" bpmnElement="CallActivity_10" isExpanded="false">
+        <dc:Bounds x="1120" y="500" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="CallActivity_11_di" bpmnElement="CallActivity_11" isExpanded="false">
+        <dc:Bounds x="1120" y="600" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Gateway_Merge_di" bpmnElement="Gateway_Merge" isMarkerVisible="true">
+        <dc:Bounds x="1345" y="555" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="End_Process_di" bpmnElement="End_Process">
+        <dc:Bounds x="1462" y="562" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Flows -->
+      <bpmndi:BPMNEdge id="F1_di" bpmnElement="F1">
+        <di:waypoint x="288" y="180" />
+        <di:waypoint x="340" y="180" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="F2_di" bpmnElement="F2">
+        <di:waypoint x="460" y="180" />
+        <di:waypoint x="490" y="180" />
+        <di:waypoint x="490" y="380" />
+        <di:waypoint x="525" y="380" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="F3a_di" bpmnElement="F3a">
+        <di:waypoint x="550" y="355" />
+        <di:waypoint x="550" y="340" />
+        <di:waypoint x="640" y="340" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="F3b_di" bpmnElement="F3b">
+        <di:waypoint x="550" y="405" />
+        <di:waypoint x="550" y="440" />
+        <di:waypoint x="640" y="440" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="F4a_di" bpmnElement="F4a">
+        <di:waypoint x="780" y="340" />
+        <di:waypoint x="870" y="340" />
+        <di:waypoint x="870" y="355" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="F4b_di" bpmnElement="F4b">
+        <di:waypoint x="780" y="440" />
+        <di:waypoint x="870" y="440" />
+        <di:waypoint x="870" y="405" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="F5_di" bpmnElement="F5">
+        <di:waypoint x="895" y="380" />
+        <di:waypoint x="1010" y="380" />
+        <di:waypoint x="1010" y="555" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="F6_di" bpmnElement="F6">
+        <di:waypoint x="1010" y="555" />
+        <di:waypoint x="1010" y="540" />
+        <di:waypoint x="1120" y="540" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="F7_di" bpmnElement="F7">
+        <di:waypoint x="1010" y="605" />
+        <di:waypoint x="1010" y="640" />
+        <di:waypoint x="1120" y="640" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="F8_di" bpmnElement="F8">
+        <di:waypoint x="1260" y="540" />
+        <di:waypoint x="1370" y="540" />
+        <di:waypoint x="1370" y="555" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="F9_di" bpmnElement="F9">
+        <di:waypoint x="1260" y="640" />
+        <di:waypoint x="1370" y="640" />
+        <di:waypoint x="1370" y="605" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="F10_di" bpmnElement="F10">
+        <di:waypoint x="1395" y="580" />
+        <di:waypoint x="1462" y="580" />
+      </bpmndi:BPMNEdge>
+      
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  
+  <!-- ДИАГРАММА РАЗДЕЛА 7 -->
+  <bpmndi:BPMNDiagram id="Diagram_Section_7">
+    <bpmndi:BPMNPlane id="Plane_7" bpmnElement="Collaboration_Section_7">
+      
+      <bpmndi:BPMNShape id="Participant_Section_7_di" bpmnElement="Participant_Section_7" isHorizontal="true">
+        <dc:Bounds x="160" y="1200" width="2000" height="800" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Lane_7_Director_di" bpmnElement="Lane_7_Director" isHorizontal="true">
+        <dc:Bounds x="190" y="1200" width="1970" height="200" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Lane_7_Chief_di" bpmnElement="Lane_7_Chief" isHorizontal="true">
+        <dc:Bounds x="190" y="1400" width="1970" height="200" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Lane_7_Lead_di" bpmnElement="Lane_7_Lead" isHorizontal="true">
+        <dc:Bounds x="190" y="1600" width="1970" height="200" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Lane_7_Deputy_di" bpmnElement="Lane_7_Deputy" isHorizontal="true">
+        <dc:Bounds x="190" y="1800" width="1970" height="200" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Start_7_di" bpmnElement="Start_7">
+        <dc:Bounds x="252" y="1282" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="234" y="1325" width="72" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_7_1_2_di" bpmnElement="Task_7_1_2">
+        <dc:Bounds x="340" y="1260" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_7_3_di" bpmnElement="Task_7_3">
+        <dc:Bounds x="520" y="1460" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_7_4_di" bpmnElement="Task_7_4">
+        <dc:Bounds x="700" y="1660" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_7_5_di" bpmnElement="Task_7_5">
+        <dc:Bounds x="880" y="1460" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_7_6_di" bpmnElement="Task_7_6">
+        <dc:Bounds x="1060" y="1860" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Gateway_7_Review_di" bpmnElement="Gateway_7_Review" isMarkerVisible="true">
+        <dc:Bounds x="1245" y="1875" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_7_7_di" bpmnElement="Task_7_7">
+        <dc:Bounds x="1360" y="1460" width="120" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="End_7_di" bpmnElement="End_7">
+        <dc:Bounds x="1522" y="1882" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNEdge id="Flow_7_1_di" bpmnElement="Flow_7_1">
+        <di:waypoint x="288" y="1300" />
+        <di:waypoint x="340" y="1300" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_7_2_di" bpmnElement="Flow_7_2">
+        <di:waypoint x="460" y="1300" />
+        <di:waypoint x="490" y="1300" />
+        <di:waypoint x="490" y="1500" />
+        <di:waypoint x="520" y="1500" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_7_3_di" bpmnElement="Flow_7_3">
+        <di:waypoint x="640" y="1500" />
+        <di:waypoint x="670" y="1500" />
+        <di:waypoint x="670" y="1700" />
+        <di:waypoint x="700" y="1700" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_7_4_di" bpmnElement="Flow_7_4">
+        <di:waypoint x="820" y="1700" />
+        <di:waypoint x="850" y="1700" />
+        <di:waypoint x="850" y="1500" />
+        <di:waypoint x="880" y="1500" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_7_5_di" bpmnElement="Flow_7_5">
+        <di:waypoint x="1000" y="1500" />
+        <di:waypoint x="1030" y="1500" />
+        <di:waypoint x="1030" y="1900" />
+        <di:waypoint x="1060" y="1900" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_7_6_di" bpmnElement="Flow_7_6">
+        <di:waypoint x="1180" y="1900" />
+        <di:waypoint x="1245" y="1900" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_7_7_Yes_di" bpmnElement="Flow_7_7_Yes">
+        <di:waypoint x="1270" y="1875" />
+        <di:waypoint x="1270" y="1500" />
+        <di:waypoint x="1360" y="1500" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_7_8_di" bpmnElement="Flow_7_8">
+        <di:waypoint x="1420" y="1460" />
+        <di:waypoint x="1420" y="1400" />
+        <di:waypoint x="940" y="1400" />
+        <di:waypoint x="940" y="1460" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_7_9_No_di" bpmnElement="Flow_7_9_No">
+        <di:waypoint x="1295" y="1900" />
+        <di:waypoint x="1522" y="1900" />
+      </bpmndi:BPMNEdge>
+      
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  
+</bpmn:definitions>
+

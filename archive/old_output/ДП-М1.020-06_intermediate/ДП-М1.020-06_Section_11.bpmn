@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" 
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI" 
+                  id="Definitions_Section_11" 
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+  
+  <bpmn:collaboration id="Collaboration_Section_11">
+    <bpmn:participant id="Participant_Section_11" name="Раздел 11: Плановые аудиты" processRef="Process_Section_11" />
+    <bpmn:participant id="Participant_Agent" name="Агент (внешний)" />
+    <bpmn:messageFlow id="MsgFlow_Plan_to_Agent" sourceRef="Task_11_3_1_5" targetRef="Participant_Agent" />
+    <bpmn:messageFlow id="MsgFlow_Report_to_Agent" sourceRef="Task_11_3_5" targetRef="Participant_Agent" />
+  </bpmn:collaboration>
+  
+  <bpmn:process id="Process_Section_11" name="Плановые аудиты" isExecutable="true">
+    
+    <bpmn:laneSet id="LaneSet_11">
+      <bpmn:lane id="Lane_11_Management" name="Руководство ОООД/ООНО">
+        <bpmn:flowNodeRef>Start_11</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_11_2_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_11_2_4</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_11_3_1_1</bpmn:flowNodeRef>
+      </bpmn:lane>
+      
+      <bpmn:lane id="Lane_11_Deputy" name="Зам. ген. директора - СОД">
+        <bpmn:flowNodeRef>Task_11_2_4_Approve</bpmn:flowNodeRef>
+      </bpmn:lane>
+      
+      <bpmn:lane id="Lane_11_Audit_Leader" name="Руководитель аудиторской группы">
+        <bpmn:flowNodeRef>Task_11_3_1_4</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_11_3_1_5</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_11_3_4</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_11_3_5</bpmn:flowNodeRef>
+      </bpmn:lane>
+      
+      <bpmn:lane id="Lane_11_Auditors" name="Аудиторы">
+        <bpmn:flowNodeRef>Task_11_3_2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_11_3_3_4</bpmn:flowNodeRef>
+      </bpmn:lane>
+      
+      <bpmn:lane id="Lane_11_Control" name="Контроль выполнения">
+        <bpmn:flowNodeRef>Task_11_3_8</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_11</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    
+    <!-- START -->
+    <bpmn:startEvent id="Start_11" name="Начало планового аудита">
+      <bpmn:outgoing>Flow_11_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    
+    <!-- 11.2 ПЛАНИРОВАНИЕ -->
+    <bpmn:userTask id="Task_11_2_1" name="Подготовка годовой программы мониторинга">
+      <bpmn:incoming>Flow_11_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_2</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <bpmn:userTask id="Task_11_2_4" name="Заполнение программы (даты, города, агенты)">
+      <bpmn:incoming>Flow_11_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_3</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <bpmn:userTask id="Task_11_2_4_Approve" name="Утверждение программы">
+      <bpmn:incoming>Flow_11_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_4</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <!-- 11.3.1 ПОДГОТОВКА К АУДИТУ -->
+    <bpmn:userTask id="Task_11_3_1_1" name="Определение объема и назначение аудиторов">
+      <bpmn:incoming>Flow_11_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_5</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <bpmn:userTask id="Task_11_3_1_4" name="Составление плана аудита">
+      <bpmn:incoming>Flow_11_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_6</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <bpmn:sendTask id="Task_11_3_1_5" name="Направление плана агенту (за 10 дней)">
+      <bpmn:incoming>Flow_11_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_7</bpmn:outgoing>
+    </bpmn:sendTask>
+    
+    <!-- 11.3.2-11.3.3 ПРОВЕДЕНИЕ АУДИТА -->
+    <bpmn:userTask id="Task_11_3_2" name="Проведение аудита на месте">
+      <bpmn:incoming>Flow_11_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_8</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <bpmn:userTask id="Task_11_3_3_4" name="Заполнение чек-листа проверки">
+      <bpmn:incoming>Flow_11_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_9</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <!-- 11.3.4-11.3.6 ОТЧЕТНОСТЬ -->
+    <bpmn:userTask id="Task_11_3_4" name="Подготовка отчета (7 дней)">
+      <bpmn:incoming>Flow_11_9</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_10</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <bpmn:sendTask id="Task_11_3_5" name="Направление отчета агенту и ДУБП">
+      <bpmn:incoming>Flow_11_10</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_11</bpmn:outgoing>
+    </bpmn:sendTask>
+    
+    <!-- 11.3.7-11.3.8 КОРРЕКТИРУЮЩИЕ ДЕЙСТВИЯ -->
+    <bpmn:userTask id="Task_11_3_8" name="Контроль выполнения корректирующих действий">
+      <bpmn:incoming>Flow_11_11</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_12</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <!-- END -->
+    <bpmn:endEvent id="End_11" name="Аудит завершен">
+      <bpmn:incoming>Flow_11_12</bpmn:incoming>
+    </bpmn:endEvent>
+    
+    <!-- FLOWS -->
+    <bpmn:sequenceFlow id="Flow_11_1" sourceRef="Start_11" targetRef="Task_11_2_1" />
+    <bpmn:sequenceFlow id="Flow_11_2" sourceRef="Task_11_2_1" targetRef="Task_11_2_4" />
+    <bpmn:sequenceFlow id="Flow_11_3" sourceRef="Task_11_2_4" targetRef="Task_11_2_4_Approve" />
+    <bpmn:sequenceFlow id="Flow_11_4" sourceRef="Task_11_2_4_Approve" targetRef="Task_11_3_1_1" />
+    <bpmn:sequenceFlow id="Flow_11_5" sourceRef="Task_11_3_1_1" targetRef="Task_11_3_1_4" />
+    <bpmn:sequenceFlow id="Flow_11_6" sourceRef="Task_11_3_1_4" targetRef="Task_11_3_1_5" />
+    <bpmn:sequenceFlow id="Flow_11_7" sourceRef="Task_11_3_1_5" targetRef="Task_11_3_2" />
+    <bpmn:sequenceFlow id="Flow_11_8" sourceRef="Task_11_3_2" targetRef="Task_11_3_3_4" />
+    <bpmn:sequenceFlow id="Flow_11_9" sourceRef="Task_11_3_3_4" targetRef="Task_11_3_4" />
+    <bpmn:sequenceFlow id="Flow_11_10" sourceRef="Task_11_3_4" targetRef="Task_11_3_5" />
+    <bpmn:sequenceFlow id="Flow_11_11" sourceRef="Task_11_3_5" targetRef="Task_11_3_8" />
+    <bpmn:sequenceFlow id="Flow_11_12" sourceRef="Task_11_3_8" targetRef="End_11" />
+    
+  </bpmn:process>
+  
+  <!-- VISUALIZATION -->
+  <bpmndi:BPMNDiagram id="Diagram_Section_11">
+    <bpmndi:BPMNPlane id="Plane_11" bpmnElement="Collaboration_Section_11">
+      
+      <!-- Participant -->
+      <bpmndi:BPMNShape id="Participant_Section_11_di" bpmnElement="Participant_Section_11" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="2600" height="1000" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Lane_11_Management_di" bpmnElement="Lane_11_Management" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="2570" height="200" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Lane_11_Deputy_di" bpmnElement="Lane_11_Deputy" isHorizontal="true">
+        <dc:Bounds x="190" y="280" width="2570" height="200" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Lane_11_Audit_Leader_di" bpmnElement="Lane_11_Audit_Leader" isHorizontal="true">
+        <dc:Bounds x="190" y="480" width="2570" height="200" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Lane_11_Auditors_di" bpmnElement="Lane_11_Auditors" isHorizontal="true">
+        <dc:Bounds x="190" y="680" width="2570" height="200" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Lane_11_Control_di" bpmnElement="Lane_11_Control" isHorizontal="true">
+        <dc:Bounds x="190" y="880" width="2570" height="200" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Agent Participant -->
+      <bpmndi:BPMNShape id="Participant_Agent_di" bpmnElement="Participant_Agent" isHorizontal="true">
+        <dc:Bounds x="160" y="1200" width="2600" height="100" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Start -->
+      <bpmndi:BPMNShape id="Start_11_di" bpmnElement="Start_11">
+        <dc:Bounds x="252" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="234" y="205" width="72" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <!-- Tasks -->
+      <bpmndi:BPMNShape id="Task_11_2_1_di" bpmnElement="Task_11_2_1">
+        <dc:Bounds x="340" y="140" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_11_2_4_di" bpmnElement="Task_11_2_4">
+        <dc:Bounds x="530" y="140" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_11_2_4_Approve_di" bpmnElement="Task_11_2_4_Approve">
+        <dc:Bounds x="720" y="340" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_11_3_1_1_di" bpmnElement="Task_11_3_1_1">
+        <dc:Bounds x="910" y="140" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_11_3_1_4_di" bpmnElement="Task_11_3_1_4">
+        <dc:Bounds x="1100" y="540" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_11_3_1_5_di" bpmnElement="Task_11_3_1_5">
+        <dc:Bounds x="1290" y="540" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_11_3_2_di" bpmnElement="Task_11_3_2">
+        <dc:Bounds x="1480" y="740" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_11_3_3_4_di" bpmnElement="Task_11_3_3_4">
+        <dc:Bounds x="1670" y="740" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_11_3_4_di" bpmnElement="Task_11_3_4">
+        <dc:Bounds x="1860" y="540" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_11_3_5_di" bpmnElement="Task_11_3_5">
+        <dc:Bounds x="2050" y="540" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_11_3_8_di" bpmnElement="Task_11_3_8">
+        <dc:Bounds x="2240" y="940" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="End_11_di" bpmnElement="End_11">
+        <dc:Bounds x="2442" y="962" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2419" y="1005" width="82" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <!-- Edges -->
+      <bpmndi:BPMNEdge id="Flow_11_1_di" bpmnElement="Flow_11_1">
+        <di:waypoint x="288" y="180" />
+        <di:waypoint x="340" y="180" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_11_2_di" bpmnElement="Flow_11_2">
+        <di:waypoint x="480" y="180" />
+        <di:waypoint x="530" y="180" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_11_3_di" bpmnElement="Flow_11_3">
+        <di:waypoint x="670" y="180" />
+        <di:waypoint x="695" y="180" />
+        <di:waypoint x="695" y="380" />
+        <di:waypoint x="720" y="380" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_11_4_di" bpmnElement="Flow_11_4">
+        <di:waypoint x="860" y="380" />
+        <di:waypoint x="885" y="380" />
+        <di:waypoint x="885" y="180" />
+        <di:waypoint x="910" y="180" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_11_5_di" bpmnElement="Flow_11_5">
+        <di:waypoint x="1050" y="180" />
+        <di:waypoint x="1075" y="180" />
+        <di:waypoint x="1075" y="580" />
+        <di:waypoint x="1100" y="580" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_11_6_di" bpmnElement="Flow_11_6">
+        <di:waypoint x="1240" y="580" />
+        <di:waypoint x="1290" y="580" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_11_7_di" bpmnElement="Flow_11_7">
+        <di:waypoint x="1430" y="580" />
+        <di:waypoint x="1455" y="580" />
+        <di:waypoint x="1455" y="780" />
+        <di:waypoint x="1480" y="780" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_11_8_di" bpmnElement="Flow_11_8">
+        <di:waypoint x="1620" y="780" />
+        <di:waypoint x="1670" y="780" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_11_9_di" bpmnElement="Flow_11_9">
+        <di:waypoint x="1810" y="780" />
+        <di:waypoint x="1835" y="780" />
+        <di:waypoint x="1835" y="580" />
+        <di:waypoint x="1860" y="580" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_11_10_di" bpmnElement="Flow_11_10">
+        <di:waypoint x="2000" y="580" />
+        <di:waypoint x="2050" y="580" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_11_11_di" bpmnElement="Flow_11_11">
+        <di:waypoint x="2190" y="580" />
+        <di:waypoint x="2215" y="580" />
+        <di:waypoint x="2215" y="980" />
+        <di:waypoint x="2240" y="980" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_11_12_di" bpmnElement="Flow_11_12">
+        <di:waypoint x="2380" y="980" />
+        <di:waypoint x="2442" y="980" />
+      </bpmndi:BPMNEdge>
+      
+      <!-- Message Flows -->
+      <bpmndi:BPMNEdge id="MsgFlow_Plan_to_Agent_di" bpmnElement="MsgFlow_Plan_to_Agent">
+        <di:waypoint x="1360" y="620" />
+        <di:waypoint x="1360" y="1200" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="MsgFlow_Report_to_Agent_di" bpmnElement="MsgFlow_Report_to_Agent">
+        <di:waypoint x="2120" y="620" />
+        <di:waypoint x="2120" y="1200" />
+      </bpmndi:BPMNEdge>
+      
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+
+
