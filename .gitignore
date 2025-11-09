@@ -48,8 +48,19 @@ Thumbs.db
 *.log
 
 # Project specific
-output/
+input
+output
 *.md.bak
+
+# Archive (exclude sensitive/temporary data)
+archive/tests/
+archive/old_output/
+archive/vllm_test_*/
+archive/*_backup_*/
+archive/*.bpmn
+archive/*.png
+archive/*.md
+# Keep: archive/old_docs/ (documentation)
 prompt_test_output.log
 test_vector_debug_output.log
 show_results.html
