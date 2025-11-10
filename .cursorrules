@@ -473,15 +473,25 @@ python3 scripts/utils/test_deepseek_ocr.py
 
 ```bash
 # Проверить активировано ли виртуальное окружение
-# Если venv НЕ активирован → ОСТАНОВИТЬСЯ и попросить пользователя активировать
+# Если окружение НЕ активировано → ОСТАНОВИТЬСЯ и попросить пользователя активировать
+
+# ⚠️ ВАЖНО: Рекомендуется использовать окружение с DeepSeek-OCR
+# Обычно это DeepSeek-OCR/venv/ или подобная структура
+# Причина: содержит flash-attn, torch, transformers
 
 # Признаки активированного окружения:
-- В начале prompt: (venv) или (PDFtoBPMN)
-- Команда: which python3 → должен быть путь в venv/
+- В начале prompt: (venv)
+- Команда: which python3 → должен показать путь в venv/
+
+# Как найти правильное окружение:
+find . -type d -name "venv" 2>/dev/null
+# Проверить содержимое:
+source <найденный_путь>/bin/activate
+pip list | grep -E "flash|torch"
 
 # Команды активации для пользователя:
-cd /home/budnik_an/Obligations
-source venv/bin/activate
+cd <корень_проекта>
+source <путь_к_venv>/bin/activate  # Например: DeepSeek-OCR/venv/bin/activate
 ```
 
 **Проверка зависимостей:**
@@ -492,21 +502,36 @@ import fitz  # PyMuPDF
 import requests
 from pathlib import Path
 
+# Новые зависимости (с 10.11.2025):
+from docx import Document  # python-docx
+from openpyxl import load_workbook  # openpyxl
+
 # Если ImportError → сообщить пользователю:
-# "Установите зависимости: pip install -r requirements.txt"
+# "Установите зависимости: 
+#  source <путь_к_venv>/bin/activate
+#  pip install python-docx openpyxl"
 ```
 
-**Частые ошибки без venv:**
+**Частые ошибки без активированного окружения:**
 - ❌ `ModuleNotFoundError: No module named 'fitz'`
 - ❌ `ModuleNotFoundError: No module named 'PIL'`
-- ❌ Использование системного Python вместо venv
+- ❌ `ModuleNotFoundError: No module named 'docx'`
+- ❌ `ModuleNotFoundError: No module named 'openpyxl'`
+- ❌ Использование системного Python вместо venv с зависимостями
 - ❌ Конфликты версий пакетов
 
 **Решение:**
 ```bash
-# Всегда активировать venv перед работой:
-source venv/bin/activate  # Linux/WSL/macOS
-venv\Scripts\activate     # Windows
+# 1. Найти окружение с DeepSeek-OCR (flash-attn, torch)
+find . -type d -name "venv" 2>/dev/null
+
+# 2. Активировать найденное окружение
+cd <корень_проекта>
+source <путь_к_venv>/bin/activate  # Обычно: DeepSeek-OCR/venv/bin/activate
+
+# 3. Проверка активации:
+which python3  # Должен показать путь в venv
+pip list | grep flash_attn  # Должен найти flash-attn
 ```
 
 ---

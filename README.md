@@ -466,14 +466,33 @@ bash scripts/tests/smoke_test.sh
 - 16+ GB VRAM
 - PyTorch 2.0+
 
+**Виртуальное окружение:**
+```bash
+# Рекомендуется использовать окружение с DeepSeek-OCR
+# Обычно это DeepSeek-OCR/venv/ или подобная структура
+
+# Как найти правильное окружение:
+# 1. Ищите папку содержащую flash-attn, torch, transformers
+find . -type d -name "venv" -o -name "env" 2>/dev/null
+
+# 2. Активируйте и проверьте содержимое
+source <путь_к_venv>/bin/activate
+pip list | grep -E "flash|torch|transformers"
+
+# Проверка что окружение активировано:
+which python3  # Должен показать путь в venv
+pip list | grep flash_attn  # Должен найти flash-attn
+```
+
 **Быстрый запуск:**
 ```bash
 # 1. Запустить OCR сервис (в отдельном терминале)
-cd $PROJECT_ROOT  # Перейти в корень проекта
-source venv/bin/activate
+cd <корень_проекта>
+source <путь_к_venv>/bin/activate  # Например: DeepSeek-OCR/venv/bin/activate
 python -m uvicorn scripts.pdf_to_context.ocr_service.app:app --host 0.0.0.0 --port 8000
 
 # 2. В другом терминале - обработать документ
+source <путь_к_venv>/bin/activate
 python3 scripts/utils/run_ocr.py input/document.pdf output/document_OCR.md
 ```
 
