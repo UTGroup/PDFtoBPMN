@@ -1,6 +1,6 @@
-# Архитектура модуля PDF to Context
+# Архитектура модуля Document to Context
 
-Полное техническое описание системы интеллектуального извлечения контекста из PDF документов.
+Полное техническое описание системы интеллектуального извлечения контекста из документов различных форматов (PDF, DOCX, XLSX).
 
 ## 📋 Оглавление
 
@@ -16,14 +16,21 @@
 
 ## 🎯 Обзор
 
-Модуль для интеллектуального извлечения и структурирования контента из PDF документов с комбинированным содержимым (текст + графика).
+Модуль для интеллектуального извлечения и структурирования контента из документов различных форматов с комбинированным содержимым (текст + таблицы + графика).
+
+### Поддерживаемые форматы
+
+- 📄 **PDF** - с OCR для графики (DeepSeek-OCR/PaddleOCR)
+- 📝 **DOCX** - Word документы (структура, таблицы, изображения)
+- 📊 **XLSX** - Excel таблицы (данные, формулы, листы)
 
 ### Основные возможности
 
 - **Сохранение структуры**: извлечение структуры документа с сохранением оригинального layout
-- **Поэтапная обработка**: сначала текст нативно, затем OCR для графики
-- **Встраивание по координатам**: результаты OCR встраиваются в структуру по bbox
-- **DeepSeek-OCR интеграция**: использование мощной OCR модели для распознавания графики
+- **Поэтапная обработка**: сначала текст нативно, затем OCR для графики (PDF)
+- **Встраивание по координатам**: результаты OCR встраиваются в структуру по bbox (PDF)
+- **DeepSeek-OCR интеграция**: использование мощной OCR модели для распознавания графики (PDF)
+- **Унифицированный конвейер**: единый интерфейс обработки для всех форматов
 - **Промежуточное представление (IR)**: унифицированная структура данных с сохранением позиций
 - **Структурный анализ**: автоматическое определение заголовков, списков, таблиц
 - **Markdown выдача**: форматирование в структурированный Markdown с метаданными
@@ -40,64 +47,97 @@
 
 ## 📦 Архитектура системы
 
-### Диаграмма потока данных
+### Диаграмма потока данных (3-уровневая архитектура)
 
 ```
-PDFParser → PageAnalyzer
-                ↓
-        NativeExtractor
-    (извлечение структуры + текст)
-                ↓
-        ┌───────┴───────┐
-        ↓               ↓
-    Текстовые      Графические
-     блоки          элементы
-        ↓               ↓
-        │         OCRClient
-        │      (распознавание)
-        │               ↓
-        └───────┬───────┘
-                ↓
-    StructurePreserver
-   (встраивание OCR в структуру по bbox)
-                ↓
-           IRBuilder
-                ↓
-      StructureAnalyzer
-                ↓
-       MarkdownFormatter
-                ↓
-         Markdown Output
+                    ┌─────────────────────────┐
+                    │ DocumentToContext       │
+                    │ Pipeline                │
+                    │ (document_pipeline.py)  │
+                    └───────────┬─────────────┘
+                                ↓
+                    Автоопределение формата
+                                ↓
+        ┌───────────────────────┼───────────────────────┐
+        ↓                       ↓                       ↓
+┌───────────────┐      ┌───────────────┐      ┌───────────────┐
+│ PDFExtractor  │      │ DOCXExtractor │      │ XLSXExtractor │
+│ (PDF files)   │      │ (Word docs)   │      │ (Excel files) │
+└───────┬───────┘      └───────┬───────┘      └───────┬───────┘
+        │                      │                      │
+        ↓                      ↓                      ↓
+PDF: NativeExtractor    DOCX: python-docx    XLSX: openpyxl
+     + OCRClient              paragraphs           sheets/formulas
+     + StructurePreserver     + tables             + cells
+                              + images
+        │                      │                      │
+        └──────────────────────┼──────────────────────┘
+                               ↓
+                    Унифицированный формат
+                    (text_blocks, table_blocks,
+                     image_blocks)
+                               ↓
+                          IRBuilder
+                    (промежуточное представление)
+                               ↓
+                      StructureAnalyzer
+                    (анализ структуры)
+                               ↓
+                       MarkdownFormatter
+                               ↓
+                         Markdown Output
 ```
 
-**Ключевой принцип:** Структура документа извлекается сначала нативно, затем графика распознается через OCR и встраивается обратно в исходную структуру по координатам (bbox).
+**Ключевые принципы:**
+
+1. **Format-Specific Extractors** (Уровень 1):
+   - Каждый формат имеет свой экстрактор (PDFExtractor, DOCXExtractor, XLSXExtractor)
+   - Наследуются от `BaseExtractor` (единый интерфейс)
+   - Возвращают унифицированную структуру данных
+
+2. **Unified Document Processor** (Уровень 2):
+   - `DocumentToContextPipeline` автоматически определяет формат
+   - Выбирает подходящий экстрактор
+   - Преобразует в промежуточное представление (IR)
+
+3. **Multi-Document Process Builder** (Уровень 3):
+   - `ProcessBuilder` объединяет несколько `_OCR.md` файлов
+   - Создает единый процесс (RACI, Pipeline, BPMN)
+
+**PDF специфика:** Структура извлекается нативно, затем графика распознается через OCR и встраивается обратно по координатам (bbox).
 
 ### Структура модуля
 
 ```
 pdf_to_context/
-├── __init__.py                 # Экспорт PDFToContextPipeline
-├── pipeline.py                 # Главный оркестратор
+├── __init__.py                 # Экспорт пайплайнов
+├── pipeline.py                 # PDFToContextPipeline (legacy, PDF only)
+├── document_pipeline.py        # 🆕 DocumentToContextPipeline (unified, все форматы)
+├── process_builder.py          # 🆕 ProcessBuilder (объединение документов)
 │
-├── core/                       # Ядро системы
+├── core/                       # Ядро системы (PDF специфика)
 │   ├── parser.py              # PDFParser (PyMuPDF)
 │   ├── analyzer.py            # PageAnalyzer
 │   └── structure_preserver.py # StructurePreserver (встраивание OCR)
 │
-├── extractors/                 # Извлечение контента
-│   ├── native_extractor.py    # Native extraction (структура + текст)
-│   └── ocr_client.py          # HTTP клиент OCR (графика)
+├── extractors/                 # Извлечение контента (multi-format)
+│   ├── base_extractor.py      # 🆕 BaseExtractor (абстрактный класс)
+│   ├── pdf_extractor.py       # 🆕 PDFExtractor (обёртка над NativeExtractor)
+│   ├── docx_extractor.py      # 🆕 DOCXExtractor (python-docx)
+│   ├── xlsx_extractor.py      # 🆕 XLSXExtractor (openpyxl)
+│   ├── native_extractor.py    # Native extraction PDF (структура + текст)
+│   └── ocr_client.py          # HTTP клиент OCR (графика для PDF)
 │
 ├── ir/                        # Промежуточное представление
-│   ├── models.py              # IR, IRBlock, IRRelation
-│   ├── builder.py             # IRBuilder
+│   ├── models.py              # IR, IRBlock, IRRelation, DocumentMetadata
+│   ├── builder.py             # IRBuilder (унифицированный для всех форматов)
 │   └── structure_analyzer.py  # StructureAnalyzer
 │
 ├── output/                    # Форматирование вывода
 │   └── markdown_formatter.py  # MarkdownFormatter
 │
 ├── models/                    # Модели данных
-│   └── data_models.py         # BBox, TextBlock, etc.
+│   └── data_models.py         # BBox, TextBlock, TableBlock, etc.
 │
 └── ocr_service/               # DeepSeek-OCR микросервис
     ├── app.py                 # FastAPI приложение
