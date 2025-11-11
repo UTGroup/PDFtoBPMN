@@ -1,0 +1,43 @@
+# Минимальные зависимости для CI/CD (GitHub Actions)
+#
+# Этот файл содержит ТОЛЬКО критичные зависимости для базовых проверок.
+# Не включает тяжелые пакеты (torch, paddle, cuda) т.к. они не нужны для:
+# - Environment check
+# - Code quality (lint)
+# - Encoding validation
+#
+# Полные зависимости: requirements.txt
+
+# ============================================================
+# CORE DEPENDENCIES (обязательные для работы проекта)
+# ============================================================
+
+# PDF processing
+PyMuPDF>=1.23.0
+
+# Image processing
+Pillow>=10.0.0
+
+# HTTP requests (для OCR API если нужен)
+requests>=2.31.0
+
+# ============================================================
+# DOCUMENT FORMATS (новые форматы с 10.11.2025)
+# ============================================================
+
+# Microsoft Word support (.docx, .doc)
+python-docx>=1.2.0
+
+# Microsoft Excel support (.xlsx, .xls)
+openpyxl>=3.1.0
+
+# ============================================================
+# OPTIONAL (если нужны для тестов)
+# ============================================================
+
+# Uncomment if integration tests need these:
+# fastapi>=0.104.0
+# uvicorn>=0.24.0
+# pydantic>=2.0.0
+# python-multipart>=0.0.6
+

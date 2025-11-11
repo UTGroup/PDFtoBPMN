@@ -1,5 +1,20 @@
 name: Cross-Platform Tests
 
+# ============================================================
+# IMPORTANT: Lightweight CI dependencies
+# ============================================================
+# Этот workflow использует requirements-ci.txt (вместо requirements.txt)
+# для ускорения установки зависимостей.
+#
+# requirements-ci.txt содержит ТОЛЬКО:
+#   - PyMuPDF, python-docx, openpyxl, requests, Pillow (~50 MB)
+#
+# requirements.txt содержит ПОЛНЫЙ набор (для production):
+#   - torch (900 MB), paddlepaddle (189 MB), cuda libs (600 MB+)
+#
+# Это позволяет CI завершаться за 2-3 минуты вместо 15+ минут.
+# ============================================================
+
 # Триггеры запуска workflow
 on:
   # При каждом Push в любую ветку
@@ -41,13 +56,14 @@ jobs:
       - name: Display Python version
         run: python --version
       
-      - name: Install dependencies
+      - name: Install dependencies (minimal for CI)
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements-ci.txt
       
-      - name: Run environment check (strict mode)
-        run: python scripts/utils/check_environment.py --strict
+      - name: Run environment check
+        run: python scripts/utils/check_environment.py
+        # Note: strict mode отключен для CI - warnings ожидаемы (no venv, no pandoc, no GPU)
   
   # ==================== JOB 2: Линтер (только Linux) ====================
   lint:
@@ -105,10 +121,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       
-      - name: Install dependencies
+      - name: Install dependencies (minimal for CI)
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements-ci.txt
           pip install pytest pytest-cov
       
       - name: Run unit tests
@@ -143,10 +159,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       
-      - name: Install dependencies
+      - name: Install dependencies (minimal for CI)
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements-ci.txt
       
       - name: Test DOCX processing (Linux)
         if: runner.os == 'Linux'
