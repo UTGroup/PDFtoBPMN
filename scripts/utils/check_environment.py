@@ -26,6 +26,21 @@ from pathlib import Path
 from typing import List, Tuple, Optional
 import subprocess
 
+# ============================================================
+# КРИТИЧЕСКИ ВАЖНО: Установить UTF-8 для stdout на Windows
+# ============================================================
+# Windows по умолчанию использует cp1252/cp866 вместо UTF-8
+# Это ломает вывод emoji и русских символов
+if sys.platform == 'win32':
+    try:
+        # Попытка установить UTF-8 для stdout/stderr
+        import io
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
+    except Exception:
+        # Если не получилось - продолжаем с тем что есть
+        pass
+
 
 class EnvironmentChecker:
     """Проверка окружения проекта"""
