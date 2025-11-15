@@ -95,37 +95,48 @@ class MDParser:
             
             document_number = None
             
-            # Извлекаем весь блок между "Номер и/или серия документа" и "Дата документа"
-            doc_block_match = re.search(
-                r'Номер и/или серия\s+документа\s+(.*?)\s+Дата документа',
+            # Ищем номер документа: он идет ПОСЛЕ описания типа, прямо перед датой DD.MM.YYYY
+            # Паттерн: "Номер и/или серия документа" ... [тип документа] ... НОМЕР ... DD.MM.YYYY
+            doc_section_match = re.search(
+                r'Номер и/или серия\s+документа(.*?)Баланс по ценной бумаге',
                 chunk,
                 re.DOTALL
             )
             
-            if doc_block_match:
-                doc_block = doc_block_match.group(1).strip()
-                lines = [line.strip() for line in doc_block.split('\n') if line.strip()]
+            if doc_section_match:
+                doc_section = doc_section_match.group(1).strip()
                 
-                # Фильтруем строки - исключаем описания типов документов
+                # Ищем строку перед датой в формате DD.MM.YYYY
+                # Разбиваем на строки
+                lines = [line.strip() for line in doc_section.split('\n') if line.strip()]
+                
+                # Фильтруем: исключаем заголовки и описания
                 exclude_keywords = [
-                    'Паспорт', 'гражданина', 'действующий', 'территории', 'октября',
+                    'Дата документа', 'Орган', 'осуществивший', 'регистрацию',
+                    'Паспорт', 'гражданина', 'действующий', 'территории',
                     'Свидетельство', 'внесении', 'записи', 'ЕГРЮЛ',
-                    'Сертификат', 'инкорпорации',
-                    'регистрации', 'июля', 'июня',
-                    'Другое', 'TXID', 'UKWN'
+                    'Сертификат', 'инкорпорации', 'регистрации',
+                    'Другое', 'TXID', 'UKWN', 'Код типа', 'Описание'
                 ]
                 
-                # Ищем строку с номером (только цифры/буквы/пробелы, без описаний)
-                for line in reversed(lines):  # Идем с конца - номер обычно последним
-                    # Проверяем что это не описание
-                    has_keywords = any(kw in line for kw in exclude_keywords)
-                    # Проверяем что есть цифры или буквы
-                    has_content = re.search(r'[\dА-ЯA-Z]', line)
-                    
-                    if not has_keywords and has_content:
-                        # Это номер документа!
-                        document_number = line
-                        break
+                # Находим все строки с датами (DD.MM.YYYY)
+                date_indices = []
+                for i, line in enumerate(lines):
+                    if re.match(r'\d{2}\.\d{2}\.\d{4}', line):
+                        date_indices.append(i)
+                
+                # Если есть даты, ищем номер перед первой датой
+                if date_indices:
+                    first_date_idx = date_indices[0]
+                    # Смотрим строку перед датой
+                    for i in range(first_date_idx - 1, -1, -1):
+                        line = lines[i]
+                        has_keywords = any(kw in line for kw in exclude_keywords)
+                        has_content = re.search(r'[\dА-ЯA-Za-z]', line)
+                        
+                        if not has_keywords and has_content and len(line) >= 3:
+                            document_number = line
+                            break
             
             # Ищем количество в штуках
             # ВАЖНО: Обрабатываем случаи когда количество разорвано разрывом страницы

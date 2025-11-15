@@ -145,8 +145,8 @@ def main():
                 if args.output:
                     output_file = Path(args.output)
                 else:
-            output_name = pdf_file.stem + "_владельцы.xlsx"
-            output_file = output_dir / output_name
+                    output_name = pdf_file.stem + ".xlsx"
+                    output_file = output_dir / output_name
                 
                 pipeline.process_pdf(
                     pdf_file, 
@@ -166,9 +166,9 @@ def main():
             print("="*80)
             print("✅ ОБРАБОТКА ЗАВЕРШЕНА")
             print("="*80)
-        
-        return 0
-        
+            
+            return 0
+            
         except KeyboardInterrupt:
             print("\n\n⚠️  Прервано пользователем")
             return 1

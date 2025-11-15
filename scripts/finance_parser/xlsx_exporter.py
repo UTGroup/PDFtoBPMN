@@ -73,12 +73,13 @@ class XLSXExporter:
             ws.cell(row=row_idx, column=2, value=data['Количество в штуках'])
             ws.cell(row=row_idx, column=3, value=data['Код владельца'])
             ws.cell(row=row_idx, column=4, value=data['ФИО'])
-            ws.cell(row=row_idx, column=5, value=data['Номер счета'])
-            ws.cell(row=row_idx, column=6, value=data['Страница'])
+            ws.cell(row=row_idx, column=5, value=data['Номер документа'])
+            ws.cell(row=row_idx, column=6, value=data['Номер счета'])
+            ws.cell(row=row_idx, column=7, value=data['Страница'])
             
             # Выравнивание
             ws.cell(row=row_idx, column=2).alignment = Alignment(horizontal="right")
-            ws.cell(row=row_idx, column=6).alignment = Alignment(horizontal="center")
+            ws.cell(row=row_idx, column=7).alignment = Alignment(horizontal="center")
             
             # Подсвечиваем невалидные записи (только 2 ключевых поля)
             if not record.validate():
