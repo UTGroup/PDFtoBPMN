@@ -1,0 +1,42 @@
+---
+description: BPMN compiler + Business Studio sync (GUID matching, coordinates)
+globs:
+  - "scripts/bpmn/**"
+  - "scripts/business_studio/**"
+  - "output/**/*.bpmn"
+alwaysApply: false
+---
+
+# BPMN + Business Studio rules
+
+## BPMN compiler
+- ProcessSpec → BPMN 2.0 XML. Детерминированный код, НЕ AI.
+- AI не генерирует XML. Код конвертирует ProcessSpec в BPMN.
+- Каждый элемент: `<bpmn:documentation>` с трассировкой (source).
+- Алгоритм: Roles → Lanes, Sections → SubProcess, Activities → Tasks, Flow → SequenceFlow.
+- Layout: topological sort → координаты. Абсолютные для BS.
+
+## Camunda validation
+- Target: указать C7 или C8 (разные schema).
+- 25+ проверок: lanes == roles, tasks == activities, все BPMNShape/BPMNEdge.
+- Round-trip: export → Camunda Modeler → import → diff = 0.
+
+## Business Studio sync (BS Docs 6)
+- BS матчит по `guid`, НЕ по имени.
+- guid match + same hierarchy → UPDATE (обновление).
+- guid match + different hierarchy → DUPLICATE (дубликат!).
+- guid not found → CREATE в папке "BPMN".
+
+## GUID registry
+- `bs_guid_registry.yaml` — маппинг наших id → guid из BS.
+- Bootstrap: экспорт из BS → парсинг guid → реестр (один раз).
+- При генерации BPMN: подставлять guid из реестра для известных объектов.
+- Новые объекты → новый uuid (будут созданы в BS).
+
+## Двухканальный импорт в BS
+- Канал 1 (BPMN): процесс + lanes + flows → меню BPMN → Import.
+- Канал 2 (Excel): KPI, документы, показатели → Пакет импорта.
+- BPMN НЕ передаёт: KPI, формулы, документы-входы/выходы, метаданные СМК.
+
+## Координаты
+- Абсолютные (для BS). Калибровка из bs_config.yaml.

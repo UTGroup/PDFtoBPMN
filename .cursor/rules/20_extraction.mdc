@@ -1,0 +1,46 @@
+---
+description: Typed extraction rules (13 artifact types, provenance, ProcessSpec)
+globs:
+  - "scripts/extraction/**"
+  - "core/knowledge_types.py"
+  - "core/processspec_models.py"
+  - "core/processspec_schema.py"
+  - "core/ontology.py"
+alwaysApply: false
+---
+
+# Extraction rules
+
+## 13 типов артефактов
+Rule-based (regex/pattern): Definition, Abbreviation, DocumentRef, Formula, FormTemplate.
+LLM-based (Claude API): Role, ProcessStep, DecisionRule, KPI, Control, InputOutput, OrgUnit, System.
+
+## Provenance — обязательно для каждого артефакта
+```python
+@dataclass
+class Provenance:
+    document_code: str    # РД-Б7.004-06
+    section: str          # п.7.2
+    paragraph: int        # 3
+    page: int             # 12
+    quote: str            # Точная цитата
+    extraction_method: str  # regex / spacy / llm
+```
+
+## Confidence scoring
+- high (0.8-1.0): извлечено rule-based или LLM с однозначным контекстом.
+- medium (0.5-0.8): LLM с неоднозначным контекстом, требует проверки.
+- low (< 0.5): не включать в ProcessSpec, сохранить в `_low_confidence.json`.
+
+## ProcessSpec
+- Source of truth для процесса. Заполняется из typed extraction.
+- Только для canonical документов (authority = canonical).
+- AS-IS: только то, что написано в документе. Не додумывать.
+- Если информация не найдена → null (не выдумывать).
+- BPMN генерируется из ProcessSpec КОДОМ, не AI.
+
+## ProcessSpec assembler
+- Собирает артефакты в ProcessSpec.yaml.
+- Валидирует schema перед сохранением.
+- Role references: все role_id должны ссылаться на существующую роль.
+- Flow targets: все activity_id в flow должны существовать.

@@ -1,0 +1,43 @@
+---
+description: Ingestion pipeline rules (Docling, OCR, page classifier, tables, graphics)
+globs:
+  - "scripts/ingestion/**"
+  - "poc/poc_ocr_*"
+  - "poc/poc_page_*"
+alwaysApply: false
+---
+
+# Ingestion rules
+
+## Docling
+- Backend: `docling-parse` (MIT, дефолт). НЕ использовать PyMuPDF (AGPL).
+- OCR: победитель POC (EasyOCR или RapidOCR). Один движок, без fallback.
+- Layout: Heron (язык-агностичный). TableFormer для таблиц (`do_cell_matching=True`).
+- Результат: DoclingDocument (JSON) с layout regions.
+
+## Page classifier (перед парсингом)
+- Классифицировать каждую страницу: content / approval_sheet / appendix / cover.
+- approval_sheet → исключить из extraction, сохранить только как metadata.
+- appendix → парсить отдельно (формы, шаблоны).
+
+## Смешанные страницы (скан + натив)
+- `bitmap_area_threshold`: 0.5 для документов СМК (не 0.75 дефолт).
+- Лучше OCR лишнего, чем пропустить скан.
+
+## Таблицы
+- RACI-таблицы: распознавать по паттерну R/A/C/I, парсить специализированно.
+- Cross-page: если таблица обрывается внизу и продолжается вверху — склеить.
+- Merged cells: TableFormer flattens → для RACI нужна постобработка.
+
+## Графика
+- Растровая: Heron → picture → EasyOCR/RapidOCR + Qwen VLM.
+- Векторная (path-объекты): detector → render DPI 400 → VLM.
+- Результат VLM — metadata, не основной текст.
+
+## Authority resolver
+- PDF canonical > DOCX draft (по умолчанию).
+- Версия определяется по коду документа (РД-Б7.004-**06**).
+- Семейства: группировка по коду без версии (РД-Б7.004).
+
+## Старый pipeline
+- `scripts/pdf_to_context/` — READ-ONLY. Не менять, не удалять.
