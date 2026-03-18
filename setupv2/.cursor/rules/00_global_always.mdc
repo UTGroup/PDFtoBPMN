@@ -1,0 +1,63 @@
+---
+description: Global always-on constraints (safety + governance + anti-drift)
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# Always rules (must-follow, все агенты)
+
+## Процесс (из Helicomponents)
+- Для задач с изменением структуры/алгоритмов: анализ → план → согласование → реализация → ревью.
+- Код без плана в `.cursor/plans/` — запрещён.
+- Один plan = одна подсистема = один агент = минимальный дифф (≤3 файлов, ≤150 строк).
+
+## Governance (анти-дрейф)
+- Orchestrator ОБЯЗАН прочитать `docs/DECISIONS.md` + `docs/CURRENT_STATE.md` перед планированием.
+- Scribe БЛОКИРУЕТ план, если он противоречит существующим решениям в DECISIONS.md.
+- Максимум 3 итерации на задачу. После 3 — стоп, отчёт human.
+- Расширение scope после утверждения плана — запрещено (новый план).
+- `.cursor/rules/*.mdc` — меняет ТОЛЬКО human. Предложить может orchestrator, проверяет scribe.
+
+## Запрещено без явного разрешения (все агенты)
+- Запуск batch processing на всём корпусе.
+- Мутирующие операции в ChromaDB (индексация, удаление).
+- Вызовы Claude API (стоят деньги).
+- Удаление/переименование файлов.
+- Добавление зависимостей в requirements.txt / pyproject.toml.
+- Создание новых модулей (папок в scripts/).
+
+## Разрешено без согласования
+- Чтение любых файлов.
+- pytest на тестовых fixtures.
+- Файлы в `output/`, `docs/reports/`, `poc/`.
+
+## Ownership (жёсткий)
+```
+.cursor/rules/**       → HUMAN ONLY
+.cursor/plans/**       → orchestrator only
+.cursor/state/**       → scribe only
+docs/**                → scribe only
+scripts/**             → coder only (по плану)
+core/**                → coder only (по плану)
+tests/** (код)         → coder only
+tests/fixtures/gold/** → scribe only
+```
+
+## Ошибки
+- Нельзя тихо прятать через try/except без логирования.
+- Extraction confidence < 0.5 → не включать в ProcessSpec.
+
+## Документация
+- 4 файла должны быть согласованы:
+  1. `docs/Architecture_v2.1.md`
+  2. `docs/DECISIONS.md`
+  3. `docs/CURRENT_STATE.md`
+  4. `docs/changelog.md`
+
+## Source of truth
+- Архитектура: `docs/Architecture_v2.1.md`
+- Решения: `docs/DECISIONS.md` (append-only)
+- Состояние: `.cursor/state/dev_state.json`
+- Процесс: `output/[код]/ProcessSpec.yaml`
+- Правила: `.cursor/rules/*.mdc`

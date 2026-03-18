@@ -1,0 +1,33 @@
+---
+description: PDFtoBPMN v2.1 — Project Rules entrypoint
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# PDFtoBPMN v2.1
+
+Источник истины: `.cursor/rules/*.mdc` (модульно, human-only changes).
+
+## Агенты (3)
+- **orchestrator** — Plan Mode, Opus 4.6. Планирует, ревьюит. Код запрещён.
+- **coder** — Agent Mode, Sonnet 4.6. Пишет код по плану. Архитектура запрещена.
+- **scribe** — Agent Mode, Sonnet 4.6. Docs, state, validation. Production код запрещён.
+
+## Архитектура (кратко)
+- Два контура от общего ingestion: A (Knowledge Base / RAG) и B (Process Model / BPMN).
+- Typed extraction: 13 типов артефактов с provenance.
+- Document authority: canonical > draft > superseded.
+- ProcessSpec.yaml — source of truth для процесса. BPMN кодом, не AI.
+- Business Studio sync через GUID matching.
+
+## LLM
+- Cursor: Sonnet 4.6 (основная), Opus 4.6 (Plan Mode).
+- Batch: Claude API (`claude-sonnet-4-6`).
+- Графика: Qwen2.5-VL-7B (локально).
+
+## State (память проекта)
+- `docs/DECISIONS.md` — что решили и почему (append-only).
+- `docs/CURRENT_STATE.md` — где мы сейчас.
+- `.cursor/state/dev_state.json` — LangGraph граф разработки.
+- Scribe ведёт state. Orchestrator читает перед планированием.

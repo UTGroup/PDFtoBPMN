@@ -1,0 +1,56 @@
+[project]
+name = "pdftobpmn"
+version = "2.1.0"
+description = "PDF/DOCX → Hybrid GraphRAG + BPMN for Russian corporate СМК documents"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+
+dependencies = [
+    # --- LangGraph (local, no server) ---
+    "langgraph>=0.4",
+    "langchain-core>=0.3",
+    
+    # --- Document parsing ---
+    "docling>=2.70",
+    
+    # --- OCR (выбор по POC, установить один) ---
+    # "easyocr>=1.7",          # Вариант A
+    # "rapidocr-onnxruntime",  # Вариант B (PaddleOCR ONNX port)
+    
+    # --- Embeddings & Vector Store ---
+    "chromadb>=0.5",
+    "sentence-transformers>=3.0",  # для BGE-M3
+    
+    # --- NLP ---
+    "spacy>=3.7",
+    
+    # --- BPMN & XML ---
+    "lxml>=5.0",
+    
+    # --- Business Studio sync ---
+    "openpyxl>=3.1",              # Excel export для BS
+    
+    # --- Claude API (batch/runtime) ---
+    "anthropic>=0.40",
+    
+    # --- Utilities ---
+    "pyyaml>=6.0",
+    "pydantic>=2.0",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+    "ragas>=0.2",                 # RAG evaluation
+]
+vlm = [
+    "transformers>=4.45",
+    "torch>=2.1",
+    "accelerate>=0.30",           # Qwen2.5-VL-7B
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.backends._legacy:_Backend"

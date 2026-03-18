@@ -1,0 +1,36 @@
+---
+description: Quality rules (tests, metrics, Gold Standard, validation discipline)
+globs:
+  - "tests/**"
+  - "scripts/gold/**"
+  - "docs/reports/**"
+alwaysApply: false
+---
+
+# Quality rules
+
+## Validation discipline (из Helicomponents)
+- Истина — данные, не рассуждения. Проверять фактически (pytest, schema check).
+- Scribe запускает валидации, coder не подменяет результаты.
+
+## Gold Standard
+- `tests/fixtures/gold/*.gold.yaml` — read-only для coder.
+- Scribe ведёт и версионирует.
+- Формат: см. `docs/Gold_Standard_Methodology.md`.
+
+## Тесты
+- Каждый новый модуль → тесты в том же PR.
+- pytest green перед сдачей задачи.
+- Тесты на русских текстах — не на английских примерах.
+
+## Метрики (пороги)
+```
+Фаза 1→2: text extraction ≥95%, tables ≥90%
+Фаза 3:   Precision@5 ≥0.60, Recall@10 ≥0.80
+           Faithfulness ≥0.80, Hallucination ≤0.10
+           Citation coverage ≥0.85
+```
+
+## Отчёты
+- `docs/reports/` — единственное место для результатов тестов.
+- Можно создавать без согласования, удалять после закрытия задачи.

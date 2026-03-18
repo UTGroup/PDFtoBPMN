@@ -1,0 +1,37 @@
+---
+description: RAG pipeline rules (hybrid retrieval, authority bias, citations)
+globs:
+  - "scripts/rag/**"
+  - "scripts/graph/**"
+alwaysApply: false
+---
+
+# RAG rules (Контур A: Knowledge Base)
+
+## Hybrid retrieval
+- Dense: BGE-M3 embeddings → ChromaDB.
+- Sparse: BGE-M3 built-in sparse → ChromaDB.
+- Graph: NER(query) → entities → NetworkX neighbors (multi-hop).
+- Fusion: RRF (Reciprocal Rank Fusion).
+- Rerank: bge-reranker-v2-m3 (multilingual, MIT). ОТДЕЛЬНАЯ модель от BGE-M3.
+
+## Authority bias
+- Canonical документы получают boost при RRF fusion.
+- Superseded включаются только если:
+  - запрос явно про версионность ("как было раньше")
+  - canonical не содержит ответа.
+- Ответ содержит authority note если есть конфликт между версиями.
+
+## Citations
+- Каждое утверждение: `[РД-Б7.004-06, п.7.2, стр.12]`.
+- Минимум 1 citation на ответ. Если нет source — сказать "не найдено".
+- НЕ галлюцинировать. Лучше "не найдено" чем выдумка.
+
+## GraphStore interface
+- Protocol: add_artifact, add_relation, query_neighbors, query_by_type.
+- Реализация: NetworkXGraphStore (in-memory + JSON).
+- Замена на DB — через Protocol, без изменения потребителей.
+
+## Индексация
+- Перед индексацией нового документа: удалить старые chunks (delete_by_document).
+- Chunks содержат metadata: doc_code, section, authority, page_numbers.
