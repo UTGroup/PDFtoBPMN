@@ -1,6 +1,6 @@
-# Правила для Cursor AI - BPMN Process Automation Project
+# Правила для Cursor AI — PDFtoBPMN v2.1
 
-> **Все правила мигрированы в модульную систему `.cursor/rules/*.mdc`**
+> **Все правила в модульной системе `.cursor/rules/*.mdc`**
 > Этот файл оставлен для совместимости. Источник истины: `.cursor/rules/`
 
 ## Структура правил
@@ -8,39 +8,43 @@
 ```
 .cursor/
   rules/
-    00_global_always.mdc          Принципы, язык, стиль, changelog, AS-IS
-    05_environment.mdc            Платформы, GPU, venv, зависимости
-    10_file_structure.mdc         Каталоги, именование, доступ
-    20_document_workflow.mdc      Пайплайн обработки документа (шаги 1-7)
-    30_bpmn_methodology.mdc       Методология BPMN (анализ, RACI, Pipeline, валидация)
-    40_bpmn_technical.mdc         Технические спецификации BPMN XML
-    45_bpmn_traceability.mdc      Трассировка элементов к источнику
-    50_documentation.mdc          Связь файлов процесса
-    60_quality_control.mdc        Чеклисты и критерии качества
-    70_ocr_safety.mdc             Безопасный запуск OCR (GPU/flash-attn)
-    90_multiagent_workflow.mdc    Мультиагентный workflow
-    project.mdc                   Обвязка auto-apply
+    00_global_always.mdc          Safety, governance, ownership, anti-drift
+    10_ingestion.mdc              Docling, OCR, page classifier, таблицы
+    20_extraction.mdc             13 типов артефактов, provenance, graph population
+    30_bpmn_and_bs.mdc            BPMN compiler, Camunda, Business Studio sync
+    40_rag.mdc                    Hybrid retrieval, authority bias, citations
+    50_quality.mdc                Tests, metrics, Gold Standard
+    project.mdc                   Обвязка auto-apply, архитектура кратко
   agents/
-    orchestrator.md               Планирование, координация, governance
-    coder-pipeline.md             OCR/parsing (scripts/pdf_to_context/)
-    coder-graph-rag.md            GraphRAG (scripts/graph/, scripts/rag/)
-    coder-bpmn.md                 BPMN XML генерация
-    analyst-raci.md               RACI/Pipeline/анализ документов
-    reviewer.md                   Code review + BPMN review
-    validator.md                  Тесты, валидация BPMN, OCR quality
-    capsule-builder.md            Документация (MD только по запросу)
+    orchestrator.md               Plan Mode, Opus 4.6 — планирует, ревьюит
+    coder.md                      Agent Mode, Sonnet 4.6 — код по плану
+    validator.md                  Agent Mode, Composer 1.5 — pre/post gate
+    scribe.md                     Agent Mode, Sonnet 4.6 — docs, state, Gold Standard
+  hooks/
+    check_handoff.py              beforeSubmitPrompt — нет handoff → block
+    block_orchestrator_code.py    beforeShellExecution — orchestrator код → block
+    check_ownership.py            afterFileEdit — вне зоны → block
+    record_stop.py                stop — лог + warn
+  state/
+    dev_graph.py                  LangGraph: decisions, components, handoffs
+    batch_graph.py                LangGraph: batch pipeline (Phase 4)
+  commands/
+    start.md                      /start — первая команда orchestrator'у
+  plans/
+    TASK-NNN.md                   Планы orchestrator'а
 ```
 
-## Ключевые принципы (краткая справка)
+## Ключевые принципы
 
 - Всегда отвечать на русском языке
-- AS-IS моделирование по умолчанию (не додумывать логику)
+- AS-IS моделирование (не додумывать логику)
+- Graph as SSOT (D-001): BPMN, RACI, KPI — views из графа
+- 4 агента с hooks enforcement (D-005)
+- Один pipeline, не два контура (D-009)
+- Docling + OCR, не PyMuPDF (D-008)
 - Архитектурный анализ ПЕРЕД кодированием
-- SOLID / DRY / KISS
-- Резервные копии перед изменениями -> archive/
 - НЕ делать git коммиты (пользователь сам)
-- НЕ создавать MD файлы без явного запроса
 
-## Бэкап оригинального файла
+## Бэкап v1
 
-Полный оригинал: `archive/old_docs/cursorrules_backup_2026-02-06.md`
+Полный v1: ветка `main`, коммит `96ac7a7` + `archive/v1_cursor_backup_20260318/`

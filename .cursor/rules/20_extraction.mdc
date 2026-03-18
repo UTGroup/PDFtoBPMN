@@ -1,10 +1,10 @@
 ---
-description: Typed extraction rules (13 artifact types, provenance, ProcessSpec)
+description: Typed extraction rules (13 artifact types, provenance, graph population)
 globs:
   - "scripts/extraction/**"
   - "core/knowledge_types.py"
-  - "core/processspec_models.py"
-  - "core/processspec_schema.py"
+  - "core/edge_types.py"
+  - "core/stores.py"
   - "core/ontology.py"
 alwaysApply: false
 ---
@@ -30,17 +30,18 @@ class Provenance:
 ## Confidence scoring
 - high (0.8-1.0): извлечено rule-based или LLM с однозначным контекстом.
 - medium (0.5-0.8): LLM с неоднозначным контекстом, требует проверки.
-- low (< 0.5): не включать в ProcessSpec, сохранить в `_low_confidence.json`.
+- low (< 0.5): не включать в граф, сохранить в `_low_confidence.json`.
 
-## ProcessSpec
-- Source of truth для процесса. Заполняется из typed extraction.
+## Graph population (D-001, D-010)
+- Organizational Knowledge Graph — единственный SSOT.
+- Артефакты → nodes, связи → typed edges (18 EdgeType).
 - Только для canonical документов (authority = canonical).
 - AS-IS: только то, что написано в документе. Не додумывать.
 - Если информация не найдена → null (не выдумывать).
-- BPMN генерируется из ProcessSpec КОДОМ, не AI.
+- BPMN, RACI, KPI — views из graph queries, не отдельные pipeline.
 
-## ProcessSpec assembler
-- Собирает артефакты в ProcessSpec.yaml.
-- Валидирует schema перед сохранением.
+## Artifact assembler
+- Собирает артефакты с provenance и confidence.
+- Graph populator записывает nodes + edges в GraphStore.
 - Role references: все role_id должны ссылаться на существующую роль.
 - Flow targets: все activity_id в flow должны существовать.

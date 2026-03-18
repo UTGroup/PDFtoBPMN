@@ -9,9 +9,9 @@ alwaysApply: false
 
 # BPMN + Business Studio rules
 
-## BPMN compiler
-- ProcessSpec → BPMN 2.0 XML. Детерминированный код, НЕ AI.
-- AI не генерирует XML. Код конвертирует ProcessSpec в BPMN.
+## BPMN compiler (D-010)
+- Graph query → BPMN 2.0 XML. Детерминированный код, НЕ AI.
+- AI не генерирует XML. Код рендерит BPMN view из graph queries.
 - Каждый элемент: `<bpmn:documentation>` с трассировкой (source).
 - Алгоритм: Roles → Lanes, Sections → SubProcess, Activities → Tasks, Flow → SequenceFlow.
 - Layout: topological sort → координаты. Абсолютные для BS.

@@ -46,7 +46,7 @@ tests/fixtures/gold/** → scribe only
 
 ## Ошибки
 - Нельзя тихо прятать через try/except без логирования.
-- Extraction confidence < 0.5 → не включать в ProcessSpec.
+- Extraction confidence < 0.5 → не включать в граф, сохранить в `_low_confidence.json`.
 
 ## Документация
 - 4 файла должны быть согласованы:
@@ -58,6 +58,6 @@ tests/fixtures/gold/** → scribe only
 ## Source of truth
 - Архитектура: `docs/Architecture_v2.1.md`
 - Решения: `docs/DECISIONS.md` (append-only)
-- Состояние: `.cursor/state/dev_state.json`
-- Процесс: `output/[код]/ProcessSpec.yaml`
+- Состояние: `.cursor/state/dev_state.sqlite` (LangGraph)
+- Процесс: Organizational Knowledge Graph (SSOT, D-001)
 - Правила: `.cursor/rules/*.mdc`
