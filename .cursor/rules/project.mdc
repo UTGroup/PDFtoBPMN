@@ -9,11 +9,12 @@ alwaysApply: true
 
 Источник истины: `.cursor/rules/*.mdc` (модульно, human-only changes).
 
-## Агенты (4, D-005)
+## Агенты (5, D-011 supersedes D-005)
 - **orchestrator** — Plan Mode, Opus 4.6. Планирует, ревьюит. Код запрещён.
 - **coder** — Agent Mode, Sonnet 4.6. Пишет код по плану. Архитектура запрещена.
 - **validator** — Agent Mode, Composer 1.5, temp 0.0. Pre/post gate проверки. Read-only.
 - **scribe** — Agent Mode, Sonnet 4.6. Docs, state, Gold Standard. Production код запрещён.
+- **extractor** — Agent Mode, Sonnet 4.6, temp 0.0. LLM-extraction артефактов из текста СМК. Вызывается orchestrator'ом.
 
 ## Архитектура (кратко, D-001/D-009/D-010)
 - Один pipeline: ingestion → typed extraction → graph population + text indexing (D-009).

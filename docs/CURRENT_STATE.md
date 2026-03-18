@@ -6,9 +6,9 @@
 ## Ветка: v2-graphrag
 
 ### Компоненты
-- ✅ **cursor_rules**: 17 .mdc файлов (12 v1 + 5 v2) — валидированы
+- ✅ **cursor_rules**: 7 .mdc файлов (v1 удалены, v2 синхронизированы с DECISIONS)
 - ✅ **cursor_hooks**: 4 хука — синтаксис OK, базовая логика OK, executable
-- ✅ **cursor_agents**: 10 агентов (4 v2 + 6 v1 legacy) — валидированы
+- ✅ **cursor_agents**: 4 агента (orchestrator, coder, validator, scribe)
 - ✅ **langgraph_state**: dev_graph + batch_graph — pip install OK, 6/6 тестов pass
 - ✅ **docs**: Architecture_v2.1, DECISIONS (D-001..D-010), Handoff Protocol — готовы
 - ✅ **core_types**: KnowledgeType (13), EdgeType (19), GraphStore/VectorStore Protocol — импорт OK
@@ -21,7 +21,12 @@
 - TASK-001 валидация: 11/11 проверок PASS
 
 ### Следующее
-- TASK-002: Фаза 0 POC (7 POC параллельно + Gold Standard)
+- **TASK-002**: POC 1 — Docling + OCR (EasyOCR vs RapidOCR) ← ТЕКУЩАЯ
+- TASK-003: POC 4 — Document authority (семейства)
+- TASK-004: POC 7 — Graph population (artifacts → NetworkX)
+- TASK-005: POC 6 — Page classifier
+- TASK-006: POC 3 — Qwen VLM описание графики
+- Отложено: POC 2 (LightRAG, нет API) → Фаза 3, POC 5 (BS) → Фаза 4
 
 ### Блокеры
 - Нет

@@ -54,3 +54,9 @@
 **Контекст:** ProcessSpec.yaml был intermediate format между extraction и BPMN compiler.
 **Решение:** Граф = source of truth. BPMN compiler читает graph query напрямую.
 **Отклонено:** ProcessSpec.yaml как обязательный промежуточный файл.
+
+## D-011: 5 агентов — добавлен extractor (18.03.2026)
+**Контекст:** LLM-based extraction (6 типов: Role, ProcessStep, DecisionRule, KPI, Control, InputOutput) требует LLM. Claude API пока нет — используем Cursor AI. Нужен специализированный агент с детерминированным промптом (temp 0.0) и строгим JSON-выводом.
+**Решение:** Добавлен 5-й агент `extractor` (Sonnet 4.6, temp 0.0). Вызывается orchestrator'ом при рабочем прогоне и тестах. Read-only, AS-IS, provenance обязательна.
+**Отклонено:** Extraction как роль coder'а (менее изолированно, нет воспроизводимых промптов).
+**Supersedes:** D-005 (было 4 агента, стало 5).
