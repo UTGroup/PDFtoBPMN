@@ -1,0 +1,88 @@
+{
+  "pdf_path": "input/ДП-М1.020-06 (Эталон №14 для ознакомления).pdf",
+  "pdf_size_kb": 9285.8,
+  "total_pages": 253,
+  "results": [
+    {
+      "scenario": "native_text",
+      "ocr_engine": "none",
+      "pages_processed": 253,
+      "text_length": 1300437,
+      "elapsed_sec": 150.36,
+      "similarity": null,
+      "error": null
+    },
+    {
+      "scenario": "full_page_ocr",
+      "ocr_engine": "easyocr",
+      "pages_processed": 253,
+      "text_length": 1249657,
+      "elapsed_sec": 618.18,
+      "similarity": 0.8684,
+      "error": null
+    },
+    {
+      "scenario": "full_page_ocr",
+      "ocr_engine": "rapidocr",
+      "pages_processed": 253,
+      "text_length": 1163775,
+      "elapsed_sec": 531.7,
+      "similarity": 0.4822,
+      "error": null
+    },
+    {
+      "scenario": "mixed_auto_ocr",
+      "ocr_engine": "easyocr",
+      "pages_processed": 253,
+      "text_length": 1300445,
+      "elapsed_sec": 158.31,
+      "similarity": 1.0,
+      "error": null
+    },
+    {
+      "scenario": "mixed_auto_ocr",
+      "ocr_engine": "rapidocr",
+      "pages_processed": 253,
+      "text_length": 1300449,
+      "elapsed_sec": 152.4,
+      "similarity": 1.0,
+      "error": null
+    },
+    {
+      "scenario": "tables",
+      "ocr_engine": "easyocr",
+      "pages_processed": 253,
+      "text_length": 1300445,
+      "elapsed_sec": 158.94,
+      "similarity": 1.0,
+      "error": null
+    },
+    {
+      "scenario": "tables",
+      "ocr_engine": "rapidocr",
+      "pages_processed": 253,
+      "text_length": 1300449,
+      "elapsed_sec": 154.41,
+      "similarity": 1.0,
+      "error": null
+    },
+    {
+      "scenario": "graphics_text",
+      "ocr_engine": "easyocr",
+      "pages_processed": 253,
+      "text_length": 1249657,
+      "elapsed_sec": 620.18,
+      "similarity": 0.8684,
+      "error": null
+    },
+    {
+      "scenario": "graphics_text",
+      "ocr_engine": "rapidocr",
+      "pages_processed": 253,
+      "text_length": 1163775,
+      "elapsed_sec": 518.82,
+      "similarity": 0.4822,
+      "error": null
+    }
+  ]
+}

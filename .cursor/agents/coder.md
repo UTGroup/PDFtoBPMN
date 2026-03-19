@@ -48,10 +48,18 @@ tests/**                    → тесты (код тестов, не fixtures)
 
 ## Формат сдачи (после реализации)
 ```
-📦 СДАЧА TASK-NNN
+📦 СДАЧА TASK-NNN (итерация N/3)
 Изменено: [список файлов с кратким описанием]
 Не трогал: [non-goals подтверждены]
 Проверить: [1-3 пункта для ревью]
 Тесты: pytest [результат]
 Риски: [если есть]
 ```
+
+## Зона другого агента (не трогать)
+- `docs/**`, `.cursor/state/**`, `tests/fixtures/gold/**` → scribe
+- `.cursor/plans/**` → orchestrator
+- `.cursor/rules/**` → human only
+- Валидация, schema check, BPMN review → validator
+- Извлечение артефактов из текста → extractor
+- Архитектурные решения, декомпозиция → orchestrator

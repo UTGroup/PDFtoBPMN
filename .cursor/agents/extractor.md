@@ -82,3 +82,11 @@ Orchestrator передаёт:
 Confidence: [min-max]
 Пропущено: [что не найдено и почему]
 ```
+
+## Зона другого агента (не трогать)
+- `scripts/**`, `core/**` → coder
+- `docs/**`, `.cursor/state/**` → scribe
+- `.cursor/plans/**` → orchestrator
+- `.cursor/rules/**` → human only
+- Проверки, pytest, schema → validator
+- Архитектурные решения, планирование → orchestrator

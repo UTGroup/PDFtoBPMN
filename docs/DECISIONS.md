@@ -60,3 +60,64 @@
 **Решение:** Добавлен 5-й агент `extractor` (Sonnet 4.6, temp 0.0). Вызывается orchestrator'ом при рабочем прогоне и тестах. Read-only, AS-IS, provenance обязательна.
 **Отклонено:** Extraction как роль coder'а (менее изолированно, нет воспроизводимых промптов).
 **Supersedes:** D-005 (было 4 агента, стало 5).
+
+## D-012: OCR backend — EasyOCR (18.03.2026)
+**Контекст:** D-003 требовал POC для выбора OCR. Сравнение EasyOCR vs RapidOCR через Docling pipeline на 4 реальных PDF (русский текст СМК), 5 сценариев (native, full OCR, mixed, tables, graphics).
+**Результаты POC (4 документа, 8-253 стр, 465KB-9.3MB):**
+- EasyOCR: avg similarity 85-98%, force OCR 70-87%, mixed 100%. lang=["ru","en"], GPU.
+- RapidOCR: avg similarity 59-74%, force OCR 18-48% (модели ch_PP-OCRv4 — китайский), mixed 100%.
+- Скорость сравнимая, EasyOCR чуть медленнее (~10 мин на 253 стр full OCR).
+**Решение:** EasyOCR — единственный OCR backend. Интеграция через Docling `EasyOcrOptions(lang=["ru","en"], use_gpu=True)`.
+**Отклонено:** RapidOCR (критически плохое качество на русском тексте — 18-48% similarity при force OCR).
+**Артефакт:** `poc/poc_ocr_comparison.py`, `poc/ocr_comparison_report.json`.
+
+## D-013: NetworkXGraphStore — MVP реализация GraphStore Protocol (18.03.2026)
+**Контекст:** D-001 определил Graph as SSOT, core/stores.py зафиксировал GraphStore Protocol. Требовалось POC для проверки end-to-end: загрузка артефактов → граф → query views (BPMN, RACI).
+**Результаты POC (КД-РГ-039-05, Направление 2 — Просроченная ДЗ):**
+- NetworkXGraphStore: 10 методов (add_artifact, add_relation, query_process, query_raci, query_kpi, query_controls, query_for_rag, query_neighbors, save, load).
+- Fixture: 17 артефактов (5 Role, 8 ProcessStep, 2 DecisionRule, 2 InputOutput), 31 relation (RACI + sequence + decision + outputs).
+- query_process: 5 ролей, 8 шагов, 2 решения, 9 потоков — структура пригодна для BPMN compiler.
+- query_raci: 8 строк матрицы, 90% совпадение с существующим КД-РГ-039-05_RACI.md (порог 80% — PASS).
+- Round-trip save/load: JSON 17.6KB, 0 потерь — PASS.
+**Решение:** NetworkX MultiDiGraph — реализация GraphStore для Фазы 1-2. Перенос в scripts/graph/ при Фазе 2.
+**Артефакт:** `poc/poc_graph_population.py`, `poc/fixtures/kd_rg_039_05_artifacts.json`, `poc/graph_КД-РГ-039-05.json`.
+
+## D-014: Document Authority — парсер кодов и реестр семейств (18.03.2026)
+**Контекст:** Архитектура v2.1 определяет Document Authority Model (canonical/superseded/draft). Нужен парсер кодов документов СМК для автоматического определения семейств и версий.
+**Результаты POC (output/, 369 документов):**
+- 10 паттернов парсинга покрывают 100% кодов (323/323 OCR файлов).
+- 329 уникальных семейств, 11 типов документов.
+- 9 дубликатов между output/[код]/ и ocr_full_run/ (одна версия в двух местах).
+- 1 мультиверсионное семейство (РИ-М1.005: v6=superseded, v7=canonical).
+**Решение:** Парсер кодов и DocumentRegistry готовы для интеграции в ingestion pipeline (Фаза 2). При миграции на v2: ocr_full_run/ → архив, обработанные папки → canonical source.
+**Артефакт:** `poc/poc_document_authority.py`, `poc/document_registry.json`.
+
+## D-015: Разделение output v1 и v2 (18.03.2026)
+**Контекст:** В output/ лежат результаты прогонов v1 (14 обработанных папок + 323 OCR в ocr_full_run/). v2 pipeline будет генерировать новые артефакты. Смешивание v1 и v2 output недопустимо — разные форматы, разное качество, разная структура.
+**Решение:**
+- `output/` — остаётся как есть, read-only. Ориентир для сравнения v2 с v1.
+- v2 pipeline пишет результаты в отдельную директорию (конкретное имя определяется при Фазе 2).
+- Старые данные не блокируют рефакторинг и не являются canonical source для v2.
+- При Gold Standard: v2 генерирует черновики → аналитики правят → эталоны возвращаются как ground truth.
+**Отклонено:** Перезапись v1 output новыми данными v2; миграция ocr_full_run/ в папки (не нужно сейчас).
+
+## D-016: Page Classifier — rule-based эвристики (18.03.2026)
+**Контекст:** Pipeline v2.1 требует классификации страниц PDF для routing: cover/approval_sheet → metadata only, appendix → отдельный парсинг, content → full extraction.
+**Результаты POC (5 PDF, 397 страниц):**
+- 4 типа: cover (2.5%), content (86.6%), appendix (10.1%), approval_sheet (0.8%).
+- Эвристики: ключевые слова (УТВЕРЖДАЮ, Лист согласования, Приложение), позиция страницы, плотность текста, OCR-паттерны для сканов.
+- Cover детектируется на стр. 1-2 всех документов (скан-обложка + предисловие).
+- Approval sheet найден в 2 из 5 документов (последние страницы с подписями).
+- Appendix корректно определяется после маркера "Приложение".
+**Решение:** Rule-based PageClassifier готов для интеграции в ingestion pipeline (Фаза 2). ML-подход не нужен — эвристики достаточны для СМК документов с предсказуемой структурой.
+**Артефакт:** `poc/poc_page_classifier.py`.
+
+## D-017: Qwen VLM — 2B для dev, 7B для production (19.03.2026)
+**Контекст:** Архитектура v2.1 определяет Qwen2.5-VL для описания графики (блок-схемы, диаграммы) из PDF. POC проверил 2B модель на реальных документах.
+**Результаты POC (3 PDF, 15 страниц с графикой, 30 промптов):**
+- Qwen2-VL-2B-Instruct: 4.2GB VRAM, 14.4с/промпт, загрузка 6.3с.
+- Титульные страницы: хорошо извлекает текст (название, даты, номера).
+- Реальные схемы: слабо — шаблонные описания, галлюцинации BPMN-элементов, зацикливание на длинных ответах.
+- BPMN-промпт: более структурированный, но менее точный ответ.
+**Решение:** Qwen2-VL-2B — для dev/быстрых проверок. Qwen2-VL-7B или Qwen2.5-VL-7B — для production (требует 16GB VRAM, тестировать при Фазе 2).
+**Артефакт:** `poc/poc_qwen_graphics.py`.

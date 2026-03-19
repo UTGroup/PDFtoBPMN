@@ -1,0 +1,555 @@
+{
+  "directed": true,
+  "multigraph": true,
+  "graph": {},
+  "nodes": [
+    {
+      "type": "role",
+      "content": {
+        "name": "Руководитель ПФМ",
+        "department": "Подразделение финансового менеджмента",
+        "responsibilities": [
+          "Организация работы с дебиторской задолженностью",
+          "Координация претензионной работы",
+          "Принятие решений об эскалации"
+        ]
+      },
+      "provenance": {
+        "document_code": "КД-РГ-039-05",
+        "document_version": "05",
+        "section": "п.6.1",
+        "page": 3,
+        "paragraph": "1",
+        "document_authority": "canonical",
+        "extraction_method": "manual",
+        "confidence": 1.0
+      },
+      "id": "role_pfm_head"
+    },
+    {
+      "type": "role",
+      "content": {
+        "name": "Ответственный исполнитель (ПФМ)",
+        "department": "Подразделение финансового менеджмента",
+        "responsibilities": [
+          "Выполнение работы по контролю за ДЗ",
+          "Подготовка претензий",
+          "Взаимодействие с контрагентами"
+        ]
+      },
+      "provenance": {
+        "document_code": "КД-РГ-039-05",
+        "document_version": "05",
+        "section": "п.6.1",
+        "page": 3,
+        "paragraph": "2",
+        "document_authority": "canonical",
+        "extraction_method": "manual",
+        "confidence": 1.0
+      },
+      "id": "role_pfm_executor"
+    },
+    {
+      "type": "role",
+      "content": {
+        "name": "Начальник правового управления",
+        "department": "Правовое управление",
+        "responsibilities": [
+          "Представление интересов в судах",
+          "Подготовка исковых заявлений",
+          "Актуализация регламента"
+        ]
+      },
+      "provenance": {
+        "document_code": "КД-РГ-039-05",
+        "document_version": "05",
+        "section": "п.6.1",
+        "page": 3,
+        "paragraph": "3",
+        "document_authority": "canonical",
+        "extraction_method": "manual",
+        "confidence": 1.0
+      },
+      "id": "role_legal_head"
+    },
+    {
+      "type": "role",
+      "content": {
+        "name": "Главный бухгалтер",
+        "department": "Бухгалтерская служба",
+        "responsibilities": [
+          "Контроль достоверности информации о задолженности",
+          "Списание безнадежной ДЗ"
+        ]
+      },
+      "provenance": {
+        "document_code": "КД-РГ-039-05",
+        "document_version": "05",
+        "section": "п.6.1",
+        "page": 3,
+        "paragraph": "4",
+        "document_authority": "canonical",
+        "extraction_method": "manual",
+        "confidence": 1.0
+      },
+      "id": "role_chief_accountant"
+    },
+    {
+      "type": "role",
+      "content": {
+        "name": "Комитет по экономике и финансам",
+        "department": "Комитет",
+        "responsibilities": [
+          "Рассмотрение рисковых ситуаций со встречными претензиями"
+        ]
+      },
+      "provenance": {
+        "document_code": "КД-РГ-039-05",
+        "document_version": "05",
+        "section": "п.6.1",
+        "page": 3,
+        "paragraph": "5",
+        "document_authority": "canonical",
+        "extraction_method": "manual",
+        "confidence": 1.0
+      },
+      "id": "role_finance_committee"
+    },
+    {
+      "type": "process_step",
+      "content": {
+        "name": "Мониторинг просроченной ДЗ",
+        "description": "Проверка сроков оплаты по договорам, выявление просроченных платежей",
+        "performer_role": "role_pfm_executor",
+        "frequency": "ежемесячно 15-е число",
+        "section_ref": "п.7.2"
+      },
+      "provenance": {
+        "document_code": "КД-РГ-039-05",
+        "document_version": "05",
+        "section": "п.7.2",
+        "page": 8,
+        "paragraph": "1",
+        "document_authority": "canonical",
+        "extraction_method": "manual",
+        "confidence": 1.0
+      },
+      "id": "step_monitor_overdue"
+    },
+    {
+      "type": "process_step",
+      "content": {
+        "name": "Направление уведомления об оплате",
+        "description": "Составление и отправка электронного уведомления контрагенту с указанием суммы и срока",
+        "performer_role": "role_pfm_executor",
+        "duration": "1 день",
+        "section_ref": "п.7.2"
+      },
+      "provenance": {
+        "document_code": "КД-РГ-039-05",
+        "document_version": "05",
+        "section": "п.7.2",
+        "page": 8,
+        "paragraph": "2",
+        "document_authority": "canonical",
+        "extraction_method": "manual",
+        "confidence": 1.0
+      },
+      "id": "step_send_notification"
+    },
+    {
+      "type": "process_step",
+      "content": {
+        "name": "Телефонные звонки контрагенту",
+        "description": "Прямой контакт с контрагентом, выяснение причин неоплаты, договоренность о сроках",
+        "performer_role": "role_pfm_executor",
+        "duration": "2-3 дня",
+        "section_ref": "п.7.2"
+      },
+      "provenance": {
+        "document_code": "КД-РГ-039-05",
+        "document_version": "05",
+        "section": "п.7.2",
+        "page": 9,
+        "paragraph": "1",
+        "document_authority": "canonical",
+        "extraction_method": "manual",
+        "confidence": 1.0
+      },
+      "id": "step_phone_calls"
+    },
+    {
+      "type": "process_step",
+      "content": {
+        "name": "Составление претензии",
+        "description": "Подготовка текста претензии с обязательным наименованием 'ПРЕТЕНЗИЯ', включение обязательных сведений",
+        "performer_role": "role_pfm_executor",
+        "duration": "2-3 дня",
+        "section_ref": "п.7.2, п.10"
+      },
+      "provenance": {
+        "document_code": "КД-РГ-039-05",
+        "document_version": "05",
+        "section": "п.7.2",
+        "page": 9,
+        "paragraph": "3",
+        "document_authority": "canonical",
+        "extraction_method": "manual",
+        "confidence": 1.0
+      },
+      "id": "step_compose_claim"
+    },
+    {
+      "type": "process_step",
+      "content": {
+        "name": "Подписание претензии генеральным директором",
+        "description": "Проверка корректности и подписание претензии генеральным директором или доверенным лицом",
+        "performer_role": "role_pfm_executor",
+        "duration": "1 день",
+        "section_ref": "п.7.2"
+      },
+      "provenance": {
+        "document_code": "КД-РГ-039-05",
+        "document_version": "05",
+        "section": "п.7.2",
+        "page": 10,
+        "paragraph": "1",
+        "document_authority": "canonical",
+        "extraction_method": "manual",
+        "confidence": 1.0
+      },
+      "id": "step_sign_claim"
+    },
+    {
+      "type": "process_step",
+      "content": {
+        "name": "Направление претензии контрагенту",
+        "description": "Отправка заказным письмом с уведомлением о вручении, дополнительная отправка по электронной почте",
+        "performer_role": "role_pfm_executor",
+        "duration": "1 день",
+        "section_ref": "п.7.2"
+      },
+      "provenance": {
+        "document_code": "КД-РГ-039-05",
+        "document_version": "05",
+        "section": "п.7.2",
+        "page": 10,
+        "paragraph": "2",
+        "document_authority": "canonical",
+        "extraction_method": "manual",
+        "confidence": 1.0
+      },
+      "id": "step_send_claim"
+    },
+    {
+      "type": "process_step",
+      "content": {
+        "name": "Контроль получения ответа на претензию",
+        "description": "Отслеживание почтового отправления, мониторинг входящей корреспонденции, ожидание ответа",
+        "performer_role": "role_pfm_executor",
+        "duration": "30 календарных дней",
+        "section_ref": "п.7.2"
+      },
+      "provenance": {
+        "document_code": "КД-РГ-039-05",
+        "document_version": "05",
+        "section": "п.7.2",
+        "page": 10,
+        "paragraph": "3",
+        "document_authority": "canonical",
+        "extraction_method": "manual",
+        "confidence": 1.0
+      },
+      "id": "step_wait_response"
+    },
+    {
+      "type": "process_step",
+      "content": {
+        "name": "Передача документов в правовое управление",
+        "description": "Подготовка ЭСЗ, комплектование документов (договор, акты, счета, претензия), передача",
+        "performer_role": "role_pfm_executor",
+        "duration": "2-3 дня",
+        "section_ref": "п.11"
+      },
+      "provenance": {
+        "document_code": "КД-РГ-039-05",
+        "document_version": "05",
+        "section": "п.11",
+        "page": 15,
+        "paragraph": "1",
+        "document_authority": "canonical",
+        "extraction_method": "manual",
+        "confidence": 1.0
+      },
+      "id": "step_transfer_legal"
+    },
+    {
+      "type": "decision_rule",
+      "content": {
+        "condition": "Просрочка более 30 календарных дней",
+        "if_true": "Составление претензии (step_compose_claim)",
+        "if_false": "Ожидание оплаты, повторная проверка через 15-е число",
+        "gateway_type": "exclusive"
+      },
+      "provenance": {
+        "document_code": "КД-РГ-039-05",
+        "document_version": "05",
+        "section": "п.7.2",
+        "page": 9,
+        "paragraph": "2",
+        "document_authority": "canonical",
+        "extraction_method": "manual",
+        "confidence": 0.95
+      },
+      "id": "decision_overdue_30days"
+    },
+    {
+      "type": "decision_rule",
+      "content": {
+        "condition": "Получен ответ на претензию или произведена оплата",
+        "if_true": "Задолженность погашена — завершение",
+        "if_false": "Передача документов в правовое управление (step_transfer_legal)",
+        "gateway_type": "exclusive"
+      },
+      "provenance": {
+        "document_code": "КД-РГ-039-05",
+        "document_version": "05",
+        "section": "п.7.2",
+        "page": 10,
+        "paragraph": "4",
+        "document_authority": "canonical",
+        "extraction_method": "manual",
+        "confidence": 0.95
+      },
+      "id": "decision_response_received"
+    },
+    {
+      "type": "input_output",
+      "content": {
+        "name": "Претензия",
+        "direction": "output",
+        "description": "Документ с обязательным наименованием 'ПРЕТЕНЗИЯ', содержащий наименование, адрес контрагента, основания, сумму, срок",
+        "format": "Письменный документ, заказное письмо с уведомлением"
+      },
+      "provenance": {
+        "document_code": "КД-РГ-039-05",
+        "document_version": "05",
+        "section": "п.10",
+        "page": 12,
+        "paragraph": "1",
+        "document_authority": "canonical",
+        "extraction_method": "manual",
+        "confidence": 1.0
+      },
+      "id": "io_claim_letter"
+    },
+    {
+      "type": "input_output",
+      "content": {
+        "name": "ЭСЗ (ЭКП) на имя начальника правового управления",
+        "direction": "output",
+        "description": "Электронная служебная записка с указанием договора, периода просрочки, суммы ДЗ, проведённой претензионной работы",
+        "format": "Электронный документ через систему ЭДО"
+      },
+      "provenance": {
+        "document_code": "КД-РГ-039-05",
+        "document_version": "05",
+        "section": "п.11",
+        "page": 15,
+        "paragraph": "2",
+        "document_authority": "canonical",
+        "extraction_method": "manual",
+        "confidence": 1.0
+      },
+      "id": "io_esz_legal"
+    }
+  ],
+  "edges": [
+    {
+      "rel_type": "accountable_for",
+      "source": "role_pfm_head",
+      "target": "step_monitor_overdue",
+      "key": 0
+    },
+    {
+      "rel_type": "accountable_for",
+      "source": "role_pfm_head",
+      "target": "step_send_notification",
+      "key": 0
+    },
+    {
+      "rel_type": "accountable_for",
+      "source": "role_pfm_head",
+      "target": "step_phone_calls",
+      "key": 0
+    },
+    {
+      "rel_type": "accountable_for",
+      "source": "role_pfm_head",
+      "target": "step_compose_claim",
+      "key": 0
+    },
+    {
+      "rel_type": "accountable_for",
+      "source": "role_pfm_head",
+      "target": "step_send_claim",
+      "key": 0
+    },
+    {
+      "rel_type": "accountable_for",
+      "source": "role_pfm_head",
+      "target": "step_wait_response",
+      "key": 0
+    },
+    {
+      "rel_type": "accountable_for",
+      "source": "role_pfm_head",
+      "target": "step_transfer_legal",
+      "key": 0
+    },
+    {
+      "rel_type": "responsible_for",
+      "source": "role_pfm_executor",
+      "target": "step_monitor_overdue",
+      "key": 0
+    },
+    {
+      "rel_type": "responsible_for",
+      "source": "role_pfm_executor",
+      "target": "step_send_notification",
+      "key": 0
+    },
+    {
+      "rel_type": "responsible_for",
+      "source": "role_pfm_executor",
+      "target": "step_phone_calls",
+      "key": 0
+    },
+    {
+      "rel_type": "responsible_for",
+      "source": "role_pfm_executor",
+      "target": "step_compose_claim",
+      "key": 0
+    },
+    {
+      "rel_type": "responsible_for",
+      "source": "role_pfm_executor",
+      "target": "step_sign_claim",
+      "key": 0
+    },
+    {
+      "rel_type": "responsible_for",
+      "source": "role_pfm_executor",
+      "target": "step_send_claim",
+      "key": 0
+    },
+    {
+      "rel_type": "responsible_for",
+      "source": "role_pfm_executor",
+      "target": "step_wait_response",
+      "key": 0
+    },
+    {
+      "rel_type": "responsible_for",
+      "source": "role_pfm_executor",
+      "target": "step_transfer_legal",
+      "key": 0
+    },
+    {
+      "rel_type": "informed_of",
+      "source": "role_legal_head",
+      "target": "step_monitor_overdue",
+      "key": 0
+    },
+    {
+      "rel_type": "consulted_in",
+      "source": "role_legal_head",
+      "target": "step_compose_claim",
+      "key": 0
+    },
+    {
+      "rel_type": "accountable_for",
+      "source": "role_legal_head",
+      "target": "step_transfer_legal",
+      "key": 0
+    },
+    {
+      "rel_type": "informed_of",
+      "source": "role_chief_accountant",
+      "target": "step_monitor_overdue",
+      "key": 0
+    },
+    {
+      "rel_type": "informed_of",
+      "source": "role_finance_committee",
+      "target": "step_monitor_overdue",
+      "key": 0
+    },
+    {
+      "rel_type": "sequence",
+      "source": "step_monitor_overdue",
+      "target": "step_send_notification",
+      "key": 0
+    },
+    {
+      "rel_type": "sequence",
+      "source": "step_send_notification",
+      "target": "step_phone_calls",
+      "key": 0
+    },
+    {
+      "rel_type": "sequence",
+      "source": "step_phone_calls",
+      "target": "decision_overdue_30days",
+      "key": 0
+    },
+    {
+      "rel_type": "sequence",
+      "source": "step_compose_claim",
+      "target": "step_sign_claim",
+      "key": 0
+    },
+    {
+      "rel_type": "outputs",
+      "source": "step_compose_claim",
+      "target": "io_claim_letter",
+      "key": 0
+    },
+    {
+      "rel_type": "sequence",
+      "source": "step_sign_claim",
+      "target": "step_send_claim",
+      "key": 0
+    },
+    {
+      "rel_type": "sequence",
+      "source": "step_send_claim",
+      "target": "step_wait_response",
+      "key": 0
+    },
+    {
+      "rel_type": "sequence",
+      "source": "step_wait_response",
+      "target": "decision_response_received",
+      "key": 0
+    },
+    {
+      "rel_type": "outputs",
+      "source": "step_transfer_legal",
+      "target": "io_esz_legal",
+      "key": 0
+    },
+    {
+      "rel_type": "decision",
+      "source": "decision_overdue_30days",
+      "target": "step_compose_claim",
+      "key": 0
+    },
+    {
+      "rel_type": "decision",
+      "source": "decision_response_received",
+      "target": "step_transfer_legal",
+      "key": 0
+    }
+  ]
+}

@@ -1,0 +1,6307 @@
+{
+  "summary": {
+    "total_families": 329,
+    "total_documents": 369,
+    "doc_type_counts": {
+      "ДП": 109,
+      "РГ": 83,
+      "ИОТ": 54,
+      "РД": 36,
+      "СТ": 36,
+      "РИ": 34,
+      "unknown": 7,
+      "РК": 5,
+      "СТО": 3,
+      "TPM": 1,
+      "ПР": 1
+    },
+    "authority_counts": {
+      "canonical": 329,
+      "draft": 39,
+      "superseded": 1
+    },
+    "parse_method_counts": {
+      "std_dept_pattern": 105,
+      "std_no_dept_pattern": 101,
+      "kd_no_dept_pattern": 73,
+      "kd_dept_pattern": 68,
+      "human_readable": 6,
+      "rk_pattern": 5,
+      "merged_dept_num_pattern": 3,
+      "kd_dept_no_ver_pattern": 3,
+      "sto_pattern": 3,
+      "special_no_ver": 1,
+      "tpm_pattern": 1
+    },
+    "families_with_multiple_versions": 1,
+    "total_conflicts": 18,
+    "unparsed_count": 0,
+    "unparsed_files": []
+  },
+  "families": {
+    "TPM-UTA-UTG-002": {
+      "family_code": "TPM-UTA-UTG-002",
+      "documents": [
+        {
+          "raw_name": "TPM-UTA-UTG-002-03",
+          "family_code": "TPM-UTA-UTG-002",
+          "version": 3,
+          "doc_type": "TPM",
+          "department": "UTA-UTG",
+          "prefix": null,
+          "parse_method": "tpm_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/TPM-UTA-UTG-002-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ВБК2026": {
+      "family_code": "ВБК2026",
+      "documents": [
+        {
+          "raw_name": "ВБК2026",
+          "family_code": "ВБК2026",
+          "version": null,
+          "doc_type": null,
+          "department": null,
+          "prefix": null,
+          "parse_method": "special_no_ver",
+          "format": "xlsx",
+          "source_path": "/home/budnik_an/Obligations/output/ВБК2026",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-Б1.007": {
+      "family_code": "ДП-Б1.007",
+      "documents": [
+        {
+          "raw_name": "ДП-Б1.007-07",
+          "family_code": "ДП-Б1.007",
+          "version": 7,
+          "doc_type": "ДП",
+          "department": "Б1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-Б1.007-07_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-Б1.012": {
+      "family_code": "ДП-Б1.012",
+      "documents": [
+        {
+          "raw_name": "ДП-Б1.012-04",
+          "family_code": "ДП-Б1.012",
+          "version": 4,
+          "doc_type": "ДП",
+          "department": "Б1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-Б1.012-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-Б1.017": {
+      "family_code": "ДП-Б1.017",
+      "documents": [
+        {
+          "raw_name": "ДП-Б1.017-08",
+          "family_code": "ДП-Б1.017",
+          "version": 8,
+          "doc_type": "ДП",
+          "department": "Б1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-Б1.017-08_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-Б1.023": {
+      "family_code": "ДП-Б1.023",
+      "documents": [
+        {
+          "raw_name": "ДП-Б1.023-06",
+          "family_code": "ДП-Б1.023",
+          "version": 6,
+          "doc_type": "ДП",
+          "department": "Б1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-Б1.023-06_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-Б1.024": {
+      "family_code": "ДП-Б1.024",
+      "documents": [
+        {
+          "raw_name": "ДП-Б1.024-06",
+          "family_code": "ДП-Б1.024",
+          "version": 6,
+          "doc_type": "ДП",
+          "department": "Б1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-Б1.024-06_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-Б1.027": {
+      "family_code": "ДП-Б1.027",
+      "documents": [
+        {
+          "raw_name": "ДП-Б1.027-02",
+          "family_code": "ДП-Б1.027",
+          "version": 2,
+          "doc_type": "ДП",
+          "department": "Б1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-Б1.027-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-Б1.031": {
+      "family_code": "ДП-Б1.031",
+      "documents": [
+        {
+          "raw_name": "ДП-Б1.031-02",
+          "family_code": "ДП-Б1.031",
+          "version": 2,
+          "doc_type": "ДП",
+          "department": "Б1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-Б1.031-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-Б6.001": {
+      "family_code": "ДП-Б6.001",
+      "documents": [
+        {
+          "raw_name": "ДП-Б6.001-07",
+          "family_code": "ДП-Б6.001",
+          "version": 7,
+          "doc_type": "ДП",
+          "department": "Б6",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-Б6.001-07_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-Б6001": {
+      "family_code": "ДП-Б6001",
+      "documents": [
+        {
+          "raw_name": "ДП-Б6001-07",
+          "family_code": "ДП-Б6001",
+          "version": 7,
+          "doc_type": "ДП",
+          "department": "Б",
+          "prefix": null,
+          "parse_method": "merged_dept_num_pattern",
+          "format": "bpmn",
+          "source_path": "/home/budnik_an/Obligations/output/ДП-Б6001-07",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "ДП-Б6001-07",
+          "family_code": "ДП-Б6001",
+          "version": 7,
+          "doc_type": "ДП",
+          "department": "Б",
+          "prefix": null,
+          "parse_method": "merged_dept_num_pattern",
+          "format": "docx",
+          "source_path": "/home/budnik_an/Obligations/output/ДП-Б6001-07",
+          "authority": "canonical"
+        },
+        {
+          "raw_name": "ДП-Б6001-07",
+          "family_code": "ДП-Б6001",
+          "version": 7,
+          "doc_type": "ДП",
+          "department": "Б",
+          "prefix": null,
+          "parse_method": "merged_dept_num_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ДП-Б6001-07",
+          "authority": "draft"
+        }
+      ]
+    },
+    "ДП-Б7.005": {
+      "family_code": "ДП-Б7.005",
+      "documents": [
+        {
+          "raw_name": "ДП-Б7.005-02",
+          "family_code": "ДП-Б7.005",
+          "version": 2,
+          "doc_type": "ДП",
+          "department": "Б7",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-Б7.005-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-Б8.005": {
+      "family_code": "ДП-Б8.005",
+      "documents": [
+        {
+          "raw_name": "ДП-Б8.005-05",
+          "family_code": "ДП-Б8.005",
+          "version": 5,
+          "doc_type": "ДП",
+          "department": "Б8",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-Б8.005-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-В1.004": {
+      "family_code": "ДП-В1.004",
+      "documents": [
+        {
+          "raw_name": "ДП-В1.004-01",
+          "family_code": "ДП-В1.004",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-В1.004-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-В4.003": {
+      "family_code": "ДП-В4.003",
+      "documents": [
+        {
+          "raw_name": "ДП-В4.003-05",
+          "family_code": "ДП-В4.003",
+          "version": 5,
+          "doc_type": "ДП",
+          "department": "В4",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-В4.003-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-В4.005": {
+      "family_code": "ДП-В4.005",
+      "documents": [
+        {
+          "raw_name": "ДП-В4.005-07",
+          "family_code": "ДП-В4.005",
+          "version": 7,
+          "doc_type": "ДП",
+          "department": "В4",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-В4.005-07_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-В4.017": {
+      "family_code": "ДП-В4.017",
+      "documents": [
+        {
+          "raw_name": "ДП-В4.017-03",
+          "family_code": "ДП-В4.017",
+          "version": 3,
+          "doc_type": "ДП",
+          "department": "В4",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-В4.017-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-В4.027": {
+      "family_code": "ДП-В4.027",
+      "documents": [
+        {
+          "raw_name": "ДП-В4.027-02",
+          "family_code": "ДП-В4.027",
+          "version": 2,
+          "doc_type": "ДП",
+          "department": "В4",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-В4.027-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-В4.033": {
+      "family_code": "ДП-В4.033",
+      "documents": [
+        {
+          "raw_name": "ДП-В4.033-01",
+          "family_code": "ДП-В4.033",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В4",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-В4.033-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-В4.034": {
+      "family_code": "ДП-В4.034",
+      "documents": [
+        {
+          "raw_name": "ДП-В4.034-01",
+          "family_code": "ДП-В4.034",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В4",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-В4.034-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-В5.016": {
+      "family_code": "ДП-В5.016",
+      "documents": [
+        {
+          "raw_name": "ДП-В5.016-03",
+          "family_code": "ДП-В5.016",
+          "version": 3,
+          "doc_type": "ДП",
+          "department": "В5",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-В5.016-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-В6.002": {
+      "family_code": "ДП-В6.002",
+      "documents": [
+        {
+          "raw_name": "ДП-В6.002-04",
+          "family_code": "ДП-В6.002",
+          "version": 4,
+          "doc_type": "ДП",
+          "department": "В6",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-В6.002-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-В6.005": {
+      "family_code": "ДП-В6.005",
+      "documents": [
+        {
+          "raw_name": "ДП-В6.005-01",
+          "family_code": "ДП-В6.005",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В6",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-В6.005-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-В6.006": {
+      "family_code": "ДП-В6.006",
+      "documents": [
+        {
+          "raw_name": "ДП-В6.006-01",
+          "family_code": "ДП-В6.006",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В6",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-В6.006-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-В6.007": {
+      "family_code": "ДП-В6.007",
+      "documents": [
+        {
+          "raw_name": "ДП-В6.007-01",
+          "family_code": "ДП-В6.007",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В6",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-В6.007-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-В6.008": {
+      "family_code": "ДП-В6.008",
+      "documents": [
+        {
+          "raw_name": "ДП-В6.008-01",
+          "family_code": "ДП-В6.008",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В6",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-В6.008-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-В6.009": {
+      "family_code": "ДП-В6.009",
+      "documents": [
+        {
+          "raw_name": "ДП-В6.009-01",
+          "family_code": "ДП-В6.009",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В6",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-В6.009-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-В6.010": {
+      "family_code": "ДП-В6.010",
+      "documents": [
+        {
+          "raw_name": "ДП-В6.010-01",
+          "family_code": "ДП-В6.010",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В6",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-В6.010-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-В6.011": {
+      "family_code": "ДП-В6.011",
+      "documents": [
+        {
+          "raw_name": "ДП-В6.011-01",
+          "family_code": "ДП-В6.011",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В6",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-В6.011-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-В6.012": {
+      "family_code": "ДП-В6.012",
+      "documents": [
+        {
+          "raw_name": "ДП-В6.012-01",
+          "family_code": "ДП-В6.012",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В6",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-В6.012-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-В6.013": {
+      "family_code": "ДП-В6.013",
+      "documents": [
+        {
+          "raw_name": "ДП-В6.013-01",
+          "family_code": "ДП-В6.013",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В6",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-В6.013-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-В6.014": {
+      "family_code": "ДП-В6.014",
+      "documents": [
+        {
+          "raw_name": "ДП-В6.014-01",
+          "family_code": "ДП-В6.014",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В6",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-В6.014-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-В6.016": {
+      "family_code": "ДП-В6.016",
+      "documents": [
+        {
+          "raw_name": "ДП-В6.016-01",
+          "family_code": "ДП-В6.016",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В6",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-В6.016-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-В6.017": {
+      "family_code": "ДП-В6.017",
+      "documents": [
+        {
+          "raw_name": "ДП-В6.017-01",
+          "family_code": "ДП-В6.017",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В6",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-В6.017-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.001": {
+      "family_code": "ДП-М1.001",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.001-10",
+          "family_code": "ДП-М1.001",
+          "version": 10,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.001-10_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.003": {
+      "family_code": "ДП-М1.003",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.003-08",
+          "family_code": "ДП-М1.003",
+          "version": 8,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.003-08_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.020": {
+      "family_code": "ДП-М1.020",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.020-06",
+          "family_code": "ДП-М1.020",
+          "version": 6,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "bpmn",
+          "source_path": "/home/budnik_an/Obligations/output/ДП-М1.020-06",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "ДП-М1.020-06",
+          "family_code": "ДП-М1.020",
+          "version": 6,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "docx",
+          "source_path": "/home/budnik_an/Obligations/output/ДП-М1.020-06",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "ДП-М1.020-06",
+          "family_code": "ДП-М1.020",
+          "version": 6,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ДП-М1.020-06",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "ДП-М1.020-06",
+          "family_code": "ДП-М1.020",
+          "version": 6,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "pdf",
+          "source_path": "/home/budnik_an/Obligations/output/ДП-М1.020-06",
+          "authority": "canonical"
+        },
+        {
+          "raw_name": "ДП-М1.020-06",
+          "family_code": "ДП-М1.020",
+          "version": 6,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.020-06_OCR.md",
+          "authority": "draft"
+        }
+      ]
+    },
+    "ДП-М1.024": {
+      "family_code": "ДП-М1.024",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.024-04",
+          "family_code": "ДП-М1.024",
+          "version": 4,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.024-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.025": {
+      "family_code": "ДП-М1.025",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.025-06",
+          "family_code": "ДП-М1.025",
+          "version": 6,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.025-06_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.029": {
+      "family_code": "ДП-М1.029",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.029-04",
+          "family_code": "ДП-М1.029",
+          "version": 4,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.029-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.033": {
+      "family_code": "ДП-М1.033",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.033-06",
+          "family_code": "ДП-М1.033",
+          "version": 6,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.033-06_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.034": {
+      "family_code": "ДП-М1.034",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.034-04",
+          "family_code": "ДП-М1.034",
+          "version": 4,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.034-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.038": {
+      "family_code": "ДП-М1.038",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.038-02",
+          "family_code": "ДП-М1.038",
+          "version": 2,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.038-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.041": {
+      "family_code": "ДП-М1.041",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.041-03",
+          "family_code": "ДП-М1.041",
+          "version": 3,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.041-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.047": {
+      "family_code": "ДП-М1.047",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.047-01",
+          "family_code": "ДП-М1.047",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.047-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.051": {
+      "family_code": "ДП-М1.051",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.051-02",
+          "family_code": "ДП-М1.051",
+          "version": 2,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.051-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.052": {
+      "family_code": "ДП-М1.052",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.052-01",
+          "family_code": "ДП-М1.052",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.052-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.053": {
+      "family_code": "ДП-М1.053",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.053-01",
+          "family_code": "ДП-М1.053",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.053-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.054": {
+      "family_code": "ДП-М1.054",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.054-01",
+          "family_code": "ДП-М1.054",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.054-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.055": {
+      "family_code": "ДП-М1.055",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.055-01",
+          "family_code": "ДП-М1.055",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.055-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.056": {
+      "family_code": "ДП-М1.056",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.056-01",
+          "family_code": "ДП-М1.056",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.056-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.057": {
+      "family_code": "ДП-М1.057",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.057-01",
+          "family_code": "ДП-М1.057",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.057-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.058": {
+      "family_code": "ДП-М1.058",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.058-01",
+          "family_code": "ДП-М1.058",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.058-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.060": {
+      "family_code": "ДП-М1.060",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.060-01",
+          "family_code": "ДП-М1.060",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.060-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.061": {
+      "family_code": "ДП-М1.061",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.061-01",
+          "family_code": "ДП-М1.061",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.061-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.062": {
+      "family_code": "ДП-М1.062",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.062-01",
+          "family_code": "ДП-М1.062",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.062-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.063": {
+      "family_code": "ДП-М1.063",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.063-01",
+          "family_code": "ДП-М1.063",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.063-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.064": {
+      "family_code": "ДП-М1.064",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.064-01",
+          "family_code": "ДП-М1.064",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.064-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М1.067": {
+      "family_code": "ДП-М1.067",
+      "documents": [
+        {
+          "raw_name": "ДП-М1.067-01",
+          "family_code": "ДП-М1.067",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.067-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ДП-М2.001": {
+      "family_code": "ДП-М2.001",
+      "documents": [
+        {
+          "raw_name": "ДП-М2.001-04",
+          "family_code": "ДП-М2.001",
+          "version": 4,
+          "doc_type": "ДП",
+          "department": "М2",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М2.001-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-001": {
+      "family_code": "ИОТ-001",
+      "documents": [
+        {
+          "raw_name": "ИОТ-001-02",
+          "family_code": "ИОТ-001",
+          "version": 2,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-001-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-007": {
+      "family_code": "ИОТ-007",
+      "documents": [
+        {
+          "raw_name": "ИОТ-007-04",
+          "family_code": "ИОТ-007",
+          "version": 4,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-007-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-008": {
+      "family_code": "ИОТ-008",
+      "documents": [
+        {
+          "raw_name": "ИОТ-008-04",
+          "family_code": "ИОТ-008",
+          "version": 4,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-008-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-010": {
+      "family_code": "ИОТ-010",
+      "documents": [
+        {
+          "raw_name": "ИОТ-010-03",
+          "family_code": "ИОТ-010",
+          "version": 3,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-010-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-012": {
+      "family_code": "ИОТ-012",
+      "documents": [
+        {
+          "raw_name": "ИОТ-012-02",
+          "family_code": "ИОТ-012",
+          "version": 2,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-012-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-013": {
+      "family_code": "ИОТ-013",
+      "documents": [
+        {
+          "raw_name": "ИОТ-013-03",
+          "family_code": "ИОТ-013",
+          "version": 3,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-013-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-014": {
+      "family_code": "ИОТ-014",
+      "documents": [
+        {
+          "raw_name": "ИОТ-014-03",
+          "family_code": "ИОТ-014",
+          "version": 3,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-014-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-016": {
+      "family_code": "ИОТ-016",
+      "documents": [
+        {
+          "raw_name": "ИОТ-016-05",
+          "family_code": "ИОТ-016",
+          "version": 5,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-016-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-017": {
+      "family_code": "ИОТ-017",
+      "documents": [
+        {
+          "raw_name": "ИОТ-017-04",
+          "family_code": "ИОТ-017",
+          "version": 4,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-017-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-018": {
+      "family_code": "ИОТ-018",
+      "documents": [
+        {
+          "raw_name": "ИОТ-018-04",
+          "family_code": "ИОТ-018",
+          "version": 4,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-018-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-019": {
+      "family_code": "ИОТ-019",
+      "documents": [
+        {
+          "raw_name": "ИОТ-019-02",
+          "family_code": "ИОТ-019",
+          "version": 2,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-019-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-020": {
+      "family_code": "ИОТ-020",
+      "documents": [
+        {
+          "raw_name": "ИОТ-020-02",
+          "family_code": "ИОТ-020",
+          "version": 2,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-020-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-021": {
+      "family_code": "ИОТ-021",
+      "documents": [
+        {
+          "raw_name": "ИОТ-021-02",
+          "family_code": "ИОТ-021",
+          "version": 2,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-021-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-024": {
+      "family_code": "ИОТ-024",
+      "documents": [
+        {
+          "raw_name": "ИОТ-024-02",
+          "family_code": "ИОТ-024",
+          "version": 2,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-024-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-025": {
+      "family_code": "ИОТ-025",
+      "documents": [
+        {
+          "raw_name": "ИОТ-025-01",
+          "family_code": "ИОТ-025",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-025-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-030": {
+      "family_code": "ИОТ-030",
+      "documents": [
+        {
+          "raw_name": "ИОТ-030-02",
+          "family_code": "ИОТ-030",
+          "version": 2,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-030-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-032": {
+      "family_code": "ИОТ-032",
+      "documents": [
+        {
+          "raw_name": "ИОТ-032-01",
+          "family_code": "ИОТ-032",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-032-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-033": {
+      "family_code": "ИОТ-033",
+      "documents": [
+        {
+          "raw_name": "ИОТ-033-01",
+          "family_code": "ИОТ-033",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-033-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-035": {
+      "family_code": "ИОТ-035",
+      "documents": [
+        {
+          "raw_name": "ИОТ-035-01",
+          "family_code": "ИОТ-035",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-035-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-037": {
+      "family_code": "ИОТ-037",
+      "documents": [
+        {
+          "raw_name": "ИОТ-037-01",
+          "family_code": "ИОТ-037",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-037-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-038": {
+      "family_code": "ИОТ-038",
+      "documents": [
+        {
+          "raw_name": "ИОТ-038-01",
+          "family_code": "ИОТ-038",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-038-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-040": {
+      "family_code": "ИОТ-040",
+      "documents": [
+        {
+          "raw_name": "ИОТ-040-01",
+          "family_code": "ИОТ-040",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-040-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-041": {
+      "family_code": "ИОТ-041",
+      "documents": [
+        {
+          "raw_name": "ИОТ-041-01",
+          "family_code": "ИОТ-041",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-041-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-042": {
+      "family_code": "ИОТ-042",
+      "documents": [
+        {
+          "raw_name": "ИОТ-042-01",
+          "family_code": "ИОТ-042",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-042-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-045": {
+      "family_code": "ИОТ-045",
+      "documents": [
+        {
+          "raw_name": "ИОТ-045-01",
+          "family_code": "ИОТ-045",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-045-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-046": {
+      "family_code": "ИОТ-046",
+      "documents": [
+        {
+          "raw_name": "ИОТ-046-01",
+          "family_code": "ИОТ-046",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-046-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-047": {
+      "family_code": "ИОТ-047",
+      "documents": [
+        {
+          "raw_name": "ИОТ-047-01",
+          "family_code": "ИОТ-047",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-047-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-048": {
+      "family_code": "ИОТ-048",
+      "documents": [
+        {
+          "raw_name": "ИОТ-048-01",
+          "family_code": "ИОТ-048",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-048-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-049": {
+      "family_code": "ИОТ-049",
+      "documents": [
+        {
+          "raw_name": "ИОТ-049-01",
+          "family_code": "ИОТ-049",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-049-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-050": {
+      "family_code": "ИОТ-050",
+      "documents": [
+        {
+          "raw_name": "ИОТ-050-01",
+          "family_code": "ИОТ-050",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-050-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-051": {
+      "family_code": "ИОТ-051",
+      "documents": [
+        {
+          "raw_name": "ИОТ-051-01",
+          "family_code": "ИОТ-051",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-051-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-052": {
+      "family_code": "ИОТ-052",
+      "documents": [
+        {
+          "raw_name": "ИОТ-052-01",
+          "family_code": "ИОТ-052",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-052-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-053": {
+      "family_code": "ИОТ-053",
+      "documents": [
+        {
+          "raw_name": "ИОТ-053-01",
+          "family_code": "ИОТ-053",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-053-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-056": {
+      "family_code": "ИОТ-056",
+      "documents": [
+        {
+          "raw_name": "ИОТ-056-01",
+          "family_code": "ИОТ-056",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-056-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-057": {
+      "family_code": "ИОТ-057",
+      "documents": [
+        {
+          "raw_name": "ИОТ-057-01",
+          "family_code": "ИОТ-057",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-057-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-058": {
+      "family_code": "ИОТ-058",
+      "documents": [
+        {
+          "raw_name": "ИОТ-058-01",
+          "family_code": "ИОТ-058",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-058-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-059": {
+      "family_code": "ИОТ-059",
+      "documents": [
+        {
+          "raw_name": "ИОТ-059-01",
+          "family_code": "ИОТ-059",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-059-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-060": {
+      "family_code": "ИОТ-060",
+      "documents": [
+        {
+          "raw_name": "ИОТ-060-01",
+          "family_code": "ИОТ-060",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-060-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-061": {
+      "family_code": "ИОТ-061",
+      "documents": [
+        {
+          "raw_name": "ИОТ-061-01",
+          "family_code": "ИОТ-061",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-061-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-062": {
+      "family_code": "ИОТ-062",
+      "documents": [
+        {
+          "raw_name": "ИОТ-062-01",
+          "family_code": "ИОТ-062",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-062-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-063": {
+      "family_code": "ИОТ-063",
+      "documents": [
+        {
+          "raw_name": "ИОТ-063-01",
+          "family_code": "ИОТ-063",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-063-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-064": {
+      "family_code": "ИОТ-064",
+      "documents": [
+        {
+          "raw_name": "ИОТ-064-01",
+          "family_code": "ИОТ-064",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-064-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-066": {
+      "family_code": "ИОТ-066",
+      "documents": [
+        {
+          "raw_name": "ИОТ-066-01",
+          "family_code": "ИОТ-066",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-066-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-069": {
+      "family_code": "ИОТ-069",
+      "documents": [
+        {
+          "raw_name": "ИОТ-069-01",
+          "family_code": "ИОТ-069",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-069-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-070": {
+      "family_code": "ИОТ-070",
+      "documents": [
+        {
+          "raw_name": "ИОТ-070-01",
+          "family_code": "ИОТ-070",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-070-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-071": {
+      "family_code": "ИОТ-071",
+      "documents": [
+        {
+          "raw_name": "ИОТ-071-01",
+          "family_code": "ИОТ-071",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-071-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-072": {
+      "family_code": "ИОТ-072",
+      "documents": [
+        {
+          "raw_name": "ИОТ-072-01",
+          "family_code": "ИОТ-072",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-072-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-073": {
+      "family_code": "ИОТ-073",
+      "documents": [
+        {
+          "raw_name": "ИОТ-073-01",
+          "family_code": "ИОТ-073",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-073-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-074": {
+      "family_code": "ИОТ-074",
+      "documents": [
+        {
+          "raw_name": "ИОТ-074-01",
+          "family_code": "ИОТ-074",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-074-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-075": {
+      "family_code": "ИОТ-075",
+      "documents": [
+        {
+          "raw_name": "ИОТ-075-01",
+          "family_code": "ИОТ-075",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-075-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-076": {
+      "family_code": "ИОТ-076",
+      "documents": [
+        {
+          "raw_name": "ИОТ-076-01",
+          "family_code": "ИОТ-076",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-076-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-078": {
+      "family_code": "ИОТ-078",
+      "documents": [
+        {
+          "raw_name": "ИОТ-078-01",
+          "family_code": "ИОТ-078",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-078-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-081": {
+      "family_code": "ИОТ-081",
+      "documents": [
+        {
+          "raw_name": "ИОТ-081-01",
+          "family_code": "ИОТ-081",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-081-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "ИОТ-082": {
+      "family_code": "ИОТ-082",
+      "documents": [
+        {
+          "raw_name": "ИОТ-082-01",
+          "family_code": "ИОТ-082",
+          "version": 1,
+          "doc_type": "ИОТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ИОТ-082-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-Б1.002": {
+      "family_code": "КД-ДП-Б1.002",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-Б1.002-04",
+          "family_code": "КД-ДП-Б1.002",
+          "version": 4,
+          "doc_type": "ДП",
+          "department": "Б1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-Б1.002-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-Б1.011": {
+      "family_code": "КД-ДП-Б1.011",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-Б1.011-04",
+          "family_code": "КД-ДП-Б1.011",
+          "version": 4,
+          "doc_type": "ДП",
+          "department": "Б1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-Б1.011-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-Б1.016": {
+      "family_code": "КД-ДП-Б1.016",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-Б1.016-06",
+          "family_code": "КД-ДП-Б1.016",
+          "version": 6,
+          "doc_type": "ДП",
+          "department": "Б1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-Б1.016-06_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-Б1.021": {
+      "family_code": "КД-ДП-Б1.021",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-Б1.021-03",
+          "family_code": "КД-ДП-Б1.021",
+          "version": 3,
+          "doc_type": "ДП",
+          "department": "Б1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-Б1.021-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-Б1.026": {
+      "family_code": "КД-ДП-Б1.026",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-Б1.026-01",
+          "family_code": "КД-ДП-Б1.026",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "Б1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-Б1.026-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-Б1.029": {
+      "family_code": "КД-ДП-Б1.029",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-Б1.029-02",
+          "family_code": "КД-ДП-Б1.029",
+          "version": 2,
+          "doc_type": "ДП",
+          "department": "Б1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-Б1.029-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-Б5.006": {
+      "family_code": "КД-ДП-Б5.006",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-Б5.006-07",
+          "family_code": "КД-ДП-Б5.006",
+          "version": 7,
+          "doc_type": "ДП",
+          "department": "Б5",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-Б5.006-07_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-Б5.007": {
+      "family_code": "КД-ДП-Б5.007",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-Б5.007-04",
+          "family_code": "КД-ДП-Б5.007",
+          "version": 4,
+          "doc_type": "ДП",
+          "department": "Б5",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-Б5.007-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-Б6.005": {
+      "family_code": "КД-ДП-Б6.005",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-Б6.005-03",
+          "family_code": "КД-ДП-Б6.005",
+          "version": 3,
+          "doc_type": "ДП",
+          "department": "Б6",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-Б6.005-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-Б6.006": {
+      "family_code": "КД-ДП-Б6.006",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-Б6.006-04",
+          "family_code": "КД-ДП-Б6.006",
+          "version": 4,
+          "doc_type": "ДП",
+          "department": "Б6",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-Б6.006-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-Б6.007": {
+      "family_code": "КД-ДП-Б6.007",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-Б6.007-01",
+          "family_code": "КД-ДП-Б6.007",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "Б6",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-Б6.007-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-Б7-008": {
+      "family_code": "КД-ДП-Б7-008",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-Б7-008",
+          "family_code": "КД-ДП-Б7-008",
+          "version": null,
+          "doc_type": "ДП",
+          "department": "Б7",
+          "prefix": "КД",
+          "parse_method": "kd_dept_no_ver_pattern",
+          "format": "bpmn",
+          "source_path": "/home/budnik_an/Obligations/output/КД-ДП-Б7-008",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "КД-ДП-Б7-008",
+          "family_code": "КД-ДП-Б7-008",
+          "version": null,
+          "doc_type": "ДП",
+          "department": "Б7",
+          "prefix": "КД",
+          "parse_method": "kd_dept_no_ver_pattern",
+          "format": "docx",
+          "source_path": "/home/budnik_an/Obligations/output/КД-ДП-Б7-008",
+          "authority": "canonical"
+        },
+        {
+          "raw_name": "КД-ДП-Б7-008",
+          "family_code": "КД-ДП-Б7-008",
+          "version": null,
+          "doc_type": "ДП",
+          "department": "Б7",
+          "prefix": "КД",
+          "parse_method": "kd_dept_no_ver_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/КД-ДП-Б7-008",
+          "authority": "draft"
+        }
+      ]
+    },
+    "КД-ДП-Б7.004": {
+      "family_code": "КД-ДП-Б7.004",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-Б7.004-05",
+          "family_code": "КД-ДП-Б7.004",
+          "version": 5,
+          "doc_type": "ДП",
+          "department": "Б7",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-Б7.004-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-Б7.006": {
+      "family_code": "КД-ДП-Б7.006",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-Б7.006-01",
+          "family_code": "КД-ДП-Б7.006",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "Б7",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-Б7.006-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-Б7.007": {
+      "family_code": "КД-ДП-Б7.007",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-Б7.007-01",
+          "family_code": "КД-ДП-Б7.007",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "Б7",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-Б7.007-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-Б8.007": {
+      "family_code": "КД-ДП-Б8.007",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-Б8.007-05",
+          "family_code": "КД-ДП-Б8.007",
+          "version": 5,
+          "doc_type": "ДП",
+          "department": "Б8",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-Б8.007-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-В1.001": {
+      "family_code": "КД-ДП-В1.001",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-В1.001-01",
+          "family_code": "КД-ДП-В1.001",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-В1.001-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-В1.002": {
+      "family_code": "КД-ДП-В1.002",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-В1.002-01",
+          "family_code": "КД-ДП-В1.002",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-В1.002-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-В1.003": {
+      "family_code": "КД-ДП-В1.003",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-В1.003-01",
+          "family_code": "КД-ДП-В1.003",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-В1.003-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-В4.012": {
+      "family_code": "КД-ДП-В4.012",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-В4.012-03",
+          "family_code": "КД-ДП-В4.012",
+          "version": 3,
+          "doc_type": "ДП",
+          "department": "В4",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-В4.012-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-В4.020": {
+      "family_code": "КД-ДП-В4.020",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-В4.020-03",
+          "family_code": "КД-ДП-В4.020",
+          "version": 3,
+          "doc_type": "ДП",
+          "department": "В4",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-В4.020-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-В4.021": {
+      "family_code": "КД-ДП-В4.021",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-В4.021-04",
+          "family_code": "КД-ДП-В4.021",
+          "version": 4,
+          "doc_type": "ДП",
+          "department": "В4",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-В4.021-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-В4.023": {
+      "family_code": "КД-ДП-В4.023",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-В4.023-04",
+          "family_code": "КД-ДП-В4.023",
+          "version": 4,
+          "doc_type": "ДП",
+          "department": "В4",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-В4.023-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-В4.024": {
+      "family_code": "КД-ДП-В4.024",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-В4.024-03",
+          "family_code": "КД-ДП-В4.024",
+          "version": 3,
+          "doc_type": "ДП",
+          "department": "В4",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-В4.024-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-В4.025": {
+      "family_code": "КД-ДП-В4.025",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-В4.025-05",
+          "family_code": "КД-ДП-В4.025",
+          "version": 5,
+          "doc_type": "ДП",
+          "department": "В4",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-В4.025-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-В4.028": {
+      "family_code": "КД-ДП-В4.028",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-В4.028-01",
+          "family_code": "КД-ДП-В4.028",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В4",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-В4.028-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-В4.029": {
+      "family_code": "КД-ДП-В4.029",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-В4.029-02",
+          "family_code": "КД-ДП-В4.029",
+          "version": 2,
+          "doc_type": "ДП",
+          "department": "В4",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-В4.029-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-В4.030": {
+      "family_code": "КД-ДП-В4.030",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-В4.030-02",
+          "family_code": "КД-ДП-В4.030",
+          "version": 2,
+          "doc_type": "ДП",
+          "department": "В4",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-В4.030-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-В4.032": {
+      "family_code": "КД-ДП-В4.032",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-В4.032-01",
+          "family_code": "КД-ДП-В4.032",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В4",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-В4.032-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-В4.035": {
+      "family_code": "КД-ДП-В4.035",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-В4.035-01",
+          "family_code": "КД-ДП-В4.035",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В4",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-В4.035-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-В4.036": {
+      "family_code": "КД-ДП-В4.036",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-В4.036-01",
+          "family_code": "КД-ДП-В4.036",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "В4",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-В4.036-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-В5.008": {
+      "family_code": "КД-ДП-В5.008",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-В5.008-06",
+          "family_code": "КД-ДП-В5.008",
+          "version": 6,
+          "doc_type": "ДП",
+          "department": "В5",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-В5.008-06_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-В5.015": {
+      "family_code": "КД-ДП-В5.015",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-В5.015-03",
+          "family_code": "КД-ДП-В5.015",
+          "version": 3,
+          "doc_type": "ДП",
+          "department": "В5",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-В5.015-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-В6.003": {
+      "family_code": "КД-ДП-В6.003",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-В6.003-04",
+          "family_code": "КД-ДП-В6.003",
+          "version": 4,
+          "doc_type": "ДП",
+          "department": "В6",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-В6.003-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-В6.004": {
+      "family_code": "КД-ДП-В6.004",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-В6.004-02",
+          "family_code": "КД-ДП-В6.004",
+          "version": 2,
+          "doc_type": "ДП",
+          "department": "В6",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "dir",
+          "source_path": "/home/budnik_an/Obligations/output/КД-ДП-В6.004-02",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "КД-ДП-В6.004-02",
+          "family_code": "КД-ДП-В6.004",
+          "version": 2,
+          "doc_type": "ДП",
+          "department": "В6",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-В6.004-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-М1.007": {
+      "family_code": "КД-ДП-М1.007",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-М1.007-13",
+          "family_code": "КД-ДП-М1.007",
+          "version": 13,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-М1.007-13_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-М1.022": {
+      "family_code": "КД-ДП-М1.022",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-М1.022-06",
+          "family_code": "КД-ДП-М1.022",
+          "version": 6,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-М1.022-06_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-М1.039": {
+      "family_code": "КД-ДП-М1.039",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-М1.039-04",
+          "family_code": "КД-ДП-М1.039",
+          "version": 4,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-М1.039-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-М1.046": {
+      "family_code": "КД-ДП-М1.046",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-М1.046-02",
+          "family_code": "КД-ДП-М1.046",
+          "version": 2,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-М1.046-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-М1.048": {
+      "family_code": "КД-ДП-М1.048",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-М1.048-02",
+          "family_code": "КД-ДП-М1.048",
+          "version": 2,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-М1.048-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-М1.065": {
+      "family_code": "КД-ДП-М1.065",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-М1.065-01",
+          "family_code": "КД-ДП-М1.065",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-М1.065-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-ДП-М1.066": {
+      "family_code": "КД-ДП-М1.066",
+      "documents": [
+        {
+          "raw_name": "КД-ДП-М1.066-01",
+          "family_code": "КД-ДП-М1.066",
+          "version": 1,
+          "doc_type": "ДП",
+          "department": "М1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-М1.066-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-039": {
+      "family_code": "КД-РГ-039",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-039-05",
+          "family_code": "КД-РГ-039",
+          "version": 5,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "bpmn",
+          "source_path": "/home/budnik_an/Obligations/output/КД-РГ-039-05",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "КД-РГ-039-05",
+          "family_code": "КД-РГ-039",
+          "version": 5,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "docx",
+          "source_path": "/home/budnik_an/Obligations/output/КД-РГ-039-05",
+          "authority": "canonical"
+        },
+        {
+          "raw_name": "КД-РГ-039-05",
+          "family_code": "КД-РГ-039",
+          "version": 5,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/КД-РГ-039-05",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "КД-РГ-039-05",
+          "family_code": "КД-РГ-039",
+          "version": 5,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-039-05_OCR.md",
+          "authority": "draft"
+        }
+      ]
+    },
+    "КД-РГ-046": {
+      "family_code": "КД-РГ-046",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-046-09",
+          "family_code": "КД-РГ-046",
+          "version": 9,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-046-09_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-053": {
+      "family_code": "КД-РГ-053",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-053-06",
+          "family_code": "КД-РГ-053",
+          "version": 6,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "bpmn",
+          "source_path": "/home/budnik_an/Obligations/output/КД-РГ-053-06",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "КД-РГ-053-06",
+          "family_code": "КД-РГ-053",
+          "version": 6,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "docx",
+          "source_path": "/home/budnik_an/Obligations/output/КД-РГ-053-06",
+          "authority": "canonical"
+        },
+        {
+          "raw_name": "КД-РГ-053-06",
+          "family_code": "КД-РГ-053",
+          "version": 6,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/КД-РГ-053-06",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "КД-РГ-053-06",
+          "family_code": "КД-РГ-053",
+          "version": 6,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-053-06_OCR.md",
+          "authority": "draft"
+        }
+      ]
+    },
+    "КД-РГ-055": {
+      "family_code": "КД-РГ-055",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-055-10",
+          "family_code": "КД-РГ-055",
+          "version": 10,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-055-10_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-067": {
+      "family_code": "КД-РГ-067",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-067-09",
+          "family_code": "КД-РГ-067",
+          "version": 9,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-067-09_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-074": {
+      "family_code": "КД-РГ-074",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-074-10",
+          "family_code": "КД-РГ-074",
+          "version": 10,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-074-10_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-076": {
+      "family_code": "КД-РГ-076",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-076-04",
+          "family_code": "КД-РГ-076",
+          "version": 4,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-076-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-089": {
+      "family_code": "КД-РГ-089",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-089-06",
+          "family_code": "КД-РГ-089",
+          "version": 6,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "bpmn",
+          "source_path": "/home/budnik_an/Obligations/output/КД-РГ-089-06",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "КД-РГ-089-06",
+          "family_code": "КД-РГ-089",
+          "version": 6,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "docx",
+          "source_path": "/home/budnik_an/Obligations/output/КД-РГ-089-06",
+          "authority": "canonical"
+        },
+        {
+          "raw_name": "КД-РГ-089-06",
+          "family_code": "КД-РГ-089",
+          "version": 6,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/КД-РГ-089-06",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "КД-РГ-089-06",
+          "family_code": "КД-РГ-089",
+          "version": 6,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-089-06_OCR.md",
+          "authority": "draft"
+        }
+      ]
+    },
+    "КД-РГ-093": {
+      "family_code": "КД-РГ-093",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-093-04",
+          "family_code": "КД-РГ-093",
+          "version": 4,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-093-04 _OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-104": {
+      "family_code": "КД-РГ-104",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-104-03",
+          "family_code": "КД-РГ-104",
+          "version": 3,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-104-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-110": {
+      "family_code": "КД-РГ-110",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-110-05",
+          "family_code": "КД-РГ-110",
+          "version": 5,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "bpmn",
+          "source_path": "/home/budnik_an/Obligations/output/КД-РГ-110-05",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "КД-РГ-110-05",
+          "family_code": "КД-РГ-110",
+          "version": 5,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "docx",
+          "source_path": "/home/budnik_an/Obligations/output/КД-РГ-110-05",
+          "authority": "canonical"
+        },
+        {
+          "raw_name": "КД-РГ-110-05",
+          "family_code": "КД-РГ-110",
+          "version": 5,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/КД-РГ-110-05",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "КД-РГ-110-05",
+          "family_code": "КД-РГ-110",
+          "version": 5,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-110-05_OCR.md",
+          "authority": "draft"
+        }
+      ]
+    },
+    "КД-РГ-121": {
+      "family_code": "КД-РГ-121",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-121-05",
+          "family_code": "КД-РГ-121",
+          "version": 5,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-121-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-127": {
+      "family_code": "КД-РГ-127",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-127-05",
+          "family_code": "КД-РГ-127",
+          "version": 5,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-127-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-147": {
+      "family_code": "КД-РГ-147",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-147-08",
+          "family_code": "КД-РГ-147",
+          "version": 8,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-147-08_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-152": {
+      "family_code": "КД-РГ-152",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-152-07",
+          "family_code": "КД-РГ-152",
+          "version": 7,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-152-07_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-153": {
+      "family_code": "КД-РГ-153",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-153-05",
+          "family_code": "КД-РГ-153",
+          "version": 5,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-153-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-159": {
+      "family_code": "КД-РГ-159",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-159-02",
+          "family_code": "КД-РГ-159",
+          "version": 2,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-159-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-161": {
+      "family_code": "КД-РГ-161",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-161-05",
+          "family_code": "КД-РГ-161",
+          "version": 5,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-161-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-168": {
+      "family_code": "КД-РГ-168",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-168-01",
+          "family_code": "КД-РГ-168",
+          "version": 1,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-168-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-172": {
+      "family_code": "КД-РГ-172",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-172-05",
+          "family_code": "КД-РГ-172",
+          "version": 5,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-172-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-174": {
+      "family_code": "КД-РГ-174",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-174-05",
+          "family_code": "КД-РГ-174",
+          "version": 5,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-174-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-175": {
+      "family_code": "КД-РГ-175",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-175-05",
+          "family_code": "КД-РГ-175",
+          "version": 5,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-175-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-180": {
+      "family_code": "КД-РГ-180",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-180-02",
+          "family_code": "КД-РГ-180",
+          "version": 2,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-180-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-181": {
+      "family_code": "КД-РГ-181",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-181-05",
+          "family_code": "КД-РГ-181",
+          "version": 5,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-181-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-182": {
+      "family_code": "КД-РГ-182",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-182-04",
+          "family_code": "КД-РГ-182",
+          "version": 4,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-182-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-185": {
+      "family_code": "КД-РГ-185",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-185-01",
+          "family_code": "КД-РГ-185",
+          "version": 1,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-185-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-188": {
+      "family_code": "КД-РГ-188",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-188-02",
+          "family_code": "КД-РГ-188",
+          "version": 2,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-188-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-195": {
+      "family_code": "КД-РГ-195",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-195-04",
+          "family_code": "КД-РГ-195",
+          "version": 4,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-195-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-200": {
+      "family_code": "КД-РГ-200",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-200-01",
+          "family_code": "КД-РГ-200",
+          "version": 1,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-200-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-201": {
+      "family_code": "КД-РГ-201",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-201-03",
+          "family_code": "КД-РГ-201",
+          "version": 3,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-201-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-204": {
+      "family_code": "КД-РГ-204",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-204-01",
+          "family_code": "КД-РГ-204",
+          "version": 1,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-204-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-205": {
+      "family_code": "КД-РГ-205",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-205-03",
+          "family_code": "КД-РГ-205",
+          "version": 3,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-205-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-206": {
+      "family_code": "КД-РГ-206",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-206-02",
+          "family_code": "КД-РГ-206",
+          "version": 2,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-206-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-207": {
+      "family_code": "КД-РГ-207",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-207-03",
+          "family_code": "КД-РГ-207",
+          "version": 3,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-207-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-211": {
+      "family_code": "КД-РГ-211",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-211-03",
+          "family_code": "КД-РГ-211",
+          "version": 3,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-211-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-214": {
+      "family_code": "КД-РГ-214",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-214-02",
+          "family_code": "КД-РГ-214",
+          "version": 2,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-214-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-216": {
+      "family_code": "КД-РГ-216",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-216-02",
+          "family_code": "КД-РГ-216",
+          "version": 2,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-216-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-218": {
+      "family_code": "КД-РГ-218",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-218-02",
+          "family_code": "КД-РГ-218",
+          "version": 2,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-218-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-221": {
+      "family_code": "КД-РГ-221",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-221-02",
+          "family_code": "КД-РГ-221",
+          "version": 2,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-221-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-222": {
+      "family_code": "КД-РГ-222",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-222-01",
+          "family_code": "КД-РГ-222",
+          "version": 1,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-222-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-223": {
+      "family_code": "КД-РГ-223",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-223-02",
+          "family_code": "КД-РГ-223",
+          "version": 2,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-223-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-224": {
+      "family_code": "КД-РГ-224",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-224-01",
+          "family_code": "КД-РГ-224",
+          "version": 1,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-224-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-225": {
+      "family_code": "КД-РГ-225",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-225-01",
+          "family_code": "КД-РГ-225",
+          "version": 1,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-225-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-228": {
+      "family_code": "КД-РГ-228",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-228-01",
+          "family_code": "КД-РГ-228",
+          "version": 1,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-228-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РГ-229": {
+      "family_code": "КД-РГ-229",
+      "documents": [
+        {
+          "raw_name": "КД-РГ-229-01",
+          "family_code": "КД-РГ-229",
+          "version": 1,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-229-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РД-Б1.012": {
+      "family_code": "КД-РД-Б1.012",
+      "documents": [
+        {
+          "raw_name": "КД-РД-Б1.012-05",
+          "family_code": "КД-РД-Б1.012",
+          "version": 5,
+          "doc_type": "РД",
+          "department": "Б1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РД-Б1.012-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РД-Б1.013": {
+      "family_code": "КД-РД-Б1.013",
+      "documents": [
+        {
+          "raw_name": "КД-РД-Б1.013-03",
+          "family_code": "КД-РД-Б1.013",
+          "version": 3,
+          "doc_type": "РД",
+          "department": "Б1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РД-Б1.013-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РД-Б1.041": {
+      "family_code": "КД-РД-Б1.041",
+      "documents": [
+        {
+          "raw_name": "КД-РД-Б1.041-04",
+          "family_code": "КД-РД-Б1.041",
+          "version": 4,
+          "doc_type": "РД",
+          "department": "Б1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РД-Б1.041-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РД-Б1.043": {
+      "family_code": "КД-РД-Б1.043",
+      "documents": [
+        {
+          "raw_name": "КД-РД-Б1.043-02",
+          "family_code": "КД-РД-Б1.043",
+          "version": 2,
+          "doc_type": "РД",
+          "department": "Б1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РД-Б1.043-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РД-Б1.046": {
+      "family_code": "КД-РД-Б1.046",
+      "documents": [
+        {
+          "raw_name": "КД-РД-Б1.046-01",
+          "family_code": "КД-РД-Б1.046",
+          "version": 1,
+          "doc_type": "РД",
+          "department": "Б1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РД-Б1.046-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РД-Б5.005": {
+      "family_code": "КД-РД-Б5.005",
+      "documents": [
+        {
+          "raw_name": "КД-РД-Б5.005-05",
+          "family_code": "КД-РД-Б5.005",
+          "version": 5,
+          "doc_type": "РД",
+          "department": "Б5",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РД-Б5.005-05 _OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РД-Б5.008": {
+      "family_code": "КД-РД-Б5.008",
+      "documents": [
+        {
+          "raw_name": "КД-РД-Б5.008-19",
+          "family_code": "КД-РД-Б5.008",
+          "version": 19,
+          "doc_type": "РД",
+          "department": "Б5",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РД-Б5.008-19_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РД-Б5.009": {
+      "family_code": "КД-РД-Б5.009",
+      "documents": [
+        {
+          "raw_name": "КД-РД-Б5.009-01",
+          "family_code": "КД-РД-Б5.009",
+          "version": 1,
+          "doc_type": "РД",
+          "department": "Б5",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РД-Б5.009-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РД-Б7.005": {
+      "family_code": "КД-РД-Б7.005",
+      "documents": [
+        {
+          "raw_name": "КД-РД-Б7.005-02",
+          "family_code": "КД-РД-Б7.005",
+          "version": 2,
+          "doc_type": "РД",
+          "department": "Б7",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РД-Б7.005-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РД-Б7.006": {
+      "family_code": "КД-РД-Б7.006",
+      "documents": [
+        {
+          "raw_name": "КД-РД-Б7.006-02",
+          "family_code": "КД-РД-Б7.006",
+          "version": 2,
+          "doc_type": "РД",
+          "department": "Б7",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РД-Б7.006-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РД-В1.001": {
+      "family_code": "КД-РД-В1.001",
+      "documents": [
+        {
+          "raw_name": "КД-РД-В1.001-07",
+          "family_code": "КД-РД-В1.001",
+          "version": 7,
+          "doc_type": "РД",
+          "department": "В1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РД-В1.001-07_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РД-В4.008": {
+      "family_code": "КД-РД-В4.008",
+      "documents": [
+        {
+          "raw_name": "КД-РД-В4.008-08",
+          "family_code": "КД-РД-В4.008",
+          "version": 8,
+          "doc_type": "РД",
+          "department": "В4",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РД-В4.008-08_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РД-В5.061": {
+      "family_code": "КД-РД-В5.061",
+      "documents": [
+        {
+          "raw_name": "КД-РД-В5.061-04",
+          "family_code": "КД-РД-В5.061",
+          "version": 4,
+          "doc_type": "РД",
+          "department": "В5",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РД-В5.061-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РИ-Б1.035": {
+      "family_code": "КД-РИ-Б1.035",
+      "documents": [
+        {
+          "raw_name": "КД-РИ-Б1.035-04",
+          "family_code": "КД-РИ-Б1.035",
+          "version": 4,
+          "doc_type": "РИ",
+          "department": "Б1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РИ-Б1.035-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РИ-Б1.058": {
+      "family_code": "КД-РИ-Б1.058",
+      "documents": [
+        {
+          "raw_name": "КД-РИ-Б1.058-04",
+          "family_code": "КД-РИ-Б1.058",
+          "version": 4,
+          "doc_type": "РИ",
+          "department": "Б1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РИ-Б1.058-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РИ-Б1.070": {
+      "family_code": "КД-РИ-Б1.070",
+      "documents": [
+        {
+          "raw_name": "КД-РИ-Б1.070-03",
+          "family_code": "КД-РИ-Б1.070",
+          "version": 3,
+          "doc_type": "РИ",
+          "department": "Б1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РИ-Б1.070-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РИ-Б1.071": {
+      "family_code": "КД-РИ-Б1.071",
+      "documents": [
+        {
+          "raw_name": "КД-РИ-Б1.071-06",
+          "family_code": "КД-РИ-Б1.071",
+          "version": 6,
+          "doc_type": "РИ",
+          "department": "Б1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РИ-Б1.071-06_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РИ-Б1.073": {
+      "family_code": "КД-РИ-Б1.073",
+      "documents": [
+        {
+          "raw_name": "КД-РИ-Б1.073-05",
+          "family_code": "КД-РИ-Б1.073",
+          "version": 5,
+          "doc_type": "РИ",
+          "department": "Б1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РИ-Б1.073-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РИ-Б1.075": {
+      "family_code": "КД-РИ-Б1.075",
+      "documents": [
+        {
+          "raw_name": "КД-РИ-Б1.075-06",
+          "family_code": "КД-РИ-Б1.075",
+          "version": 6,
+          "doc_type": "РИ",
+          "department": "Б1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РИ-Б1.075-06_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РИ-Б1.076": {
+      "family_code": "КД-РИ-Б1.076",
+      "documents": [
+        {
+          "raw_name": "КД-РИ-Б1.076-04",
+          "family_code": "КД-РИ-Б1.076",
+          "version": 4,
+          "doc_type": "РИ",
+          "department": "Б1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РИ-Б1.076-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РИ-В1.004": {
+      "family_code": "КД-РИ-В1.004",
+      "documents": [
+        {
+          "raw_name": "КД-РИ-В1.004-12",
+          "family_code": "КД-РИ-В1.004",
+          "version": 12,
+          "doc_type": "РИ",
+          "department": "В1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РИ-В1.004-12_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РИ-В1.014": {
+      "family_code": "КД-РИ-В1.014",
+      "documents": [
+        {
+          "raw_name": "КД-РИ-В1.014-07",
+          "family_code": "КД-РИ-В1.014",
+          "version": 7,
+          "doc_type": "РИ",
+          "department": "В1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РИ-В1.014-07_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РИ-В1.022": {
+      "family_code": "КД-РИ-В1.022",
+      "documents": [
+        {
+          "raw_name": "КД-РИ-В1.022-07",
+          "family_code": "КД-РИ-В1.022",
+          "version": 7,
+          "doc_type": "РИ",
+          "department": "В1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РИ-В1.022-07_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РИ-М1.018": {
+      "family_code": "КД-РИ-М1.018",
+      "documents": [
+        {
+          "raw_name": "КД-РИ-М1.018-04",
+          "family_code": "КД-РИ-М1.018",
+          "version": 4,
+          "doc_type": "РИ",
+          "department": "М1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РИ-М1.018-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РИ-М1.036": {
+      "family_code": "КД-РИ-М1.036",
+      "documents": [
+        {
+          "raw_name": "КД-РИ-М1.036-09",
+          "family_code": "КД-РИ-М1.036",
+          "version": 9,
+          "doc_type": "РИ",
+          "department": "М1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РИ-М1.036-09_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-РИ-М1.057": {
+      "family_code": "КД-РИ-М1.057",
+      "documents": [
+        {
+          "raw_name": "КД-РИ-М1.057-02",
+          "family_code": "КД-РИ-М1.057",
+          "version": 2,
+          "doc_type": "РИ",
+          "department": "М1",
+          "prefix": "КД",
+          "parse_method": "kd_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-РИ-М1.057-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-СТ-001": {
+      "family_code": "КД-СТ-001",
+      "documents": [
+        {
+          "raw_name": "КД-СТ-001-08",
+          "family_code": "КД-СТ-001",
+          "version": 8,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-СТ-001-08_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-СТ-014": {
+      "family_code": "КД-СТ-014",
+      "documents": [
+        {
+          "raw_name": "КД-СТ-014-08",
+          "family_code": "КД-СТ-014",
+          "version": 8,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-СТ-014-08_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-СТ-059": {
+      "family_code": "КД-СТ-059",
+      "documents": [
+        {
+          "raw_name": "КД-СТ-059-09",
+          "family_code": "КД-СТ-059",
+          "version": 9,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-СТ-059-09_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-СТ-109": {
+      "family_code": "КД-СТ-109",
+      "documents": [
+        {
+          "raw_name": "КД-СТ-109-08",
+          "family_code": "КД-СТ-109",
+          "version": 8,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-СТ-109-08_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-СТ-122": {
+      "family_code": "КД-СТ-122",
+      "documents": [
+        {
+          "raw_name": "КД-СТ-122-07",
+          "family_code": "КД-СТ-122",
+          "version": 7,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-СТ-122-07_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-СТ-139": {
+      "family_code": "КД-СТ-139",
+      "documents": [
+        {
+          "raw_name": "КД-СТ-139-03",
+          "family_code": "КД-СТ-139",
+          "version": 3,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-СТ-139-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-СТ-145": {
+      "family_code": "КД-СТ-145",
+      "documents": [
+        {
+          "raw_name": "КД-СТ-145-01",
+          "family_code": "КД-СТ-145",
+          "version": 1,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-СТ-145-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-СТ-148": {
+      "family_code": "КД-СТ-148",
+      "documents": [
+        {
+          "raw_name": "КД-СТ-148-02",
+          "family_code": "КД-СТ-148",
+          "version": 2,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-СТ-148-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-СТ-151": {
+      "family_code": "КД-СТ-151",
+      "documents": [
+        {
+          "raw_name": "КД-СТ-151-05",
+          "family_code": "КД-СТ-151",
+          "version": 5,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-СТ-151-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-СТ-154": {
+      "family_code": "КД-СТ-154",
+      "documents": [
+        {
+          "raw_name": "КД-СТ-154-02",
+          "family_code": "КД-СТ-154",
+          "version": 2,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-СТ-154-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-СТ-157": {
+      "family_code": "КД-СТ-157",
+      "documents": [
+        {
+          "raw_name": "КД-СТ-157-02",
+          "family_code": "КД-СТ-157",
+          "version": 2,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-СТ-157-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-СТ-158": {
+      "family_code": "КД-СТ-158",
+      "documents": [
+        {
+          "raw_name": "КД-СТ-158-02",
+          "family_code": "КД-СТ-158",
+          "version": 2,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-СТ-158-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-СТ-159": {
+      "family_code": "КД-СТ-159",
+      "documents": [
+        {
+          "raw_name": "КД-СТ-159-01",
+          "family_code": "КД-СТ-159",
+          "version": 1,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-СТ-159-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-СТ-162": {
+      "family_code": "КД-СТ-162",
+      "documents": [
+        {
+          "raw_name": "КД-СТ-162-01",
+          "family_code": "КД-СТ-162",
+          "version": 1,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-СТ-162-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-СТ-170": {
+      "family_code": "КД-СТ-170",
+      "documents": [
+        {
+          "raw_name": "КД-СТ-170-01",
+          "family_code": "КД-СТ-170",
+          "version": 1,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-СТ-170-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "КД-СТ-171": {
+      "family_code": "КД-СТ-171",
+      "documents": [
+        {
+          "raw_name": "КД-СТ-171-01",
+          "family_code": "КД-СТ-171",
+          "version": 1,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": "КД",
+          "parse_method": "kd_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/КД-СТ-171-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "Оценка_персонала": {
+      "family_code": "Оценка_персонала",
+      "documents": [
+        {
+          "raw_name": "Оценка_персонала",
+          "family_code": "Оценка_персонала",
+          "version": null,
+          "doc_type": null,
+          "department": null,
+          "prefix": null,
+          "parse_method": "human_readable",
+          "format": "bpmn",
+          "source_path": "/home/budnik_an/Obligations/output/Оценка_персонала",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "Оценка_персонала",
+          "family_code": "Оценка_персонала",
+          "version": null,
+          "doc_type": null,
+          "department": null,
+          "prefix": null,
+          "parse_method": "human_readable",
+          "format": "docx",
+          "source_path": "/home/budnik_an/Obligations/output/Оценка_персонала",
+          "authority": "canonical"
+        },
+        {
+          "raw_name": "Оценка_персонала",
+          "family_code": "Оценка_персонала",
+          "version": null,
+          "doc_type": null,
+          "department": null,
+          "prefix": null,
+          "parse_method": "human_readable",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/Оценка_персонала",
+          "authority": "draft"
+        }
+      ]
+    },
+    "ПР-073": {
+      "family_code": "ПР-073",
+      "documents": [
+        {
+          "raw_name": "ПР-073-15",
+          "family_code": "ПР-073",
+          "version": 15,
+          "doc_type": "ПР",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/ПР-073-15_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "Планирование_ТО_ВС": {
+      "family_code": "Планирование_ТО_ВС",
+      "documents": [
+        {
+          "raw_name": "Планирование_ТО_ВС",
+          "family_code": "Планирование_ТО_ВС",
+          "version": null,
+          "doc_type": null,
+          "department": null,
+          "prefix": null,
+          "parse_method": "human_readable",
+          "format": "bpmn",
+          "source_path": "/home/budnik_an/Obligations/output/Планирование_ТО_ВС",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "Планирование_ТО_ВС",
+          "family_code": "Планирование_ТО_ВС",
+          "version": null,
+          "doc_type": null,
+          "department": null,
+          "prefix": null,
+          "parse_method": "human_readable",
+          "format": "docx",
+          "source_path": "/home/budnik_an/Obligations/output/Планирование_ТО_ВС",
+          "authority": "canonical"
+        },
+        {
+          "raw_name": "Планирование_ТО_ВС",
+          "family_code": "Планирование_ТО_ВС",
+          "version": null,
+          "doc_type": null,
+          "department": null,
+          "prefix": null,
+          "parse_method": "human_readable",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/Планирование_ТО_ВС",
+          "authority": "draft"
+        }
+      ]
+    },
+    "РГ-004": {
+      "family_code": "РГ-004",
+      "documents": [
+        {
+          "raw_name": "РГ-004-05",
+          "family_code": "РГ-004",
+          "version": 5,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-004-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-043": {
+      "family_code": "РГ-043",
+      "documents": [
+        {
+          "raw_name": "РГ-043-02",
+          "family_code": "РГ-043",
+          "version": 2,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-043-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-062": {
+      "family_code": "РГ-062",
+      "documents": [
+        {
+          "raw_name": "РГ-062-10",
+          "family_code": "РГ-062",
+          "version": 10,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-062-10_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-073": {
+      "family_code": "РГ-073",
+      "documents": [
+        {
+          "raw_name": "РГ-073-08",
+          "family_code": "РГ-073",
+          "version": 8,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-073-08_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-096": {
+      "family_code": "РГ-096",
+      "documents": [
+        {
+          "raw_name": "РГ-096-03",
+          "family_code": "РГ-096",
+          "version": 3,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-096-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-100": {
+      "family_code": "РГ-100",
+      "documents": [
+        {
+          "raw_name": "РГ-100-05",
+          "family_code": "РГ-100",
+          "version": 5,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-100-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-108": {
+      "family_code": "РГ-108",
+      "documents": [
+        {
+          "raw_name": "РГ-108-03",
+          "family_code": "РГ-108",
+          "version": 3,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-108-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-113": {
+      "family_code": "РГ-113",
+      "documents": [
+        {
+          "raw_name": "РГ-113-03",
+          "family_code": "РГ-113",
+          "version": 3,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-113-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-128": {
+      "family_code": "РГ-128",
+      "documents": [
+        {
+          "raw_name": "РГ-128-06",
+          "family_code": "РГ-128",
+          "version": 6,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-128-06_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-132": {
+      "family_code": "РГ-132",
+      "documents": [
+        {
+          "raw_name": "РГ-132-06",
+          "family_code": "РГ-132",
+          "version": 6,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-132-06_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-162": {
+      "family_code": "РГ-162",
+      "documents": [
+        {
+          "raw_name": "РГ-162-03",
+          "family_code": "РГ-162",
+          "version": 3,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-162-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-163": {
+      "family_code": "РГ-163",
+      "documents": [
+        {
+          "raw_name": "РГ-163-10",
+          "family_code": "РГ-163",
+          "version": 10,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-163-10_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-179": {
+      "family_code": "РГ-179",
+      "documents": [
+        {
+          "raw_name": "РГ-179-02",
+          "family_code": "РГ-179",
+          "version": 2,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "bpmn",
+          "source_path": "/home/budnik_an/Obligations/output/РГ-179-02",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "РГ-179-02",
+          "family_code": "РГ-179",
+          "version": 2,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "docx",
+          "source_path": "/home/budnik_an/Obligations/output/РГ-179-02",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "РГ-179-02",
+          "family_code": "РГ-179",
+          "version": 2,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/РГ-179-02",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "РГ-179-02",
+          "family_code": "РГ-179",
+          "version": 2,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "pdf",
+          "source_path": "/home/budnik_an/Obligations/output/РГ-179-02",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-184": {
+      "family_code": "РГ-184",
+      "documents": [
+        {
+          "raw_name": "РГ-184-06",
+          "family_code": "РГ-184",
+          "version": 6,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-184-06_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-189": {
+      "family_code": "РГ-189",
+      "documents": [
+        {
+          "raw_name": "РГ-189-03",
+          "family_code": "РГ-189",
+          "version": 3,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-189-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-190": {
+      "family_code": "РГ-190",
+      "documents": [
+        {
+          "raw_name": "РГ-190-03",
+          "family_code": "РГ-190",
+          "version": 3,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-190-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-191": {
+      "family_code": "РГ-191",
+      "documents": [
+        {
+          "raw_name": "РГ-191-03",
+          "family_code": "РГ-191",
+          "version": 3,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-191-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-192": {
+      "family_code": "РГ-192",
+      "documents": [
+        {
+          "raw_name": "РГ-192-02",
+          "family_code": "РГ-192",
+          "version": 2,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-192-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-193": {
+      "family_code": "РГ-193",
+      "documents": [
+        {
+          "raw_name": "РГ-193-02",
+          "family_code": "РГ-193",
+          "version": 2,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-193-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-199": {
+      "family_code": "РГ-199",
+      "documents": [
+        {
+          "raw_name": "РГ-199-01",
+          "family_code": "РГ-199",
+          "version": 1,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-199-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-217": {
+      "family_code": "РГ-217",
+      "documents": [
+        {
+          "raw_name": "РГ-217-01",
+          "family_code": "РГ-217",
+          "version": 1,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-217-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-226": {
+      "family_code": "РГ-226",
+      "documents": [
+        {
+          "raw_name": "РГ-226-02",
+          "family_code": "РГ-226",
+          "version": 2,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-226-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РГ-230": {
+      "family_code": "РГ-230",
+      "documents": [
+        {
+          "raw_name": "РГ-230-01",
+          "family_code": "РГ-230",
+          "version": 1,
+          "doc_type": "РГ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РГ-230-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РД-Б1.019": {
+      "family_code": "РД-Б1.019",
+      "documents": [
+        {
+          "raw_name": "РД-Б1.019-06",
+          "family_code": "РД-Б1.019",
+          "version": 6,
+          "doc_type": "РД",
+          "department": "Б1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РД-Б1.019-06_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РД-Б1.040": {
+      "family_code": "РД-Б1.040",
+      "documents": [
+        {
+          "raw_name": "РД-Б1.040-07",
+          "family_code": "РД-Б1.040",
+          "version": 7,
+          "doc_type": "РД",
+          "department": "Б1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РД-Б1.040-07_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РД-Б1.042": {
+      "family_code": "РД-Б1.042",
+      "documents": [
+        {
+          "raw_name": "РД-Б1.042-06",
+          "family_code": "РД-Б1.042",
+          "version": 6,
+          "doc_type": "РД",
+          "department": "Б1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РД-Б1.042-06_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РД-Б7.004": {
+      "family_code": "РД-Б7.004",
+      "documents": [
+        {
+          "raw_name": "РД-Б7.004-05",
+          "family_code": "РД-Б7.004",
+          "version": 5,
+          "doc_type": "РД",
+          "department": "Б7",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "bpmn",
+          "source_path": "/home/budnik_an/Obligations/output/РД-Б7.004-05",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "РД-Б7.004-05",
+          "family_code": "РД-Б7.004",
+          "version": 5,
+          "doc_type": "РД",
+          "department": "Б7",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "docx",
+          "source_path": "/home/budnik_an/Obligations/output/РД-Б7.004-05",
+          "authority": "canonical"
+        },
+        {
+          "raw_name": "РД-Б7.004-05",
+          "family_code": "РД-Б7.004",
+          "version": 5,
+          "doc_type": "РД",
+          "department": "Б7",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/РД-Б7.004-05",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "РД-Б7.004-05",
+          "family_code": "РД-Б7.004",
+          "version": 5,
+          "doc_type": "РД",
+          "department": "Б7",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РД-Б7.004-05_OCR.md",
+          "authority": "draft"
+        }
+      ]
+    },
+    "РД-Б8.003": {
+      "family_code": "РД-Б8.003",
+      "documents": [
+        {
+          "raw_name": "РД-Б8.003-11",
+          "family_code": "РД-Б8.003",
+          "version": 11,
+          "doc_type": "РД",
+          "department": "Б8",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РД-Б8.003-11_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РД-Б8.005": {
+      "family_code": "РД-Б8.005",
+      "documents": [
+        {
+          "raw_name": "РД-Б8.005-09",
+          "family_code": "РД-Б8.005",
+          "version": 9,
+          "doc_type": "РД",
+          "department": "Б8",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РД-Б8.005-09_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РД-Б8.006": {
+      "family_code": "РД-Б8.006",
+      "documents": [
+        {
+          "raw_name": "РД-Б8.006-06",
+          "family_code": "РД-Б8.006",
+          "version": 6,
+          "doc_type": "РД",
+          "department": "Б8",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РД-Б8.006-06_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РД-Б8.007": {
+      "family_code": "РД-Б8.007",
+      "documents": [
+        {
+          "raw_name": "РД-Б8.007-05",
+          "family_code": "РД-Б8.007",
+          "version": 5,
+          "doc_type": "РД",
+          "department": "Б8",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РД-Б8.007-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РД-В4.010": {
+      "family_code": "РД-В4.010",
+      "documents": [
+        {
+          "raw_name": "РД-В4.010-06",
+          "family_code": "РД-В4.010",
+          "version": 6,
+          "doc_type": "РД",
+          "department": "В4",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РД-В4.010-06_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РД-В4.012": {
+      "family_code": "РД-В4.012",
+      "documents": [
+        {
+          "raw_name": "РД-В4.012-05",
+          "family_code": "РД-В4.012",
+          "version": 5,
+          "doc_type": "РД",
+          "department": "В4",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РД-В4.012-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РД-В5.034": {
+      "family_code": "РД-В5.034",
+      "documents": [
+        {
+          "raw_name": "РД-В5.034-05",
+          "family_code": "РД-В5.034",
+          "version": 5,
+          "doc_type": "РД",
+          "department": "В5",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РД-В5.034-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РД-В5.062": {
+      "family_code": "РД-В5.062",
+      "documents": [
+        {
+          "raw_name": "РД-В5.062-04",
+          "family_code": "РД-В5.062",
+          "version": 4,
+          "doc_type": "РД",
+          "department": "В5",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РД-В5.062-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РД-В5.064": {
+      "family_code": "РД-В5.064",
+      "documents": [
+        {
+          "raw_name": "РД-В5.064-01",
+          "family_code": "РД-В5.064",
+          "version": 1,
+          "doc_type": "РД",
+          "department": "В5",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РД-В5.064-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РД-В6.026": {
+      "family_code": "РД-В6.026",
+      "documents": [
+        {
+          "raw_name": "РД-В6.026-02",
+          "family_code": "РД-В6.026",
+          "version": 2,
+          "doc_type": "РД",
+          "department": "В6",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РД-В6.026-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РД-В6.027": {
+      "family_code": "РД-В6.027",
+      "documents": [
+        {
+          "raw_name": "РД-В6.027-01",
+          "family_code": "РД-В6.027",
+          "version": 1,
+          "doc_type": "РД",
+          "department": "В6",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РД-В6.027-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РД-В7.001": {
+      "family_code": "РД-В7.001",
+      "documents": [
+        {
+          "raw_name": "РД-В7.001-05",
+          "family_code": "РД-В7.001",
+          "version": 5,
+          "doc_type": "РД",
+          "department": "В7",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РД-В7.001-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РД-М1.014": {
+      "family_code": "РД-М1.014",
+      "documents": [
+        {
+          "raw_name": "РД-М1.014-16",
+          "family_code": "РД-М1.014",
+          "version": 16,
+          "doc_type": "РД",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РД-М1.014-16_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РД-М1.029": {
+      "family_code": "РД-М1.029",
+      "documents": [
+        {
+          "raw_name": "РД-М1.029-07",
+          "family_code": "РД-М1.029",
+          "version": 7,
+          "doc_type": "РД",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РД-М1.029-07_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РД-М1.031": {
+      "family_code": "РД-М1.031",
+      "documents": [
+        {
+          "raw_name": "РД-М1.031-04",
+          "family_code": "РД-М1.031",
+          "version": 4,
+          "doc_type": "РД",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РД-М1.031-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РД-М1.032": {
+      "family_code": "РД-М1.032",
+      "documents": [
+        {
+          "raw_name": "РД-М1.032-07",
+          "family_code": "РД-М1.032",
+          "version": 7,
+          "doc_type": "РД",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РД-М1.032-07_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РИ-Б1.063": {
+      "family_code": "РИ-Б1.063",
+      "documents": [
+        {
+          "raw_name": "РИ-Б1.063-08",
+          "family_code": "РИ-Б1.063",
+          "version": 8,
+          "doc_type": "РИ",
+          "department": "Б1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РИ-Б1.063-08_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РИ-Б5.1.008": {
+      "family_code": "РИ-Б5.1.008",
+      "documents": [
+        {
+          "raw_name": "РИ-Б5.1.008-11",
+          "family_code": "РИ-Б5.1.008",
+          "version": 11,
+          "doc_type": "РИ",
+          "department": "Б5.1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РИ-Б5.1.008-11_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РИ-Б8.014": {
+      "family_code": "РИ-Б8.014",
+      "documents": [
+        {
+          "raw_name": "РИ-Б8.014-07",
+          "family_code": "РИ-Б8.014",
+          "version": 7,
+          "doc_type": "РИ",
+          "department": "Б8",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РИ-Б8.014-07_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РИ-Б8.1.018": {
+      "family_code": "РИ-Б8.1.018",
+      "documents": [
+        {
+          "raw_name": "РИ-Б8.1.018-06",
+          "family_code": "РИ-Б8.1.018",
+          "version": 6,
+          "doc_type": "РИ",
+          "department": "Б8.1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РИ-Б8.1.018-06_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РИ-В1.018": {
+      "family_code": "РИ-В1.018",
+      "documents": [
+        {
+          "raw_name": "РИ-В1.018-07",
+          "family_code": "РИ-В1.018",
+          "version": 7,
+          "doc_type": "РИ",
+          "department": "В1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РИ-В1.018-07_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РИ-В1.050": {
+      "family_code": "РИ-В1.050",
+      "documents": [
+        {
+          "raw_name": "РИ-В1.050-01",
+          "family_code": "РИ-В1.050",
+          "version": 1,
+          "doc_type": "РИ",
+          "department": "В1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РИ-В1.050-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РИ-В4.015": {
+      "family_code": "РИ-В4.015",
+      "documents": [
+        {
+          "raw_name": "РИ-В4.015-02",
+          "family_code": "РИ-В4.015",
+          "version": 2,
+          "doc_type": "РИ",
+          "department": "В4",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РИ-В4.015-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РИ-В5.071": {
+      "family_code": "РИ-В5.071",
+      "documents": [
+        {
+          "raw_name": "РИ-В5.071-02",
+          "family_code": "РИ-В5.071",
+          "version": 2,
+          "doc_type": "РИ",
+          "department": "В5",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РИ-В5.071-02_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РИ-В5.072": {
+      "family_code": "РИ-В5.072",
+      "documents": [
+        {
+          "raw_name": "РИ-В5.072-01",
+          "family_code": "РИ-В5.072",
+          "version": 1,
+          "doc_type": "РИ",
+          "department": "В5",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РИ-В5.072-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РИ-М1.003": {
+      "family_code": "РИ-М1.003",
+      "documents": [
+        {
+          "raw_name": "РИ-М1.003-06",
+          "family_code": "РИ-М1.003",
+          "version": 6,
+          "doc_type": "РИ",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РИ-М1.003-06_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РИ-М1.005": {
+      "family_code": "РИ-М1.005",
+      "documents": [
+        {
+          "raw_name": "РИ-М1.005-06",
+          "family_code": "РИ-М1.005",
+          "version": 6,
+          "doc_type": "РИ",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РИ-М1.005-06_OCR.md",
+          "authority": "superseded"
+        },
+        {
+          "raw_name": "РИ-М1.005-07",
+          "family_code": "РИ-М1.005",
+          "version": 7,
+          "doc_type": "РИ",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РИ-М1.005-07_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РИ-М1.007": {
+      "family_code": "РИ-М1.007",
+      "documents": [
+        {
+          "raw_name": "РИ-М1.007-08",
+          "family_code": "РИ-М1.007",
+          "version": 8,
+          "doc_type": "РИ",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РИ-М1.007-08_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РИ-М1.008": {
+      "family_code": "РИ-М1.008",
+      "documents": [
+        {
+          "raw_name": "РИ-М1.008-11",
+          "family_code": "РИ-М1.008",
+          "version": 11,
+          "doc_type": "РИ",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РИ-М1.008-11_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РИ-М1.010": {
+      "family_code": "РИ-М1.010",
+      "documents": [
+        {
+          "raw_name": "РИ-М1.010-12",
+          "family_code": "РИ-М1.010",
+          "version": 12,
+          "doc_type": "РИ",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РИ-М1.010-12_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РИ-М1.015": {
+      "family_code": "РИ-М1.015",
+      "documents": [
+        {
+          "raw_name": "РИ-М1.015-05",
+          "family_code": "РИ-М1.015",
+          "version": 5,
+          "doc_type": "РИ",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РИ-М1.015-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РИ-М1.016": {
+      "family_code": "РИ-М1.016",
+      "documents": [
+        {
+          "raw_name": "РИ-М1.016-08",
+          "family_code": "РИ-М1.016",
+          "version": 8,
+          "doc_type": "РИ",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РИ-М1.016-08_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РИ-М1.049": {
+      "family_code": "РИ-М1.049",
+      "documents": [
+        {
+          "raw_name": "РИ-М1.049-04",
+          "family_code": "РИ-М1.049",
+          "version": 4,
+          "doc_type": "РИ",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РИ-М1.049-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РИ-М1.053": {
+      "family_code": "РИ-М1.053",
+      "documents": [
+        {
+          "raw_name": "РИ-М1.053-05",
+          "family_code": "РИ-М1.053",
+          "version": 5,
+          "doc_type": "РИ",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РИ-М1.053-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РИ-М1.056": {
+      "family_code": "РИ-М1.056",
+      "documents": [
+        {
+          "raw_name": "РИ-М1.056-05",
+          "family_code": "РИ-М1.056",
+          "version": 5,
+          "doc_type": "РИ",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РИ-М1.056-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РИ-М1.059": {
+      "family_code": "РИ-М1.059",
+      "documents": [
+        {
+          "raw_name": "РИ-М1.059-01",
+          "family_code": "РИ-М1.059",
+          "version": 1,
+          "doc_type": "РИ",
+          "department": "М1",
+          "prefix": null,
+          "parse_method": "std_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РИ-М1.059-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "РК01-2017": {
+      "family_code": "РК01-2017",
+      "documents": [
+        {
+          "raw_name": "РК01-2017-07",
+          "family_code": "РК01-2017",
+          "version": 7,
+          "doc_type": "РК",
+          "department": null,
+          "prefix": null,
+          "parse_method": "rk_pattern",
+          "format": "bpmn",
+          "source_path": "/home/budnik_an/Obligations/output/РК01-2017-07",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "РК01-2017-07",
+          "family_code": "РК01-2017",
+          "version": 7,
+          "doc_type": "РК",
+          "department": null,
+          "prefix": null,
+          "parse_method": "rk_pattern",
+          "format": "docx",
+          "source_path": "/home/budnik_an/Obligations/output/РК01-2017-07",
+          "authority": "canonical"
+        },
+        {
+          "raw_name": "РК01-2017-07",
+          "family_code": "РК01-2017",
+          "version": 7,
+          "doc_type": "РК",
+          "department": null,
+          "prefix": null,
+          "parse_method": "rk_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/РК01-2017-07",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "РК01-2017-07",
+          "family_code": "РК01-2017",
+          "version": 7,
+          "doc_type": "РК",
+          "department": null,
+          "prefix": null,
+          "parse_method": "rk_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РК01-2017-07_OCR.md",
+          "authority": "draft"
+        }
+      ]
+    },
+    "РК02-2025": {
+      "family_code": "РК02-2025",
+      "documents": [
+        {
+          "raw_name": "РК02-2025-01",
+          "family_code": "РК02-2025",
+          "version": 1,
+          "doc_type": "РК",
+          "department": null,
+          "prefix": null,
+          "parse_method": "rk_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/РК02-2025-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "СТ-041": {
+      "family_code": "СТ-041",
+      "documents": [
+        {
+          "raw_name": "СТ-041-10",
+          "family_code": "СТ-041",
+          "version": 10,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/СТ-041-10_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "СТ-043": {
+      "family_code": "СТ-043",
+      "documents": [
+        {
+          "raw_name": "СТ-043-07",
+          "family_code": "СТ-043",
+          "version": 7,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/СТ-043-07_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "СТ-058": {
+      "family_code": "СТ-058",
+      "documents": [
+        {
+          "raw_name": "СТ-058-07",
+          "family_code": "СТ-058",
+          "version": 7,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/СТ-058-07_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "СТ-088": {
+      "family_code": "СТ-088",
+      "documents": [
+        {
+          "raw_name": "СТ-088-05",
+          "family_code": "СТ-088",
+          "version": 5,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/СТ-088-05_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "СТ-097": {
+      "family_code": "СТ-097",
+      "documents": [
+        {
+          "raw_name": "СТ-097-08",
+          "family_code": "СТ-097",
+          "version": 8,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "bpmn",
+          "source_path": "/home/budnik_an/Obligations/output/СТ-097-08",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "СТ-097-08",
+          "family_code": "СТ-097",
+          "version": 8,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "docx",
+          "source_path": "/home/budnik_an/Obligations/output/СТ-097-08",
+          "authority": "canonical"
+        },
+        {
+          "raw_name": "СТ-097-08",
+          "family_code": "СТ-097",
+          "version": 8,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/СТ-097-08",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "СТ-097-08",
+          "family_code": "СТ-097",
+          "version": 8,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/СТ-097-08_OCR.md",
+          "authority": "draft"
+        }
+      ]
+    },
+    "СТ-144": {
+      "family_code": "СТ-144",
+      "documents": [
+        {
+          "raw_name": "СТ-144-08",
+          "family_code": "СТ-144",
+          "version": 8,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/СТ-144-08 _OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "СТ-147": {
+      "family_code": "СТ-147",
+      "documents": [
+        {
+          "raw_name": "СТ-147-03",
+          "family_code": "СТ-147",
+          "version": 3,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/СТ-147-03_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "СТ-150": {
+      "family_code": "СТ-150",
+      "documents": [
+        {
+          "raw_name": "СТ-150-01",
+          "family_code": "СТ-150",
+          "version": 1,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/СТ-150-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "СТ-152": {
+      "family_code": "СТ-152",
+      "documents": [
+        {
+          "raw_name": "СТ-152-04",
+          "family_code": "СТ-152",
+          "version": 4,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/СТ-152-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "СТ-155": {
+      "family_code": "СТ-155",
+      "documents": [
+        {
+          "raw_name": "СТ-155-04",
+          "family_code": "СТ-155",
+          "version": 4,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/СТ-155-04_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "СТ-160": {
+      "family_code": "СТ-160",
+      "documents": [
+        {
+          "raw_name": "СТ-160-01",
+          "family_code": "СТ-160",
+          "version": 1,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/СТ-160-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "СТ-163": {
+      "family_code": "СТ-163",
+      "documents": [
+        {
+          "raw_name": "СТ-163-01",
+          "family_code": "СТ-163",
+          "version": 1,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/СТ-163-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "СТ-164": {
+      "family_code": "СТ-164",
+      "documents": [
+        {
+          "raw_name": "СТ-164-01",
+          "family_code": "СТ-164",
+          "version": 1,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/СТ-164-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "СТ-165": {
+      "family_code": "СТ-165",
+      "documents": [
+        {
+          "raw_name": "СТ-165-01",
+          "family_code": "СТ-165",
+          "version": 1,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/СТ-165-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "СТ-166": {
+      "family_code": "СТ-166",
+      "documents": [
+        {
+          "raw_name": "СТ-166-01",
+          "family_code": "СТ-166",
+          "version": 1,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/СТ-166-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "СТ-167": {
+      "family_code": "СТ-167",
+      "documents": [
+        {
+          "raw_name": "СТ-167-01",
+          "family_code": "СТ-167",
+          "version": 1,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/СТ-167-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "СТ-168": {
+      "family_code": "СТ-168",
+      "documents": [
+        {
+          "raw_name": "СТ-168-01",
+          "family_code": "СТ-168",
+          "version": 1,
+          "doc_type": "СТ",
+          "department": null,
+          "prefix": null,
+          "parse_method": "std_no_dept_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/ocr_full_run/СТ-168-01_OCR.md",
+          "authority": "canonical"
+        }
+      ]
+    },
+    "СТО_И38-2025": {
+      "family_code": "СТО_И38-2025",
+      "documents": [
+        {
+          "raw_name": "СТО_И38-2025_V3",
+          "family_code": "СТО_И38-2025",
+          "version": 3,
+          "doc_type": "СТО",
+          "department": null,
+          "prefix": null,
+          "parse_method": "sto_pattern",
+          "format": "bpmn",
+          "source_path": "/home/budnik_an/Obligations/output/СТО_И38-2025_V3",
+          "authority": "draft"
+        },
+        {
+          "raw_name": "СТО_И38-2025_V3",
+          "family_code": "СТО_И38-2025",
+          "version": 3,
+          "doc_type": "СТО",
+          "department": null,
+          "prefix": null,
+          "parse_method": "sto_pattern",
+          "format": "docx",
+          "source_path": "/home/budnik_an/Obligations/output/СТО_И38-2025_V3",
+          "authority": "canonical"
+        },
+        {
+          "raw_name": "СТО_И38-2025_V3",
+          "family_code": "СТО_И38-2025",
+          "version": 3,
+          "doc_type": "СТО",
+          "department": null,
+          "prefix": null,
+          "parse_method": "sto_pattern",
+          "format": "md",
+          "source_path": "/home/budnik_an/Obligations/output/СТО_И38-2025_V3",
+          "authority": "draft"
+        }
+      ]
+    }
+  },
+  "conflicts": [
+    {
+      "type": "duplicate_ocr_and_processed",
+      "family": "ДП-М1.020",
+      "ocr_count": 1,
+      "processed_count": 1,
+      "ocr_sources": [
+        "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.020-06_OCR.md"
+      ],
+      "processed_sources": [
+        "/home/budnik_an/Obligations/output/ДП-М1.020-06"
+      ]
+    },
+    {
+      "type": "same_version_multiple_sources",
+      "family": "ДП-М1.020",
+      "version": 6,
+      "sources": [
+        "/home/budnik_an/Obligations/output/ocr_full_run/ДП-М1.020-06_OCR.md",
+        "/home/budnik_an/Obligations/output/ДП-М1.020-06"
+      ]
+    },
+    {
+      "type": "duplicate_ocr_and_processed",
+      "family": "КД-ДП-В6.004",
+      "ocr_count": 1,
+      "processed_count": 1,
+      "ocr_sources": [
+        "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-В6.004-02_OCR.md"
+      ],
+      "processed_sources": [
+        "/home/budnik_an/Obligations/output/КД-ДП-В6.004-02"
+      ]
+    },
+    {
+      "type": "same_version_multiple_sources",
+      "family": "КД-ДП-В6.004",
+      "version": 2,
+      "sources": [
+        "/home/budnik_an/Obligations/output/ocr_full_run/КД-ДП-В6.004-02_OCR.md",
+        "/home/budnik_an/Obligations/output/КД-ДП-В6.004-02"
+      ]
+    },
+    {
+      "type": "duplicate_ocr_and_processed",
+      "family": "КД-РГ-039",
+      "ocr_count": 1,
+      "processed_count": 1,
+      "ocr_sources": [
+        "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-039-05_OCR.md"
+      ],
+      "processed_sources": [
+        "/home/budnik_an/Obligations/output/КД-РГ-039-05"
+      ]
+    },
+    {
+      "type": "same_version_multiple_sources",
+      "family": "КД-РГ-039",
+      "version": 5,
+      "sources": [
+        "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-039-05_OCR.md",
+        "/home/budnik_an/Obligations/output/КД-РГ-039-05"
+      ]
+    },
+    {
+      "type": "duplicate_ocr_and_processed",
+      "family": "КД-РГ-053",
+      "ocr_count": 1,
+      "processed_count": 1,
+      "ocr_sources": [
+        "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-053-06_OCR.md"
+      ],
+      "processed_sources": [
+        "/home/budnik_an/Obligations/output/КД-РГ-053-06"
+      ]
+    },
+    {
+      "type": "same_version_multiple_sources",
+      "family": "КД-РГ-053",
+      "version": 6,
+      "sources": [
+        "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-053-06_OCR.md",
+        "/home/budnik_an/Obligations/output/КД-РГ-053-06"
+      ]
+    },
+    {
+      "type": "duplicate_ocr_and_processed",
+      "family": "КД-РГ-089",
+      "ocr_count": 1,
+      "processed_count": 1,
+      "ocr_sources": [
+        "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-089-06_OCR.md"
+      ],
+      "processed_sources": [
+        "/home/budnik_an/Obligations/output/КД-РГ-089-06"
+      ]
+    },
+    {
+      "type": "same_version_multiple_sources",
+      "family": "КД-РГ-089",
+      "version": 6,
+      "sources": [
+        "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-089-06_OCR.md",
+        "/home/budnik_an/Obligations/output/КД-РГ-089-06"
+      ]
+    },
+    {
+      "type": "duplicate_ocr_and_processed",
+      "family": "КД-РГ-110",
+      "ocr_count": 1,
+      "processed_count": 1,
+      "ocr_sources": [
+        "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-110-05_OCR.md"
+      ],
+      "processed_sources": [
+        "/home/budnik_an/Obligations/output/КД-РГ-110-05"
+      ]
+    },
+    {
+      "type": "same_version_multiple_sources",
+      "family": "КД-РГ-110",
+      "version": 5,
+      "sources": [
+        "/home/budnik_an/Obligations/output/ocr_full_run/КД-РГ-110-05_OCR.md",
+        "/home/budnik_an/Obligations/output/КД-РГ-110-05"
+      ]
+    },
+    {
+      "type": "duplicate_ocr_and_processed",
+      "family": "РД-Б7.004",
+      "ocr_count": 1,
+      "processed_count": 1,
+      "ocr_sources": [
+        "/home/budnik_an/Obligations/output/ocr_full_run/РД-Б7.004-05_OCR.md"
+      ],
+      "processed_sources": [
+        "/home/budnik_an/Obligations/output/РД-Б7.004-05"
+      ]
+    },
+    {
+      "type": "same_version_multiple_sources",
+      "family": "РД-Б7.004",
+      "version": 5,
+      "sources": [
+        "/home/budnik_an/Obligations/output/ocr_full_run/РД-Б7.004-05_OCR.md",
+        "/home/budnik_an/Obligations/output/РД-Б7.004-05"
+      ]
+    },
+    {
+      "type": "duplicate_ocr_and_processed",
+      "family": "РК01-2017",
+      "ocr_count": 1,
+      "processed_count": 1,
+      "ocr_sources": [
+        "/home/budnik_an/Obligations/output/ocr_full_run/РК01-2017-07_OCR.md"
+      ],
+      "processed_sources": [
+        "/home/budnik_an/Obligations/output/РК01-2017-07"
+      ]
+    },
+    {
+      "type": "same_version_multiple_sources",
+      "family": "РК01-2017",
+      "version": 7,
+      "sources": [
+        "/home/budnik_an/Obligations/output/ocr_full_run/РК01-2017-07_OCR.md",
+        "/home/budnik_an/Obligations/output/РК01-2017-07"
+      ]
+    },
+    {
+      "type": "duplicate_ocr_and_processed",
+      "family": "СТ-097",
+      "ocr_count": 1,
+      "processed_count": 1,
+      "ocr_sources": [
+        "/home/budnik_an/Obligations/output/ocr_full_run/СТ-097-08_OCR.md"
+      ],
+      "processed_sources": [
+        "/home/budnik_an/Obligations/output/СТ-097-08"
+      ]
+    },
+    {
+      "type": "same_version_multiple_sources",
+      "family": "СТ-097",
+      "version": 8,
+      "sources": [
+        "/home/budnik_an/Obligations/output/ocr_full_run/СТ-097-08_OCR.md",
+        "/home/budnik_an/Obligations/output/СТ-097-08"
+      ]
+    }
+  ]
+}

@@ -12,7 +12,7 @@ mode: agent
 
 ## МОЖЕТ
 - `docs/**` — DECISIONS.md, CURRENT_STATE.md, changelog.md, reports
-- `.cursor/state/**` — dev_state.json (LangGraph state)
+- `.cursor/state/**` — dev_state.sqlite (LangGraph state)
 - `tests/fixtures/gold/**` — Gold Standard разметка
 - Запускать pytest и RAGAS метрики (read-only к коду)
 - Генерировать отчёты в `docs/reports/`
@@ -49,8 +49,8 @@ mode: agent
 ### Блокеры: [список]
 ```
 
-### 3. dev_state.json (LangGraph state)
-Персистентный JSON — граф разработки:
+### 3. dev_state.sqlite (LangGraph state)
+Персистентный граф разработки (через LangGraph SqliteSaver):
 ```json
 {
   "phase": "1_ingestion",
@@ -99,3 +99,11 @@ Decisions recorded: ✅ D-012 (OCR choice)
 State updated: ✅ ingestion → done
 Governance: ✅ no conflicts with DECISIONS.md
 ```
+
+## Зона другого агента (не трогать)
+- `scripts/**`, `core/**`, `poc/**` → coder
+- `.cursor/plans/**` → orchestrator
+- `.cursor/rules/**` → human only
+- Проверки, pytest (как gate), schema validation → validator
+- Извлечение артефактов из текста → extractor
+- Архитектурные решения, планирование → orchestrator
