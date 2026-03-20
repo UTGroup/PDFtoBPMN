@@ -27,6 +27,16 @@ MANIFEST
 venv/
 venv_*/
 vllm_venv/
+ocr_bench_venv/
+
+# Benchmark raw results (contain OCR text from confidential documents)
+poc/benchmark_results/deepseek_v1_baseline.json
+poc/benchmark_results/deepseek_v2.json
+poc/benchmark_results/easyocr.json
+poc/benchmark_results/glm_ocr.json
+poc/benchmark_results/got_ocr2.json
+poc/benchmark_results/paddleocr_vl.json
+poc/benchmark_results/smoldocling.json
 ENV/
 env/
 .venv

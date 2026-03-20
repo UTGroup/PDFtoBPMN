@@ -51,8 +51,22 @@
   - Вывод: для production нужна 7B модель; 2B — только для быстрых проверок
   - Артефакт: poc/poc_qwen_graphics.py
 
+- TASK-007 OCR/VLM Benchmark: 7 моделей протестированы на 18 страницах из 4 PDF (D-018)
+  - DeepSeek-OCR v1 — лидер (baseline, 100%)
+  - GLM-OCR — лучший баланс скорость/качество (63.2%, 10.6с/стр, 2.1GB VRAM)
+  - DeepSeek-OCR v2 — хуже v1 на наших документах (51.3%, зацикливание генерации — known issue)
+  - GOT-OCR2 — экономичный (51.1%, 1GB VRAM), но плохо с кириллицей
+  - PaddleOCR-VL-1.5 — аномально медленный (189.7с/стр)
+  - SmolDocling-256M — слишком маленький (31.7%)
+  - EasyOCR (Docling) — обрабатывает целый PDF, прямое сравнение невозможно
+  - Инфраструктура: 3 venv (DeepSeek-OCR/venv, venv, ocr_bench_venv)
+  - Артефакты: poc/benchmark_results/ (7 JSON + summary.json), poc/bench_*.py (9 скриптов)
+
 ### Следующее
 - Фаза 0 POC завершена. Следующий шаг: планирование Фазы 1 (production pipeline).
+- OCR стратегия определена (D-018): DeepSeek-OCR v1 primary, GLM-OCR fast fallback.
+- Ансамбль OCR моделей — Фаза 2.
+- Qwen-7B VLM тестирование — на машине с RTX 5090 (дома).
 - Отложено: POC 2 (LightRAG, нет API) → Фаза 3, POC 5 (BS) → Фаза 4
 
 ### Блокеры
@@ -66,3 +80,4 @@
 - H9: Orchestrator → Human (18.03.2026) — TASK-004 completed, Document Authority POC all PASS
 - H9: Orchestrator → Human (18.03.2026) — TASK-005 completed, Page Classifier POC 397 pages classified
 - H9: Orchestrator → Human (19.03.2026) — TASK-006 completed, Qwen VLM POC: 2B работает, для production нужна 7B
+- H10: Orchestrator → Human (20.03.2026) — TASK-007 completed, OCR/VLM Benchmark: 7 моделей, D-018

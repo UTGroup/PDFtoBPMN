@@ -1,0 +1,1194 @@
+{
+  "benchmark": {
+    "baseline": "deepseek-ocr-v1",
+    "pages_count": 18,
+    "models_count": 7
+  },
+  "ranking": [
+    {
+      "rank": 1,
+      "model": "deepseek-ocr-v1",
+      "similarity": 100.0,
+      "speed": 40.1,
+      "vram": 6456
+    },
+    {
+      "rank": 2,
+      "model": "glm-ocr",
+      "similarity": 63.2,
+      "speed": 10.6,
+      "vram": 2112
+    },
+    {
+      "rank": 3,
+      "model": "deepseek-ocr-v2",
+      "similarity": 51.3,
+      "speed": 20.3,
+      "vram": 6562
+    },
+    {
+      "rank": 4,
+      "model": "got-ocr2",
+      "similarity": 51.1,
+      "speed": 21.5,
+      "vram": 1069
+    },
+    {
+      "rank": 5,
+      "model": "paddleocr-vl-1.5",
+      "similarity": 48.7,
+      "speed": 189.7,
+      "vram": 1738
+    },
+    {
+      "rank": 6,
+      "model": "smoldocling-256m",
+      "similarity": 31.7,
+      "speed": 41.7,
+      "vram": 489
+    },
+    {
+      "rank": 7,
+      "model": "easyocr-docling",
+      "similarity": 0.0,
+      "speed": 61.9,
+      "vram": 0
+    }
+  ],
+  "models": [
+    {
+      "model": "deepseek-ocr-v1",
+      "model_id": "deepseek-ai/DeepSeek-OCR",
+      "avg_similarity": 100.0,
+      "avg_inference_time": 40.1,
+      "total_inference_time": 721.8,
+      "load_time": 4.9,
+      "vram_model_mb": 6456,
+      "pages_count": 18,
+      "similarity_by_type": {
+        "cover_scan": 100.0,
+        "diagram": 100.0,
+        "text": 100.0,
+        "mixed": 100.0
+      },
+      "page_details": [
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 1,
+          "page_type": "cover_scan",
+          "similarity": 100.0,
+          "chars": 2524,
+          "inference_time": 18.0
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 17,
+          "page_type": "diagram",
+          "similarity": 100.0,
+          "chars": 785,
+          "inference_time": 7.3
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 18,
+          "page_type": "diagram",
+          "similarity": 100.0,
+          "chars": 1642,
+          "inference_time": 14.6
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 19,
+          "page_type": "diagram",
+          "similarity": 100.0,
+          "chars": 16237,
+          "inference_time": 241.8
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 20,
+          "page_type": "diagram",
+          "similarity": 100.0,
+          "chars": 60,
+          "inference_time": 0.5
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 2,
+          "page_type": "text",
+          "similarity": 100.0,
+          "chars": 18324,
+          "inference_time": 244.8
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 5,
+          "page_type": "text",
+          "similarity": 100.0,
+          "chars": 5354,
+          "inference_time": 20.0
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 27,
+          "page_type": "text",
+          "similarity": 100.0,
+          "chars": 2402,
+          "inference_time": 19.8
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 72,
+          "page_type": "mixed",
+          "similarity": 100.0,
+          "chars": 2842,
+          "inference_time": 24.8
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 120,
+          "page_type": "mixed",
+          "similarity": 100.0,
+          "chars": 6339,
+          "inference_time": 29.2
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 148,
+          "page_type": "mixed",
+          "similarity": 100.0,
+          "chars": 2341,
+          "inference_time": 17.9
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 180,
+          "page_type": "text",
+          "similarity": 100.0,
+          "chars": 543,
+          "inference_time": 3.7
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 189,
+          "page_type": "mixed",
+          "similarity": 100.0,
+          "chars": 1959,
+          "inference_time": 13.9
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 230,
+          "page_type": "mixed",
+          "similarity": 100.0,
+          "chars": 1886,
+          "inference_time": 14.9
+        },
+        {
+          "doc_code": "КД-РГ-110-05",
+          "page_num": 0,
+          "page_type": "cover_scan",
+          "similarity": 100.0,
+          "chars": 195,
+          "inference_time": 2.4
+        },
+        {
+          "doc_code": "КД-РГ-110-05",
+          "page_num": 1,
+          "page_type": "cover_scan",
+          "similarity": 100.0,
+          "chars": 1972,
+          "inference_time": 15.7
+        },
+        {
+          "doc_code": "РГ-179-02",
+          "page_num": 21,
+          "page_type": "text",
+          "similarity": 100.0,
+          "chars": 2520,
+          "inference_time": 20.0
+        },
+        {
+          "doc_code": "РГ-179-02",
+          "page_num": 48,
+          "page_type": "diagram",
+          "similarity": 100.0,
+          "chars": 1717,
+          "inference_time": 12.5
+        }
+      ]
+    },
+    {
+      "model": "glm-ocr",
+      "model_id": "zai-org/GLM-OCR",
+      "avg_similarity": 63.2,
+      "avg_inference_time": 10.6,
+      "total_inference_time": 190.1,
+      "load_time": 47.5,
+      "vram_model_mb": 2112,
+      "pages_count": 18,
+      "similarity_by_type": {
+        "cover_scan": 79.7,
+        "diagram": 59.8,
+        "text": 61.1,
+        "mixed": 58.8
+      },
+      "page_details": [
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 1,
+          "page_type": "cover_scan",
+          "similarity": 98.1,
+          "chars": 2512,
+          "inference_time": 11.1
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 17,
+          "page_type": "diagram",
+          "similarity": 56.8,
+          "chars": 1099,
+          "inference_time": 6.3
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 18,
+          "page_type": "diagram",
+          "similarity": 74.3,
+          "chars": 1516,
+          "inference_time": 9.6
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 19,
+          "page_type": "diagram",
+          "similarity": 8.3,
+          "chars": 1295,
+          "inference_time": 6.4
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 20,
+          "page_type": "diagram",
+          "similarity": 100.0,
+          "chars": 60,
+          "inference_time": 0.9
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 2,
+          "page_type": "text",
+          "similarity": 24.5,
+          "chars": 2863,
+          "inference_time": 26.4
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 5,
+          "page_type": "text",
+          "similarity": 31.4,
+          "chars": 2069,
+          "inference_time": 12.7
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 27,
+          "page_type": "text",
+          "similarity": 88.0,
+          "chars": 2540,
+          "inference_time": 13.7
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 72,
+          "page_type": "mixed",
+          "similarity": 66.6,
+          "chars": 2443,
+          "inference_time": 11.7
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 120,
+          "page_type": "mixed",
+          "similarity": 23.2,
+          "chars": 4164,
+          "inference_time": 19.1
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 148,
+          "page_type": "mixed",
+          "similarity": 76.8,
+          "chars": 2218,
+          "inference_time": 11.0
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 180,
+          "page_type": "text",
+          "similarity": 72.8,
+          "chars": 697,
+          "inference_time": 4.1
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 189,
+          "page_type": "mixed",
+          "similarity": 43.8,
+          "chars": 1218,
+          "inference_time": 9.2
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 230,
+          "page_type": "mixed",
+          "similarity": 83.6,
+          "chars": 1825,
+          "inference_time": 9.9
+        },
+        {
+          "doc_code": "КД-РГ-110-05",
+          "page_num": 0,
+          "page_type": "cover_scan",
+          "similarity": 52.0,
+          "chars": 350,
+          "inference_time": 3.7
+        },
+        {
+          "doc_code": "КД-РГ-110-05",
+          "page_num": 1,
+          "page_type": "cover_scan",
+          "similarity": 88.9,
+          "chars": 2101,
+          "inference_time": 11.3
+        },
+        {
+          "doc_code": "РГ-179-02",
+          "page_num": 21,
+          "page_type": "text",
+          "similarity": 88.6,
+          "chars": 2708,
+          "inference_time": 14.1
+        },
+        {
+          "doc_code": "РГ-179-02",
+          "page_num": 48,
+          "page_type": "diagram",
+          "similarity": 59.4,
+          "chars": 1723,
+          "inference_time": 8.9
+        }
+      ]
+    },
+    {
+      "model": "deepseek-ocr-v2",
+      "model_id": "deepseek-ai/DeepSeek-OCR-2",
+      "avg_similarity": 51.3,
+      "avg_inference_time": 20.3,
+      "total_inference_time": 366.2,
+      "load_time": 9.8,
+      "vram_model_mb": 6562,
+      "pages_count": 18,
+      "similarity_by_type": {
+        "cover_scan": 78.6,
+        "diagram": 24.7,
+        "text": 62.2,
+        "mixed": 50.7
+      },
+      "page_details": [
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 1,
+          "page_type": "cover_scan",
+          "similarity": 98.7,
+          "chars": 2542,
+          "inference_time": 18.3
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 17,
+          "page_type": "diagram",
+          "similarity": 39.8,
+          "chars": 1212,
+          "inference_time": 12.8
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 18,
+          "page_type": "diagram",
+          "similarity": 19.1,
+          "chars": 1479,
+          "inference_time": 19.6
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 19,
+          "page_type": "diagram",
+          "similarity": 8.6,
+          "chars": 899,
+          "inference_time": 8.1
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 20,
+          "page_type": "diagram",
+          "similarity": 4.4,
+          "chars": 1300,
+          "inference_time": 9.2
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 2,
+          "page_type": "text",
+          "similarity": 37.7,
+          "chars": 5771,
+          "inference_time": 67.1
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 5,
+          "page_type": "text",
+          "similarity": 33.4,
+          "chars": 2343,
+          "inference_time": 21.9
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 27,
+          "page_type": "text",
+          "similarity": 90.0,
+          "chars": 2598,
+          "inference_time": 22.2
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 72,
+          "page_type": "mixed",
+          "similarity": 78.1,
+          "chars": 3803,
+          "inference_time": 38.3
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 120,
+          "page_type": "mixed",
+          "similarity": 18.9,
+          "chars": 4452,
+          "inference_time": 35.6
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 148,
+          "page_type": "mixed",
+          "similarity": 83.7,
+          "chars": 2565,
+          "inference_time": 22.8
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 180,
+          "page_type": "text",
+          "similarity": 59.9,
+          "chars": 887,
+          "inference_time": 8.6
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 189,
+          "page_type": "mixed",
+          "similarity": 68.5,
+          "chars": 1729,
+          "inference_time": 16.0
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 230,
+          "page_type": "mixed",
+          "similarity": 4.4,
+          "chars": 357,
+          "inference_time": 2.2
+        },
+        {
+          "doc_code": "КД-РГ-110-05",
+          "page_num": 0,
+          "page_type": "cover_scan",
+          "similarity": 47.4,
+          "chars": 433,
+          "inference_time": 7.7
+        },
+        {
+          "doc_code": "КД-РГ-110-05",
+          "page_num": 1,
+          "page_type": "cover_scan",
+          "similarity": 89.8,
+          "chars": 2217,
+          "inference_time": 18.5
+        },
+        {
+          "doc_code": "РГ-179-02",
+          "page_num": 21,
+          "page_type": "text",
+          "similarity": 89.9,
+          "chars": 2804,
+          "inference_time": 24.6
+        },
+        {
+          "doc_code": "РГ-179-02",
+          "page_num": 48,
+          "page_type": "diagram",
+          "similarity": 51.6,
+          "chars": 1574,
+          "inference_time": 12.7
+        }
+      ]
+    },
+    {
+      "model": "got-ocr2",
+      "model_id": "stepfun-ai/GOT-OCR-2.0-hf",
+      "avg_similarity": 51.1,
+      "avg_inference_time": 21.5,
+      "total_inference_time": 387.4,
+      "load_time": 29.2,
+      "vram_model_mb": 1069,
+      "pages_count": 18,
+      "similarity_by_type": {
+        "cover_scan": 77.4,
+        "diagram": 12.8,
+        "text": 71.0,
+        "mixed": 53.9
+      },
+      "page_details": [
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 1,
+          "page_type": "cover_scan",
+          "similarity": 90.7,
+          "chars": 2803,
+          "inference_time": 17.0
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 17,
+          "page_type": "diagram",
+          "similarity": 7.9,
+          "chars": 6734,
+          "inference_time": 70.1
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 18,
+          "page_type": "diagram",
+          "similarity": 20.5,
+          "chars": 353,
+          "inference_time": 3.0
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 19,
+          "page_type": "diagram",
+          "similarity": 8.5,
+          "chars": 1102,
+          "inference_time": 5.2
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 20,
+          "page_type": "diagram",
+          "similarity": 4.0,
+          "chars": 1521,
+          "inference_time": 7.0
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 2,
+          "page_type": "text",
+          "similarity": 18.0,
+          "chars": 5531,
+          "inference_time": 68.4
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 5,
+          "page_type": "text",
+          "similarity": 88.3,
+          "chars": 5285,
+          "inference_time": 16.6
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 27,
+          "page_type": "text",
+          "similarity": 90.4,
+          "chars": 2714,
+          "inference_time": 18.7
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 72,
+          "page_type": "mixed",
+          "similarity": 64.8,
+          "chars": 2500,
+          "inference_time": 19.1
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 120,
+          "page_type": "mixed",
+          "similarity": 14.0,
+          "chars": 2233,
+          "inference_time": 17.5
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 148,
+          "page_type": "mixed",
+          "similarity": 73.0,
+          "chars": 2164,
+          "inference_time": 14.1
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 180,
+          "page_type": "text",
+          "similarity": 72.3,
+          "chars": 717,
+          "inference_time": 4.4
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 189,
+          "page_type": "mixed",
+          "similarity": 47.5,
+          "chars": 1195,
+          "inference_time": 10.5
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 230,
+          "page_type": "mixed",
+          "similarity": 70.4,
+          "chars": 1530,
+          "inference_time": 8.4
+        },
+        {
+          "doc_code": "КД-РГ-110-05",
+          "page_num": 0,
+          "page_type": "cover_scan",
+          "similarity": 53.6,
+          "chars": 348,
+          "inference_time": 4.0
+        },
+        {
+          "doc_code": "КД-РГ-110-05",
+          "page_num": 1,
+          "page_type": "cover_scan",
+          "similarity": 87.8,
+          "chars": 2126,
+          "inference_time": 14.4
+        },
+        {
+          "doc_code": "РГ-179-02",
+          "page_num": 21,
+          "page_type": "text",
+          "similarity": 85.8,
+          "chars": 3064,
+          "inference_time": 19.7
+        },
+        {
+          "doc_code": "РГ-179-02",
+          "page_num": 48,
+          "page_type": "diagram",
+          "similarity": 22.9,
+          "chars": 9397,
+          "inference_time": 69.3
+        }
+      ]
+    },
+    {
+      "model": "paddleocr-vl-1.5",
+      "model_id": "PaddlePaddle/PaddleOCR-VL-1.5",
+      "avg_similarity": 48.7,
+      "avg_inference_time": 189.7,
+      "total_inference_time": 3415.5,
+      "load_time": 6.9,
+      "vram_model_mb": 1738,
+      "pages_count": 18,
+      "similarity_by_type": {
+        "cover_scan": 78.0,
+        "diagram": 33.6,
+        "text": 62.8,
+        "mixed": 32.1
+      },
+      "page_details": [
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 1,
+          "page_type": "cover_scan",
+          "similarity": 94.7,
+          "chars": 2647,
+          "inference_time": 123.9
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 17,
+          "page_type": "diagram",
+          "similarity": 40.7,
+          "chars": 1356,
+          "inference_time": 87.3
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 18,
+          "page_type": "diagram",
+          "similarity": 55.5,
+          "chars": 1320,
+          "inference_time": 84.0
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 19,
+          "page_type": "diagram",
+          "similarity": 8.6,
+          "chars": 1225,
+          "inference_time": 42.9
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 20,
+          "page_type": "diagram",
+          "similarity": 5.7,
+          "chars": 1063,
+          "inference_time": 41.9
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 2,
+          "page_type": "text",
+          "similarity": 28.1,
+          "chars": 4262,
+          "inference_time": 639.7
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 5,
+          "page_type": "text",
+          "similarity": 33.5,
+          "chars": 2130,
+          "inference_time": 139.9
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 27,
+          "page_type": "text",
+          "similarity": 90.9,
+          "chars": 2553,
+          "inference_time": 153.9
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 72,
+          "page_type": "mixed",
+          "similarity": 23.8,
+          "chars": 3604,
+          "inference_time": 222.3
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 120,
+          "page_type": "mixed",
+          "similarity": 10.8,
+          "chars": 6710,
+          "inference_time": 639.7
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 148,
+          "page_type": "mixed",
+          "similarity": 16.6,
+          "chars": 5462,
+          "inference_time": 627.3
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 180,
+          "page_type": "text",
+          "similarity": 73.7,
+          "chars": 699,
+          "inference_time": 29.6
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 189,
+          "page_type": "mixed",
+          "similarity": 43.7,
+          "chars": 1173,
+          "inference_time": 78.6
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 230,
+          "page_type": "mixed",
+          "similarity": 65.6,
+          "chars": 1885,
+          "inference_time": 78.8
+        },
+        {
+          "doc_code": "КД-РГ-110-05",
+          "page_num": 0,
+          "page_type": "cover_scan",
+          "similarity": 54.0,
+          "chars": 354,
+          "inference_time": 31.2
+        },
+        {
+          "doc_code": "КД-РГ-110-05",
+          "page_num": 1,
+          "page_type": "cover_scan",
+          "similarity": 85.3,
+          "chars": 2025,
+          "inference_time": 120.6
+        },
+        {
+          "doc_code": "РГ-179-02",
+          "page_num": 21,
+          "page_type": "text",
+          "similarity": 87.8,
+          "chars": 2863,
+          "inference_time": 169.7
+        },
+        {
+          "doc_code": "РГ-179-02",
+          "page_num": 48,
+          "page_type": "diagram",
+          "similarity": 57.7,
+          "chars": 1654,
+          "inference_time": 104.2
+        }
+      ]
+    },
+    {
+      "model": "smoldocling-256m",
+      "model_id": "ds4sd/SmolDocling-256M-preview",
+      "avg_similarity": 31.7,
+      "avg_inference_time": 41.7,
+      "total_inference_time": 751.3,
+      "load_time": 30.5,
+      "vram_model_mb": 489,
+      "pages_count": 18,
+      "similarity_by_type": {
+        "cover_scan": 45.1,
+        "diagram": 8.9,
+        "text": 47.9,
+        "mixed": 30.0
+      },
+      "page_details": [
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 1,
+          "page_type": "cover_scan",
+          "similarity": 64.9,
+          "chars": 3752,
+          "inference_time": 38.6
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 17,
+          "page_type": "diagram",
+          "similarity": 5.8,
+          "chars": 796,
+          "inference_time": 7.4
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 18,
+          "page_type": "diagram",
+          "similarity": 6.7,
+          "chars": 490,
+          "inference_time": 4.9
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 19,
+          "page_type": "diagram",
+          "similarity": 10.9,
+          "chars": 8184,
+          "inference_time": 81.2
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 20,
+          "page_type": "diagram",
+          "similarity": 3.0,
+          "chars": 2003,
+          "inference_time": 16.2
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 2,
+          "page_type": "text",
+          "similarity": 10.7,
+          "chars": 2874,
+          "inference_time": 81.8
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 5,
+          "page_type": "text",
+          "similarity": 56.0,
+          "chars": 15833,
+          "inference_time": 79.8
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 27,
+          "page_type": "text",
+          "similarity": 62.8,
+          "chars": 3556,
+          "inference_time": 46.7
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 72,
+          "page_type": "mixed",
+          "similarity": 41.5,
+          "chars": 4512,
+          "inference_time": 40.6
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 120,
+          "page_type": "mixed",
+          "similarity": 5.3,
+          "chars": 5290,
+          "inference_time": 80.9
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 148,
+          "page_type": "mixed",
+          "similarity": 58.4,
+          "chars": 3031,
+          "inference_time": 30.7
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 180,
+          "page_type": "text",
+          "similarity": 43.4,
+          "chars": 1215,
+          "inference_time": 10.4
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 189,
+          "page_type": "mixed",
+          "similarity": 28.5,
+          "chars": 2460,
+          "inference_time": 29.5
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 230,
+          "page_type": "mixed",
+          "similarity": 16.5,
+          "chars": 6044,
+          "inference_time": 81.0
+        },
+        {
+          "doc_code": "КД-РГ-110-05",
+          "page_num": 0,
+          "page_type": "cover_scan",
+          "similarity": 16.8,
+          "chars": 1116,
+          "inference_time": 13.1
+        },
+        {
+          "doc_code": "КД-РГ-110-05",
+          "page_num": 1,
+          "page_type": "cover_scan",
+          "similarity": 53.7,
+          "chars": 3439,
+          "inference_time": 43.7
+        },
+        {
+          "doc_code": "РГ-179-02",
+          "page_num": 21,
+          "page_type": "text",
+          "similarity": 66.8,
+          "chars": 3583,
+          "inference_time": 50.1
+        },
+        {
+          "doc_code": "РГ-179-02",
+          "page_num": 48,
+          "page_type": "diagram",
+          "similarity": 18.2,
+          "chars": 1173,
+          "inference_time": 14.7
+        }
+      ]
+    },
+    {
+      "model": "easyocr-docling",
+      "model_id": "easyocr 1.7.2 + docling 2.80.0",
+      "avg_similarity": 0.0,
+      "avg_inference_time": 61.9,
+      "total_inference_time": 1113.7,
+      "load_time": 0.0,
+      "vram_model_mb": 0,
+      "pages_count": 18,
+      "similarity_by_type": {
+        "cover_scan": 0.0,
+        "diagram": 0.0,
+        "text": 0.0,
+        "mixed": 0.0
+      },
+      "page_details": [
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 1,
+          "page_type": "cover_scan",
+          "similarity": 0.0,
+          "chars": 65176,
+          "inference_time": 14.3
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 17,
+          "page_type": "diagram",
+          "similarity": 0.0,
+          "chars": 65176,
+          "inference_time": 14.3
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 18,
+          "page_type": "diagram",
+          "similarity": 0.0,
+          "chars": 65176,
+          "inference_time": 14.3
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 19,
+          "page_type": "diagram",
+          "similarity": 0.0,
+          "chars": 65176,
+          "inference_time": 14.3
+        },
+        {
+          "doc_code": "ДП-Б1.004-06",
+          "page_num": 20,
+          "page_type": "diagram",
+          "similarity": 0.0,
+          "chars": 65176,
+          "inference_time": 14.3
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 2,
+          "page_type": "text",
+          "similarity": 0.0,
+          "chars": 1137507,
+          "inference_time": 93.2
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 5,
+          "page_type": "text",
+          "similarity": 0.0,
+          "chars": 1137507,
+          "inference_time": 93.2
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 27,
+          "page_type": "text",
+          "similarity": 0.0,
+          "chars": 1137507,
+          "inference_time": 93.2
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 72,
+          "page_type": "mixed",
+          "similarity": 0.0,
+          "chars": 1137507,
+          "inference_time": 93.2
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 120,
+          "page_type": "mixed",
+          "similarity": 0.0,
+          "chars": 1137507,
+          "inference_time": 93.2
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 148,
+          "page_type": "mixed",
+          "similarity": 0.0,
+          "chars": 1137507,
+          "inference_time": 93.2
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 180,
+          "page_type": "text",
+          "similarity": 0.0,
+          "chars": 1137507,
+          "inference_time": 93.2
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 189,
+          "page_type": "mixed",
+          "similarity": 0.0,
+          "chars": 1137507,
+          "inference_time": 93.2
+        },
+        {
+          "doc_code": "ДП-М1.020-06",
+          "page_num": 230,
+          "page_type": "mixed",
+          "similarity": 0.0,
+          "chars": 1137507,
+          "inference_time": 93.2
+        },
+        {
+          "doc_code": "КД-РГ-110-05",
+          "page_num": 0,
+          "page_type": "cover_scan",
+          "similarity": 0.0,
+          "chars": 41181,
+          "inference_time": 16.6
+        },
+        {
+          "doc_code": "КД-РГ-110-05",
+          "page_num": 1,
+          "page_type": "cover_scan",
+          "similarity": 0.0,
+          "chars": 41181,
+          "inference_time": 16.6
+        },
+        {
+          "doc_code": "РГ-179-02",
+          "page_num": 21,
+          "page_type": "text",
+          "similarity": 0.0,
+          "chars": 234430,
+          "inference_time": 85.1
+        },
+        {
+          "doc_code": "РГ-179-02",
+          "page_num": 48,
+          "page_type": "diagram",
+          "similarity": 0.0,
+          "chars": 234430,
+          "inference_time": 85.1
+        }
+      ]
+    }
+  ]
+}

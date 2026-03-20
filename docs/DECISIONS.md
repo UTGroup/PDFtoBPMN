@@ -121,3 +121,34 @@
 - BPMN-промпт: более структурированный, но менее точный ответ.
 **Решение:** Qwen2-VL-2B — для dev/быстрых проверок. Qwen2-VL-7B или Qwen2.5-VL-7B — для production (требует 16GB VRAM, тестировать при Фазе 2).
 **Артефакт:** `poc/poc_qwen_graphics.py`.
+
+## D-018: OCR/VLM Benchmark — 7 моделей, DeepSeek-OCR v1 остаётся лидером (20.03.2026)
+**Контекст:** Исследование лучших практик OCR/VLM выявило 6 альтернативных моделей. Проведён полный бенчмарк на 18 страницах из 4 реальных PDF (text, table, diagram, mixed, cover). DeepSeek-OCR v1 — baseline.
+**Результаты бенчмарка (Levenshtein similarity к baseline):**
+
+| # | Модель | Similarity | с/стр | VRAM MB | Параметры | venv |
+|---|--------|-----------|-------|---------|-----------|------|
+| 1 | DeepSeek-OCR v1 (baseline) | 100.0% | 40.1 | 6456 | ~3B | DeepSeek-OCR/venv |
+| 2 | GLM-OCR | 63.2% | 10.6 | 2112 | 0.9B | ocr_bench_venv |
+| 3 | DeepSeek-OCR v2 | 51.3% | 20.6 | 6562 | ~3B | DeepSeek-OCR/venv |
+| 4 | GOT-OCR2 | 51.1% | 21.5 | 1069 | 580M | ocr_bench_venv |
+| 5 | PaddleOCR-VL-1.5 | 48.7% | 189.7 | 1738 | 0.9B | ocr_bench_venv |
+| 6 | SmolDocling-256M | 31.7% | 41.7 | 489 | 256M | venv |
+| 7 | EasyOCR (Docling) | n/a | 61.9 | ~0 | — | venv |
+
+**Известные проблемы:**
+- DeepSeek-OCR v1/v2: зацикливание генерации на ~9% страниц (known issue #151 v1, #42 v2). Guardrails не помогают.
+- DeepSeek-OCR v2: поддерживает только image_size=768/1024 (не 640). crop_mode=True — официальная рекомендация.
+- PaddleOCR-VL-1.5: аномально медленный на SDPA (189.7с/стр).
+- EasyOCR через Docling: обрабатывает целый PDF, прямое сравнение по страницам невозможно.
+- GOT-OCR2: плохо работает с кириллицей (артефакты транслитерации).
+- Levenshtein similarity — грубая метрика, не учитывает семантику.
+
+**Инфраструктура (3 venv):**
+- `DeepSeek-OCR/venv/`: transformers 4.46.3 + flash-attn 2.7.3 → DeepSeek-OCR v1, v2
+- `venv/`: transformers 4.57.6 → EasyOCR (Docling), SmolDocling-256M
+- `ocr_bench_venv/`: transformers 5.3.0 + torch 2.10+cu129 → GLM-OCR, PaddleOCR-VL, GOT-OCR2
+
+**Решение:** DeepSeek-OCR v1 — primary OCR для production. GLM-OCR — fast fallback (4x быстрее, 3x меньше VRAM, 63% quality). Ансамбль и дальнейшее тестирование — Фаза 2.
+**Отклонено:** DeepSeek-OCR v2 как замена v1 (хуже на наших документах). PaddleOCR-VL (слишком медленный). SmolDocling (слишком маленький для сложных документов).
+**Артефакты:** `poc/benchmark_results/` (7 JSON + summary.json), `poc/fixtures/benchmark_pages.json`, `poc/bench_*.py` (9 скриптов).

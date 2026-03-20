@@ -6,6 +6,24 @@
 
 ---
 
+## [20-03-2026] - OCR/VLM Benchmark: 7 моделей
+
+### Добавлено
+- Полный бенчмарк 7 OCR/VLM моделей на 18 страницах из 4 реальных PDF (D-018)
+- Тестовый набор: `poc/fixtures/benchmark_pages.json` (5 типов страниц: text, table, diagram, mixed, cover)
+- Скрипты бенчмарка: `poc/bench_deepseek_v1.py`, `bench_deepseek_v2.py`, `bench_easyocr.py`, `bench_smoldocling.py`, `bench_paddleocr_vl.py`, `bench_glm_ocr.py`, `bench_got_ocr2.py`, `bench_summary.py`, `prepare_benchmark_pages.py`
+- Результаты: `poc/benchmark_results/` (7 JSON файлов + summary.json)
+- Третий venv `ocr_bench_venv/` с transformers 5.3.0 + torch 2.10+cu129 для GLM-OCR, PaddleOCR-VL, GOT-OCR2
+- Решение D-018: DeepSeek-OCR v1 — primary, GLM-OCR — fast fallback
+
+### Исследовано
+- DeepSeek-OCR v1/v2: зацикливание генерации — known issue (#151 v1, #42 v2), guardrails не помогают
+- DeepSeek-OCR v2: поддерживает только image_size=768/1024, crop_mode=True — официальная рекомендация
+- PaddleOCR-VL-1.5: transformers 5.3.0 имеет баг с text_config, workaround через apply_chat_template
+- GOT-OCR2: артефакты транслитерации на кириллице
+
+---
+
 ## [06-02-2026] - DiagramElementDetector: YOLO12 для элементов схем
 
 ### Добавлено

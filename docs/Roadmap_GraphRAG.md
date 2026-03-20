@@ -151,15 +151,24 @@ DocumentToContextPipeline
 |-----------|------------|------------|
 | **Native text** | PyMuPDF | Извлечение текста из PDF |
 | **Tables** | pdfplumber | Извлечение таблиц |
-| **Graphics OCR** | DeepSeek-OCR | Распознавание диаграмм, схем |
-| **Layout** | Эвристики | Определение структуры |
+| **Graphics OCR** | DeepSeek-OCR v1 | Распознавание диаграмм, схем (primary, D-018) |
+| **Fast OCR fallback** | GLM-OCR | Быстрый fallback (63% quality, 4x faster, D-018) |
+| **Layout** | Эвристики + PageClassifier | Определение структуры (D-016) |
+
+### OCR/VLM Benchmark (D-018, 20.03.2026)
+
+7 моделей протестированы на 18 страницах. Результат:
+- **DeepSeek-OCR v1** — primary (100% baseline, 40с/стр, 6.5GB VRAM)
+- **GLM-OCR** — fast fallback (63%, 10.6с/стр, 2.1GB VRAM)
+- Подробности: `poc/BENCHMARK_HANDOFF.md`, `poc/benchmark_results/summary.json`
 
 ### Ограничения текущего решения
 
-1. **DeepSeek-OCR** — требует GPU, работает как отдельный сервис
-2. **Нет layout detection** — эвристики вместо ML-модели
+1. **DeepSeek-OCR v1** — требует GPU + flash-attn, зацикливание на ~9% страниц (known issue)
+2. **Нет layout detection** — эвристики вместо ML-модели (PageClassifier — rule-based, D-016)
 3. **Нет table detection** — только pdfplumber (rule-based)
 4. **Нет автоизвлечения сущностей** — роли/задачи извлекаются вручную
+5. **Метрика OCR** — Levenshtein (грубая), нужна семантическая
 
 ---
 
