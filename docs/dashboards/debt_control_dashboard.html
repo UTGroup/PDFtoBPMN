@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Анализ процесса контроля ДЗ/КЗ/ТМЦ — КД-РГ-110-05</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/bpmn-js@17.11.1/dist/assets/bpmn-js.css">
+<link rel="stylesheet" href="https://unpkg.com/bpmn-js@17.11.1/dist/assets/diagram-js.css">
+<link rel="stylesheet" href="https://unpkg.com/bpmn-js@17.11.1/dist/assets/bpmn-font/css/bpmn.css">
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#1c2333;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--blue:#58a6ff;--blue-bg:rgba(88,166,255,.08);--green:#3fb950;--green-bg:rgba(63,185,80,.08);--yellow:#d29922;--yellow-bg:rgba(210,153,34,.08);--red:#f85149;--red-bg:rgba(248,81,73,.08);--purple:#bc8cff;--purple-bg:rgba(188,140,255,.08);--orange:#f0883e;--orange-bg:rgba(240,136,62,.08);--cyan:#39d2c0;--cyan-bg:rgba(57,210,192,.08);--r:8px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px}
+.header{text-align:center;margin-bottom:24px}
+.header h1{font-size:22px;font-weight:700;margin-bottom:4px}
+.header .sub{font-size:13px;color:var(--text2);max-width:800px;margin:0 auto}
+.tabs{display:flex;gap:2px;justify-content:center;margin-bottom:24px;background:var(--surface);border-radius:var(--r);padding:3px;width:fit-content;margin-left:auto;margin-right:auto}
+.tab{padding:8px 18px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;border-radius:6px;transition:.2s;user-select:none}
+.tab:hover{color:var(--text)}.tab.on{background:var(--surface2);color:var(--blue)}
+.view{display:none}.view.on{display:block}
+.section{max-width:1200px;margin:0 auto 28px}
+.section h2{font-size:16px;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.section h2 .badge{font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 8px;border-radius:4px;background:var(--blue-bg);color:var(--blue)}
+.bpmn-wrapper{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:16px;transition:all .3s}
+.bpmn-wrapper.fullscreen{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;border-radius:0;border:none;margin:0}
+.bpmn-toolbar{display:flex;gap:6px;padding:8px 12px;background:var(--surface);border-bottom:1px solid var(--border);align-items:center}
+.bpmn-toolbar .label{font-size:11px;color:var(--text2);margin-right:auto}
+.zbtn{padding:5px 10px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);color:var(--text);cursor:pointer;font-size:12px;font-family:'JetBrains Mono',monospace}
+.zbtn:hover{border-color:var(--blue);color:var(--blue)}
+.bpmn-row{display:flex;height:560px}
+.bpmn-wrapper.fullscreen .bpmn-row{height:calc(100vh - 44px)}
+#bpmn-canvas{flex:1;background:#f7fafc}
+#info-panel{width:300px;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.ip-head{padding:12px 14px;background:var(--surface2);border-bottom:1px solid var(--border);font-size:12px;font-weight:600;color:var(--blue)}
+.ip-body{padding:14px;overflow-y:auto;flex:1;font-size:12px;line-height:1.7}
+.ip-body .ip-label{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--text2);margin-top:12px;margin-bottom:4px}
+.ip-body .ip-label:first-child{margin-top:0}
+.ip-body .ip-val{color:var(--text)}
+.ip-body .ip-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-family:'JetBrains Mono',monospace}
+.ip-body .ip-doc{background:var(--surface2);border-left:3px solid var(--blue);padding:10px 12px;border-radius:0 var(--r) var(--r) 0;margin-top:8px;color:var(--text2);font-size:11px;line-height:1.6;white-space:pre-line}
+.ip-placeholder{color:var(--text2);text-align:center;padding:40px 20px;font-size:12px}
+.cards{display:grid;gap:10px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.card-head{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;user-select:none;transition:.15s}
+.card-head:hover{background:var(--surface2)}
+.card-head .ic{font-size:16px}
+.card-head .tt{font-size:13px;font-weight:600;flex:1}
+.card-head .st{font-size:11px;color:var(--text2)}
+.card-head .chev{color:var(--text2);font-size:14px;transition:.2s}
+.card.open .chev{transform:rotate(90deg)}
+.card-body{display:none;padding:14px 16px;border-top:1px solid var(--border);font-size:12px;line-height:1.7;color:var(--text2)}
+.card.open .card-body{display:block}
+.card-body strong{color:var(--text)}
+.card-body ul{margin:6px 0 6px 18px}
+.card-body li{margin-bottom:3px}
+table.dt{width:100%;border-collapse:collapse;font-size:12px}
+table.dt th{background:var(--surface2);padding:8px 10px;text-align:left;font-weight:600;font-size:11px;color:var(--text2);border-bottom:1px solid var(--border);white-space:nowrap}
+table.dt td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+table.dt tr:hover{background:var(--surface)}
+.r-cell{text-align:center;font-weight:700;font-size:11px;font-family:'JetBrains Mono',monospace}
+.r-R{color:var(--blue);background:var(--blue-bg)}.r-A{color:var(--orange);background:var(--orange-bg)}.r-C{color:var(--cyan);background:var(--cyan-bg)}.r-I{color:var(--text2);background:rgba(139,148,158,.08)}
+.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:900px){.metric-grid{grid-template-columns:repeat(2,1fr)}}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px}
+.metric .mv{font-size:24px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.metric .ml{font-size:11px;color:var(--text2);margin-bottom:4px}
+.metric .md{font-size:11px;margin-top:6px}
+.md.up{color:var(--red)}.md.down{color:var(--green)}.md.neutral{color:var(--yellow)}
+.bar-group{margin-bottom:16px}
+.bar-label{font-size:12px;font-weight:600;margin-bottom:6px}
+.bar-track{display:flex;height:28px;border-radius:4px;overflow:hidden;background:var(--surface2)}
+.bar-seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden}
+.bar-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px;font-size:10px;color:var(--text2)}
+.bar-legend span::before{content:'';display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px;vertical-align:middle;background:var(--c)}
+.maturity td,.maturity th{text-align:center;padding:10px 8px;font-size:11px}
+.maturity .dim{text-align:left;font-weight:600;color:var(--text)}
+.maturity .asIs{font-weight:600}
+.maturity .bp{color:var(--text2);font-size:10px}
+.lvl-1{background:var(--red-bg);color:var(--red)}.lvl-2{background:var(--yellow-bg);color:var(--yellow)}.lvl-3{background:var(--blue-bg);color:var(--blue)}.lvl-4{background:var(--green-bg);color:var(--green)}
+.gap-cards{display:grid;gap:10px}
+.gap-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
+.gap-card .gn{font-size:13px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.gap-card .gn .gi{font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 6px;border-radius:3px;background:var(--red-bg);color:var(--red)}
+.gap-card .gd{font-size:12px;color:var(--text2);margin-bottom:6px;line-height:1.6}
+.gap-card .gr{font-size:11px;color:var(--green);line-height:1.5}
+.roadmap{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:900px){.roadmap{grid-template-columns:1fr}}
+.rm-col{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px}
+.rm-col h4{font-size:12px;font-weight:700;margin-bottom:4px}
+.rm-col .rm-period{font-size:10px;color:var(--text2);margin-bottom:10px}
+.rm-col ul{margin:0;padding:0 0 0 16px;font-size:12px;color:var(--text2);line-height:1.8}
+.rm-col ul li{margin-bottom:2px}
+.rm-col.qw{border-top:3px solid var(--green)}.rm-col.st{border-top:3px solid var(--blue)}.rm-col.mt{border-top:3px solid var(--purple)}
+.ev-decisions{font-size:11px;color:var(--text2);line-height:1.6;margin-top:4px}
+.ev-badge{display:inline-block;padding:2px 6px;border-radius:3px;font-size:10px;font-weight:600;font-family:'JetBrains Mono',monospace}
+.ev-keif{background:var(--blue-bg);color:var(--blue)}.ev-kbii{background:var(--purple-bg);color:var(--purple)}.ev-ekp{background:var(--orange-bg);color:var(--orange)}
+@media(max-width:900px){.bpmn-row{flex-direction:column;height:auto}#bpmn-canvas{height:400px}#info-panel{width:100%;height:250px;border-left:none;border-top:1px solid var(--border)}}
+abbr.tip{text-decoration:none;border-bottom:1px dotted var(--blue);cursor:help;color:var(--blue);font-weight:500}
+#gltip{position:fixed;z-index:99999;background:var(--surface2);border:1px solid var(--blue);color:var(--text);padding:10px 14px;border-radius:6px;font-size:11px;line-height:1.6;max-width:360px;pointer-events:none;box-shadow:0 6px 20px rgba(0,0,0,.6);font-family:'IBM Plex Sans',sans-serif;font-weight:400;display:none}
+#gltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--blue)}
+.wcm-cycle{display:flex;justify-content:center;margin:0 auto 32px;max-width:900px}
+.wcm-ring{position:relative;width:700px;height:700px}
+.wcm-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;width:220px}
+.wcm-center .ccc-val{font-size:42px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--orange)}
+.wcm-center .ccc-label{font-size:12px;color:var(--text2);margin-top:4px}
+.wcm-center .ccc-formula{font-size:10px;color:var(--text2);margin-top:8px;font-family:'JetBrains Mono',monospace;line-height:1.6}
+.wcm-node{position:absolute;width:200px;background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:14px;text-align:center;transition:.2s}
+.wcm-node:hover{border-color:var(--blue);transform:scale(1.03)}
+.wcm-node .wn-icon{font-size:28px;margin-bottom:6px}
+.wcm-node .wn-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.wcm-node .wn-val{font-size:20px;font-weight:700;font-family:'JetBrains Mono',monospace;margin-bottom:2px}
+.wcm-node .wn-unit{font-size:10px;color:var(--text2)}
+.wcm-node .wn-days{font-size:11px;margin-top:6px;padding-top:6px;border-top:1px solid var(--border);font-family:'JetBrains Mono',monospace}
+.wcm-arrow{position:absolute;color:var(--text2);font-size:24px}
+.wcm-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:1200px;margin:0 auto 28px}
+@media(max-width:900px){.wcm-cols{grid-template-columns:1fr}.wcm-ring{width:100%;height:auto;min-height:600px}.wcm-node{position:relative!important;width:100%!important;top:auto!important;left:auto!important;right:auto!important;bottom:auto!important;margin-bottom:10px}.wcm-cycle{flex-direction:column;align-items:center}.wcm-arrow{display:none}}
+.wcm-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px}
+.wcm-block h3{font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.wcm-block h3 .wb-badge{font-size:10px;padding:2px 6px;border-radius:3px;font-family:'JetBrains Mono',monospace}
+.wcm-flow{display:flex;align-items:center;gap:6px;margin-bottom:8px;font-size:12px;flex-wrap:wrap}
+.wcm-flow .wf-box{padding:6px 10px;border-radius:4px;font-weight:600;font-size:11px;white-space:nowrap}
+.wcm-flow .wf-arrow{color:var(--text2);font-size:14px}
+.wcm-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+@media(max-width:900px){.wcm-kpi-grid{grid-template-columns:repeat(2,1fr)}}
+.wcm-kpi{background:var(--surface2);border-radius:6px;padding:10px;text-align:center}
+.wcm-kpi .wk-val{font-size:18px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.wcm-kpi .wk-label{font-size:9px;color:var(--text2);margin-top:2px;text-transform:uppercase;letter-spacing:.4px}
+</style>
+</head>
+<body>
+
+<div class="header">
+<h1>Анализ процесса контроля ДЗ, КЗ и ТМЦ</h1>
+<div class="sub">ПАО «Авиакомпания «ЮТэйр» | КД-РГ-110-05 | Данные на 01.01.2026</div>
+</div>
+
+<div class="tabs">
+<div class="tab on" onclick="switchTab(0)">Процессная модель</div>
+<div class="tab" onclick="switchTab(1)">Структура материалов</div>
+<div class="tab" onclick="switchTab(2)">As-Is vs Best Practices</div>
+<div class="tab" onclick="switchTab(3)">Цикл оборотного капитала</div>
+</div>
+
+<!-- ═══════════════ TAB 0: PROCESS MODEL ═══════════════ -->
+<div class="view on" id="v0">
+
+<div class="section">
+<h2>Модель процесса BPMN 2.0 <span class="badge">bpmn-js</span></h2>
+<div class="bpmn-wrapper">
+<div class="bpmn-toolbar">
+<span class="label">КД-РГ-110-05 + Положения о КЭиФ/КБИИ | Ревизированная схема</span>
+<button class="zbtn" onclick="zoomOut()">−</button>
+<button class="zbtn" onclick="fitDiagram()">Fit</button>
+<button class="zbtn" onclick="zoomIn()">+</button>
+<button class="zbtn" id="fsBtn" onclick="toggleFullscreen()" style="margin-left:4px">Fullscreen</button>
+</div>
+<div class="bpmn-row">
+<div id="bpmn-canvas"></div>
+<div id="info-panel">
+<div class="ip-head">Информация об элементе</div>
+<div class="ip-body" id="ip-body">
+<div class="ip-placeholder">Кликните на элемент диаграммы для просмотра информации о задаче, ответственном и пункте регламента</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="section">
+<h2>Нормативные документы <span class="badge">3 документа</span></h2>
+<div class="cards">
+
+<div class="card">
+<div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+<span class="ic">📋</span>
+<span class="tt">КД-РГ-110-05</span>
+<span class="st">Регламент контроля ДЗ/КЗ/ТМЦ | v5, 2025</span>
+<span class="chev">›</span>
+</div>
+<div class="card-body">
+<strong>Цель:</strong> единые требования к порядку осуществления Контроля на уровне КЭиФ в отношении Компаний и ПФМ Авиакомпании.<br>
+<strong>Область:</strong> ЭУ, ОСКО, Компании Группы «ЮТэйр», ПФМ Авиакомпании.<br>
+<strong>Заменяет:</strong> КД-РГ-110-04 (приказ от 04.03.2024 № КП-51/24).<br>
+<strong>Разделы:</strong>
+<ul>
+<li>1. Цель и область применения</li>
+<li>2. Нормативные документы (ISO 9001:2015, ПБУ 4/99, КД-СТ-122, КД-РГ-039)</li>
+<li>3–4. Определения, обозначения, сокращения</li>
+<li>5. Общие положения</li>
+<li>6. Ответственность (КЭиФ, ОСКО, ЭУ, Компании, ПФМ)</li>
+<li>7. Осуществление корпоративного контроля (основной процесс)</li>
+<li>8. Записи (формы приложений 2–4)</li>
+<li>Приложения 1–4: виды/типы ДЗ/КЗ, шаблоны таблиц</li>
+</ul>
+<strong>Периодичность:</strong> ежеквартально (после закрытия БО) или ежемесячно при необходимости.
+</div>
+</div>
+
+<div class="card">
+<div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+<span class="ic">🏛️</span>
+<span class="tt">Положение о КЭиФ</span>
+<span class="st">Комитет по экономике и финансам | 31.01.2022 №1-22</span>
+<span class="chev">›</span>
+</div>
+<div class="card-body">
+<strong>Статус:</strong> постоянный рабочий орган Правления ПАО «ЮТэйр».<br>
+<strong>Состав:</strong> члены Правления + руководители подразделений (решением Правления).<br>
+<strong>Кворум:</strong> не менее 50% избранных членов.<br>
+<strong>Председатель:</strong> право вето и решающий голос при разделении мнений.<br>
+<strong>Заочно:</strong> e-mail голосование, окончательное решение — председатель.<br>
+<strong>Функции:</strong>
+<ul>
+<li>Бюджетный процесс Авиакомпании</li>
+<li>Контроль и методология хозяйственных операций</li>
+<li>Корпоративный контроль ДЗ/КЗ</li>
+<li>Рекомендации руководителям ПФМ и обществ</li>
+<li>Совершенствование учётных процессов</li>
+</ul>
+</div>
+</div>
+
+<div class="card">
+<div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+<span class="ic">🏛️</span>
+<span class="tt">Положение о КБИИ</span>
+<span class="st">Комитет по бюджету, инновациям и инвестициям | 31.01.2022 №1-22</span>
+<span class="chev">›</span>
+</div>
+<div class="card-body">
+<strong>Статус:</strong> постоянный рабочий орган Правления ПАО «ЮТэйр».<br>
+<strong>Фокус:</strong> стратегия развития, инвестиционная политика, долгосрочная эффективность.<br>
+<strong>Кворум:</strong> аналогично КЭиФ (>=50%, вето председателя).<br>
+<strong>Функции:</strong>
+<ul>
+<li>Целевые параметры деятельности ПФМ (обязательные к исполнению)</li>
+<li>Контроль исполнения бюджетов, анализ отклонений</li>
+<li>Рекомендации по утверждению бюджетов и инвестпроектов</li>
+<li>Координация с КЭиФ по вопросам оборотного капитала</li>
+</ul>
+<strong>Связь с ДЗ/КЗ:</strong> протокол 24.03.2026 — рекомендация переименовать материалы ДЗ/КЗ в «Управление оборотным капиталом», дополнить стоимостью складов.
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="section">
+<h2>Матрица RACI <span class="badge">13 задач × 5 ролей</span></h2>
+<div style="overflow-x:auto">
+<table class="dt">
+<thead><tr><th style="min-width:240px">Задача</th><th>КЭиФ</th><th>ОСКО</th><th>ЭУ</th><th>Компании</th><th>ПФМ</th></tr></thead>
+<tbody>
+<tr><td>Определение объектов Контроля</td><td class="r-cell r-R">R</td><td class="r-cell r-I">I</td><td class="r-cell"></td><td class="r-cell r-I">I</td><td class="r-cell r-I">I</td></tr>
+<tr><td>Планирование заседания КЭиФ</td><td class="r-cell r-A">A</td><td class="r-cell r-R">R</td><td class="r-cell"></td><td class="r-cell r-I">I</td><td class="r-cell r-I">I</td></tr>
+<tr><td>Выгрузка и проверка данных Компаний</td><td class="r-cell"></td><td class="r-cell"></td><td class="r-cell r-C">C</td><td class="r-cell r-R">R</td><td class="r-cell"></td></tr>
+<tr><td>Выгрузка и проверка данных ПФМ</td><td class="r-cell"></td><td class="r-cell"></td><td class="r-cell r-C">C</td><td class="r-cell"></td><td class="r-cell r-R">R</td></tr>
+<tr><td>Анализ и подготовка материалов Компаний</td><td class="r-cell"></td><td class="r-cell"></td><td class="r-cell r-C">C</td><td class="r-cell r-R">R</td><td class="r-cell"></td></tr>
+<tr><td>Анализ и подготовка материалов ПФМ</td><td class="r-cell"></td><td class="r-cell"></td><td class="r-cell r-C">C</td><td class="r-cell"></td><td class="r-cell r-R">R</td></tr>
+<tr><td>Проверка расчётов КП</td><td class="r-cell r-A">A</td><td class="r-cell"></td><td class="r-cell r-R">R</td><td class="r-cell r-I">I</td><td class="r-cell r-I">I</td></tr>
+<tr><td>Рассмотрение материалов на КЭиФ</td><td class="r-cell r-R">R</td><td class="r-cell r-C">C</td><td class="r-cell r-C">C</td><td class="r-cell r-I">I</td><td class="r-cell r-I">I</td></tr>
+<tr><td>Утверждение КП + выдача поручений</td><td class="r-cell r-R">R</td><td class="r-cell r-I">I</td><td class="r-cell r-I">I</td><td class="r-cell r-I">I</td><td class="r-cell r-I">I</td></tr>
+<tr><td>Протоколирование и рассылка</td><td class="r-cell r-A">A</td><td class="r-cell r-R">R</td><td class="r-cell"></td><td class="r-cell r-I">I</td><td class="r-cell r-I">I</td></tr>
+<tr><td>Исполнение решений Компаниями</td><td class="r-cell r-A">A</td><td class="r-cell r-I">I</td><td class="r-cell"></td><td class="r-cell r-R">R</td><td class="r-cell"></td></tr>
+<tr><td>Исполнение решений ПФМ</td><td class="r-cell r-A">A</td><td class="r-cell r-I">I</td><td class="r-cell"></td><td class="r-cell"></td><td class="r-cell r-R">R</td></tr>
+<tr><td>Контроль исполнения</td><td class="r-cell r-A">A</td><td class="r-cell r-R">R</td><td class="r-cell"></td><td class="r-cell r-I">I</td><td class="r-cell r-I">I</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+<!-- ═══════════════ TAB 1: MATERIALS ═══════════════ -->
+<div class="view" id="v1">
+
+<div class="section">
+<h2>Ключевые метрики <span class="badge">на 01.01.2026</span></h2>
+<div class="metric-grid">
+<div class="metric"><div class="ml">Дебиторская задолженность</div><div class="mv" style="color:var(--blue)">10 152</div><div class="ml">млн ₽</div><div class="md up">+2 268 млн г/г (+29%)</div></div>
+<div class="metric"><div class="ml">Кредиторская задолженность</div><div class="mv" style="color:var(--cyan)">6 670</div><div class="ml">млн ₽</div><div class="md down">−628 млн г/г (−9%)</div></div>
+<div class="metric"><div class="ml">Просроченная ДЗ</div><div class="mv" style="color:var(--red)">578</div><div class="ml">млн ₽ (5.7% от ДЗ)</div><div class="md neutral">Норматив: ≤1%</div></div>
+<div class="metric"><div class="ml">Просроченная КЗ</div><div class="mv" style="color:var(--orange)">2 005</div><div class="ml">млн ₽ (32.6% от КЗ)</div><div class="md neutral">Нет норматива</div></div>
+<div class="metric"><div class="ml">ДЗ с ВЭД-ограничениями (ПЛГ)</div><div class="mv" style="color:var(--yellow)">1 762</div><div class="ml">млн ₽</div><div class="md neutral">Исключена из нормы %</div></div>
+<div class="metric"><div class="ml">Резервы начисленные</div><div class="mv" style="color:var(--purple)">1 491</div><div class="ml">млн ₽ (99.6% санкц.)</div><div class="md neutral">Восстановление: 0 ₽</div></div>
+</div>
+</div>
+
+<div class="section">
+<h2>Нормативы оборачиваемости ДЗ <span class="badge">дни</span></h2>
+<div style="overflow-x:auto">
+<table class="dt">
+<thead><tr><th>Группа</th><th>Q1'25 план</th><th>Q1'25 факт</th><th>Q4'25 план</th><th>Q4'25 факт</th><th>Q1'26</th><th>Q2'26</th><th>Q3'26</th><th>Q4'26</th></tr></thead>
+<tbody>
+<tr><td><strong>ПЛГ общий</strong></td><td>94</td><td>106</td><td>77</td><td>77</td><td>86</td><td>84</td><td>76</td><td>75</td></tr>
+<tr><td><strong>ПЛГ (кроме АД)</strong></td><td>66</td><td>59</td><td>58</td><td>61</td><td>60</td><td>63</td><td>60</td><td>61</td></tr>
+<tr><td><strong>Покупатели</strong></td><td>48</td><td>53</td><td>45</td><td>52</td><td>43</td><td>45</td><td>44</td><td>45</td></tr>
+<tr><td><strong>Агенты</strong></td><td>4</td><td>3</td><td>3</td><td>3</td><td>3</td><td>3</td><td>3</td><td>3</td></tr>
+<tr><td><strong>Без ПЛГ</strong></td><td>5</td><td>4</td><td>3</td><td>3</td><td>4</td><td>2</td><td>2</td><td>3</td></tr>
+</tbody>
+</table>
+</div>
+<div style="margin-top:10px;font-size:11px;color:var(--text2)">Пороговый показатель: доля просроченной ДЗ ≤ 1% (с исключением ДЗ с ВЭД-ограничениями 568 млн ₽)</div>
+</div>
+
+<div class="section">
+<h2>Нормативы оборачиваемости АТИ <span class="badge">IATA Inventory Turns</span></h2>
+<div style="overflow-x:auto">
+<table class="dt">
+<thead><tr><th>Группа</th><th>Оценка</th><th>Цель 2025</th><th>Факт 2025</th><th style="color:var(--blue)">Цель 2026</th><th>Статус</th></tr></thead>
+<tbody>
+<tr><td><strong>1.1 Rotable Inventory</strong><br><span style="font-size:10px;color:var(--text2)">Ротируемые: колёса, тормоза, гидронасосы, LRU</span></td><td>Стоимость</td><td>130</td><td style="color:var(--yellow)">135</td><td>130</td><td style="color:var(--yellow)">+5 дн.</td></tr>
+<tr><td><strong>1.2 Expendable / Consumable</strong><br><span style="font-size:10px;color:var(--text2)">Расходные: фильтры, крепёж, уплотнения, прокладки</span></td><td>Стоимость</td><td>300</td><td style="color:var(--red)">357</td><td>300</td><td style="color:var(--red)">+57 дн.</td></tr>
+<tr><td><strong>1.1 Rotable Inventory</strong></td><td>Количество</td><td>100</td><td style="color:var(--red)">186</td><td>110</td><td style="color:var(--red)">+86 дн.</td></tr>
+<tr><td><strong>1.2 Expendable / Consumable</strong></td><td>Количество</td><td>160</td><td style="color:var(--green)">109</td><td>160</td><td style="color:var(--green)">−51 дн.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="section">
+<h2>Структура задолженности</h2>
+<div class="bar-group">
+<div class="bar-label">Дебиторская задолженность — 10 152 млн ₽</div>
+<div class="bar-track">
+<div class="bar-seg" style="width:55%;background:#3a7bd5">ПЛГ</div>
+<div class="bar-seg" style="width:21%;background:#00d2ff">Покуп.</div>
+<div class="bar-seg" style="width:10%;background:#6c5ce7">Прочие</div>
+<div class="bar-seg" style="width:8%;background:#a29bfe">б/ПЛГ</div>
+<div class="bar-seg" style="width:4%;background:#fd79a8">Аг.</div>
+<div class="bar-seg" style="width:2%;background:#636e72">ДЗО</div>
+</div>
+<div class="bar-legend">
+<span style="--c:#3a7bd5">Авансы ПЛГ ~5 580</span>
+<span style="--c:#00d2ff">Покупатели ~2 130</span>
+<span style="--c:#6c5ce7">Прочие ~1 015</span>
+<span style="--c:#a29bfe">Авансы б/ПЛГ ~810</span>
+<span style="--c:#fd79a8">Агенты ~410</span>
+<span style="--c:#636e72">ДЗО ~207</span>
+</div>
+</div>
+<div class="bar-group">
+<div class="bar-label">Кредиторская задолженность — 6 670 млн ₽</div>
+<div class="bar-track">
+<div class="bar-seg" style="width:62%;background:#e17055">Поставщ.</div>
+<div class="bar-seg" style="width:22%;background:#fab1a0">Авансы получ.</div>
+<div class="bar-seg" style="width:16%;background:#b2bec3">Прочие</div>
+</div>
+<div class="bar-legend">
+<span style="--c:#e17055">Поставщики и подрядчики ~4 130</span>
+<span style="--c:#fab1a0">Авансы от покупателей ~1 470</span>
+<span style="--c:#b2bec3">Прочие кредиторы ~1 070</span>
+</div>
+</div>
+<div class="bar-group">
+<div class="bar-label">ТМЦ (АТИ, группа 1) — склад ~12 434 млн ₽ на 31.12.2025</div>
+<div class="bar-track">
+<div class="bar-seg" style="width:40%;background:#0984e3">Rotable</div>
+<div class="bar-seg" style="width:28%;background:#00cec9">Expend.</div>
+<div class="bar-seg" style="width:20%;background:#fdcb6e">Slow-mov.</div>
+<div class="bar-seg" style="width:12%;background:#d63031">Obsolete</div>
+</div>
+<div class="bar-legend">
+<span style="--c:#0984e3">1.1 Rotable (ротируемые агрегаты) 3 305</span>
+<span style="--c:#00cec9">1.2 Expendable (расходные) 2 132</span>
+<span style="--c:#fdcb6e">Slow-moving (слабооборачиваемое) 6 178</span>
+<span style="--c:#d63031">Obsolete / Surplus (неликвид) 490</span>
+</div>
+</div>
+</div>
+
+<div class="section">
+<h2>Карта материалов <span class="badge">14 документов</span></h2>
+<div class="cards">
+<div class="card">
+<div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+<span class="ic">📑</span><span class="tt">Регламенты и положения (3)</span><span class="chev">›</span>
+</div>
+<div class="card-body">
+<ul>
+<li><strong>КД-РГ-110-05</strong> — Контроль ДЗ/КЗ/ТМЦ, 20 стр., v5 2025</li>
+<li><strong>Положение о КЭиФ</strong> — протокол Правления 31.01.2022 №1-22</li>
+<li><strong>Положение о КБИИ</strong> — протокол Правления 31.01.2022 №1-22</li>
+</ul>
+</div>
+</div>
+<div class="card">
+<div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+<span class="ic">📝</span><span class="tt">Протоколы и письма (3)</span><span class="chev">›</span>
+</div>
+<div class="card-body">
+<ul>
+<li><strong>Протокол КЭиФ К04-11/26</strong> от 12.03.2026 — ДЗ/КЗ/запасы ЮТПА, ТД, ДЗПИ</li>
+<li><strong>Протокол КБИИ К01-4/26</strong> от 24.03.2026 — самолётный сегмент янв–февр 2026</li>
+<li><strong>ЭКП К1-1671/26</strong> от 25.03.2026 — доведение решения КБИИ</li>
+</ul>
+</div>
+</div>
+<div class="card">
+<div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+<span class="ic">📊</span><span class="tt">Доклады и отчёты (4)</span><span class="chev">›</span>
+</div>
+<div class="card-body">
+<ul>
+<li><strong>Доклад ДЗ/КЗ нормативы</strong> — полный доклад КЭиФ на 01.01.2026, ДЗ/КЗ, нормативы 2025–2026</li>
+<li><strong>Доклад сверка ВБК</strong> — проверка ведомостей банковского контроля, 129 контрактов</li>
+<li><strong>Отчёт по запасам</strong> — мониторинг склада группы 1 на 31.12.2025</li>
+<li><strong>Нормативы 2026 (запасы)</strong> — целевые показатели оборачиваемости АТИ</li>
+</ul>
+</div>
+</div>
+<div class="card">
+<div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+<span class="ic">📈</span><span class="tt">Excel-данные (4)</span><span class="chev">›</span>
+</div>
+<div class="card-body">
+<ul>
+<li><strong>Материалы по ДЗ/КЗ</strong> — 24 листа, помесячная динамика 31.12.2024–31.12.2025, расшифровки по контрагентам</li>
+<li><strong>Расшифровка резервов</strong> — начисленные резервы по контрагентам, движение 2024–2025</li>
+<li><strong>Просроченная ДЗ</strong> — реестр просрочки: Поставщики 558 млн, Покупатели 20 млн, Агенты 3 тыс.</li>
+<li><strong>Задолженность с ВЭД-ограничениями</strong> — матрица контрагентов x дат, ДЗ/КЗ в валюте и руб.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<!-- ═══════════════ TAB 2: BEST PRACTICES ═══════════════ -->
+<div class="view" id="v2">
+
+<div class="section">
+<h2>Матрица зрелости процесса</h2>
+<div style="overflow-x:auto">
+<table class="dt maturity">
+<thead><tr><th class="dim" style="min-width:160px">Измерение</th><th>Текущее состояние (As-Is)</th><th>Уровень</th><th>Лучшая практика (To-Be)</th><th style="white-space:nowrap">Gaps</th></tr></thead>
+<tbody>
+<tr><td class="dim">Управление (Governance)</td><td class="asIs">Формальные комитеты (КЭиФ + КБИИ), регламент КД-РГ-110-05</td><td class="lvl-3">Defined</td><td class="bp">Управление на основе рисков с автоматической эскалацией при достижении пороговых значений</td><td class="bp">—</td></tr>
+<tr><td class="dim">Периодичность контроля</td><td class="asIs">Ежеквартально (после закрытия отчётности), ежемесячно при необходимости</td><td class="lvl-2">Developing</td><td class="bp">Непрерывный мониторинг с автоматическими оповещениями при критических отклонениях</td><td class="bp" style="color:var(--red)">GAP-5</td></tr>
+<tr><td class="dim">Данные и автоматизация</td><td class="asIs">Ручные выгрузки из 1С/SAP, обработка в Excel, визуализация в Power BI</td><td class="lvl-2">Developing</td><td class="bp">Автоматический конвейер: выгрузка → валидация → BI-дашборд с обновлением в реальном времени</td><td class="bp" style="color:var(--red)">GAP-4</td></tr>
+<tr><td class="dim">Показатели и нормативы</td><td class="asIs">Оборачиваемость в днях по группам, доля просроченной ДЗ ≤ 1%</td><td class="lvl-3">Defined</td><td class="bp">Единый цикл конвертации денег (CCC), анализ старения задолженности, стоимость замороженного капитала</td><td class="bp" style="color:var(--red)">GAP-1, 3</td></tr>
+<tr><td class="dim">Сегментация контрагентов</td><td class="asIs">По виду задолженности (ДЗ/КЗ/ТМЦ) и типу (текущая / просроченная / претензионная)</td><td class="lvl-2">Developing</td><td class="bp">ABC-анализ по сумме и риску, балльный рейтинг контрагентов на основе истории платежей</td><td class="bp" style="color:var(--red)">GAP-2</td></tr>
+<tr><td class="dim">Исполнение решений</td><td class="asIs">Поручения фиксируются в протоколах, контроль — вручную начальником ОСКО</td><td class="lvl-2">Developing</td><td class="bp">Система управления задачами с нормативными сроками, автоматическими напоминаниями и эскалацией</td><td class="bp" style="color:var(--red)">GAP-6</td></tr>
+<tr><td class="dim">Отчётность и аналитика</td><td class="asIs">Статичные презентации PowerPoint, таблицы Excel, отдельные дашборды Power BI</td><td class="lvl-2">Developing</td><td class="bp">Интерактивный дашборд с возможностью «проваливания» в детали до уровня контрагента</td><td class="bp" style="color:var(--red)">GAP-7</td></tr>
+<tr><td class="dim">Претензионная работа</td><td class="asIs">Отдельный регламент КД-РГ-039, данные не интегрированы в контроль ДЗ</td><td class="lvl-3">Defined</td><td class="bp">Единый контур от возникновения долга до взыскания, воронка претензионной работы в дашборде</td><td class="bp" style="color:var(--red)">GAP-8</td></tr>
+</tbody>
+</table>
+</div>
+<div style="margin-top:10px;display:flex;gap:14px;font-size:10px;flex-wrap:wrap">
+<span class="lvl-1" style="padding:3px 8px;border-radius:4px">Level 1: Initial</span>
+<span class="lvl-2" style="padding:3px 8px;border-radius:4px">Level 2: Developing</span>
+<span class="lvl-3" style="padding:3px 8px;border-radius:4px">Level 3: Defined</span>
+<span class="lvl-4" style="padding:3px 8px;border-radius:4px">Level 4: Optimized</span>
+</div>
+</div>
+
+<div class="section">
+<h2>Gap-анализ <span class="badge">8 разрывов по измерениям</span></h2>
+<div class="gap-cards">
+
+<div class="gap-card" style="border-left:3px solid var(--blue)">
+<div class="gn"><span class="gi">GAP-1</span> Нет единой интегральной метрики оборотного капитала</div>
+<div class="ip-badge" style="background:var(--blue-bg);color:var(--blue);margin-bottom:8px;font-size:10px">Измерение: KPI и нормативы</div>
+<div class="gd"><strong>Что сейчас.</strong> Дебиторская задолженность, кредиторская задолженность и товарно-материальные ценности рассматриваются изолированно друг от друга. КЭиФ утверждает нормативы оборачиваемости по каждой категории отдельно — дни оборачиваемости ДЗ по группам (ПЛГ, покупатели, агенты) и дни оборачиваемости запасов (группы 1.1, 1.2). Однако нет ни одного показателя, который бы объединял все три компонента и показывал общую картину: насколько эффективно компания управляет оборотным капиталом в целом.<br><br>
+<strong>В чём проблема.</strong> Без интегральной метрики невозможно оценить, как снижение дебиторки компенсируется ростом запасов, или как рост кредиторки улучшает общую позицию по оборотному капиталу. Каждое улучшение в одном компоненте может маскировать ухудшение в другом.<br><br>
+<strong>Конкретный пример из материалов.</strong> В 4 кв. 2025 оборачиваемость авансов ПЛГ улучшилась до 87 дней (с 99 в 3 кв.). Но в этот же период стоимость склада АТИ выросла с 11 770 до 12 434 млн руб. (+664 млн), а оборачиваемость запасов группы 1.1 составила 365 дней при цели 300. То есть выигрыш по дебиторке «съеден» заморозкой капитала в запасах. Без единой метрики это остаётся незамеченным.<br><br>
+<strong>Предложение.</strong> Рассчитать Цикл конвертации денежных средств (CCC = DSO + DIO − DPO) по данным за 2025 год. Ориентировочная оценка по 4 кв. 2025: DSO по ПЛГ ~87 дней + DIO по складу ~365 дней − DPO (оборачиваемость КЗ, оценка) ~60 дней = CCC ~392 дня. Это означает, что капитал «замораживается» на 392 дня в цикле оборотного капитала. Для авиаиндустрии нормой считается CCC 30–90 дней, что указывает на масштабную проблему.</div>
+<div class="gr">Рекомендация: рассчитать CCC поквартально за 2024–2025, включить в доклад КЭиФ как headline-метрику; установить целевой CCC на 2026 год</div>
+</div>
+
+<div class="gap-card" style="border-left:3px solid var(--yellow)">
+<div class="gn"><span class="gi">GAP-2</span> Контрагенты не классифицированы по уровню риска</div>
+<div class="ip-badge" style="background:var(--yellow-bg);color:var(--yellow);margin-bottom:8px;font-size:10px">Измерение: Сегментация</div>
+<div class="gd"><strong>Что сейчас.</strong> Контрагенты с задолженностью перечисляются общим списком в расшифровках к докладу. Нет системы приоритизации по сумме, сроку, истории платежей или внешним рискам.<br><br>
+<strong>Конкретный пример из материалов.</strong> Топ-5 просроченных дебиторов на 01.01.2026 концентрируют 95% всей просрочки (548 из 578 млн руб.):
+<ul style="margin:6px 0 6px 18px">
+<li><strong>Контрагент А</strong> — 358 млн руб. (аванс за АД + штраф по решению суда, есть исполнительный лист)</li>
+<li><strong>Контрагент Б</strong> — 87 млн руб. (ВЭД-ограничения, поставки прекращены)</li>
+<li><strong>Контрагент В</strong> — 39 млн руб. (ВЭД-ограничения, депозит по пулу компонентов, срок возврата истёк)</li>
+<li><strong>Контрагент Г</strong> — 38 млн руб. (ВЭД-ограничения, планировался зачёт встречных обязательств)</li>
+<li><strong>Контрагент Д</strong> — 26 млн руб. (невозврат депозита по аренде АД, с 2022 года)</li>
+</ul>
+Все пять — иностранные MRO-контрагенты и поставщики, все — с ВЭД-ограничениями или судебными спорами. При этом в Excel-расшифровке они находятся в одном списке с мелкими контрагентами (задолженность менее 3 тыс. руб.). Нет механизма, который бы автоматически выделил эту пятёрку как категорию повышенного риска.<br><br>
+<strong>Предложение.</strong> Разделить контрагентов на категории:
+<ul style="margin:6px 0 6px 18px">
+<li><strong>Категория A</strong> (>25 млн руб., 5 контрагентов = 95% просрочки) — еженедельный мониторинг статуса взыскания, персональный контроль ТД</li>
+<li><strong>Категория B</strong> (1–25 млн руб., ~5 контрагентов) — ежемесячный контроль</li>
+<li><strong>Категория C</strong> (<1 млн руб.) — квартальный контроль, массовые процедуры</li>
+</ul>
+Дополнительно: маркировать контрагентов с ВЭД-ограничениями отдельным флагом (сейчас минимум 6 из 10 крупнейших просроченных дебиторов — с ограничениями).</div>
+<div class="gr">Рекомендация: внедрить ABC-сегментацию с автоматической маркировкой; для категории A — еженедельный отчёт статуса взыскания в ТД</div>
+</div>
+
+<div class="gap-card" style="border-left:3px solid var(--blue)">
+<div class="gn"><span class="gi">GAP-3</span> Нет анализа «старения» просроченной задолженности</div>
+<div class="ip-badge" style="background:var(--blue-bg);color:var(--blue);margin-bottom:8px;font-size:10px">Измерение: KPI и нормативы</div>
+<div class="gd"><strong>Что сейчас.</strong> Просроченная дебиторская задолженность показана одной суммой — 578 млн руб. В Excel-расшифровке указан год возникновения, но нет стандартной разбивки по «возрастным корзинам».<br><br>
+<strong>Конкретный пример из материалов.</strong> Из расшифровки просроченной ДЗ видно, что задолженность имеет принципиально разный «возраст»:
+<ul style="margin:6px 0 6px 18px">
+<li><strong>Контрагент Д — 26 млн руб., с 2022 года</strong> (более 3 лет, невозврат депозита) — фактически безнадёжная</li>
+<li><strong>Контрагент А — 358 млн руб., с 2024 года</strong> (~1 год, есть исполнительный лист) — взыскиваемая</li>
+<li><strong>Контрагент В — 39 млн руб., с 2025 года</strong> (менее 1 года, срок возврата депозита истёк) — свежая просрочка</li>
+<li><strong>Контрагент И — 4 млн руб., с 2025 года</strong> (направлены письма о возврате) — ранняя стадия</li>
+</ul>
+Эти четыре долга находятся на совершенно разных стадиях — от раннего предупреждения до безнадёжного. Но в докладе КЭиФ все они попадают в одну строку «просроченная ДЗ».<br><br>
+<strong>Предложение.</strong> Добавить в доклад таблицу aging analysis:
+<ul style="margin:6px 0 6px 18px">
+<li><strong>0–90 дней:</strong> 2 контрагента (~6 млн) — раннее реагирование, претензии</li>
+<li><strong>91–365 дней:</strong> 3 контрагента (~164 млн) — активное взыскание, суды</li>
+<li><strong>Более 1 года:</strong> 3 контрагента (~365 млн) — исполнительное производство, резервирование</li>
+<li><strong>Более 3 лет:</strong> 1 контрагент (~26 млн) — оценка безнадёжности, списание</li>
+</ul>
+Такая разбивка сразу показывает, что основной объём (358 млн) уже на стадии исполнительного производства, а «свежая» просрочка — лишь ~43 млн.</div>
+<div class="gr">Рекомендация: добавить aging analysis в формат доклада с автоматической разбивкой по корзинам из даты возникновения просрочки; привязать % резервирования к возрастной корзине</div>
+</div>
+
+<div class="gap-card" style="border-left:3px solid var(--yellow)">
+<div class="gn"><span class="gi">GAP-4</span> Подготовка материалов к заседанию КЭиФ полностью ручная</div>
+<div class="ip-badge" style="background:var(--yellow-bg);color:var(--yellow);margin-bottom:8px;font-size:10px">Измерение: Данные и автоматизация</div>
+<div class="gd"><strong>Что сейчас.</strong> Подготовка материалов к заседанию КЭиФ начинается с ручной выгрузки данных из бухгалтерских систем (1С, SAP). Далее данные проверяются на ошибки, переносятся в Excel-таблицы, формируются графики и презентации.<br><br>
+<strong>Конкретный пример из материалов.</strong> Файл «Материалы по ДЗ КЗ на 01.01.2026» содержит <strong>24 листа Excel</strong> — сводные таблицы ДЗ и КЗ помесячно (31.12.2024 – 31.12.2025) и 22 листа расшифровок по контрагентам. Каждый лист заполняется вручную. Параллельно формируются:
+<ul style="margin:6px 0 6px 18px">
+<li>Расшифровка просроченной ДЗ — отдельный Excel с историей по кварталам и комментариями по каждому контрагенту</li>
+<li>Расшифровка резервов — отдельный Excel с движением резервов по кварталам</li>
+<li>Задолженность с ВЭД-ограничениями — матрица 41 колонка (срезы по датам × валюты × Дт/Кт)</li>
+<li>Отчёт по запасам — Power BI-выгрузка по 4 категориям ТМЦ и 11 станциям</li>
+<li>Доклад-презентация — PDF с графиками и таблицами</li>
+</ul>
+Итого: минимум 6 файлов разного формата, подготовленных разными людьми, которые нужно свести воедино и проверить на согласованность.<br><br>
+<strong>Предложение.</strong> Этапы автоматизации:
+<ul style="margin:6px 0 6px 18px">
+<li><strong>Этап 1 (быстро):</strong> шаблонизировать Excel — фиксированная структура с формулами, куда вставляются только сырые выгрузки</li>
+<li><strong>Этап 2:</strong> автовыгрузка из 1С/SAP по расписанию, валидация контрольных сумм</li>
+<li><strong>Этап 3:</strong> единый BI-дашборд, заменяющий все 6 файлов, с автоматическим обновлением</li>
+</ul></div>
+<div class="gr">Рекомендация: начать с шаблонизации Excel-файлов и автовыгрузки; целевое состояние — единый BI-дашборд с автообновлением, сокращение цикла подготовки с 10–15 до 1–2 рабочих дней</div>
+</div>
+
+<div class="gap-card" style="border-left:3px solid var(--yellow)">
+<div class="gn"><span class="gi">GAP-5</span> Контроль реактивный — только постфактум, нет механизма раннего предупреждения</div>
+<div class="ip-badge" style="background:var(--yellow-bg);color:var(--yellow);margin-bottom:8px;font-size:10px">Измерение: Периодичность</div>
+<div class="gd"><strong>Что сейчас.</strong> Контроль привязан к отчётным периодам — данные рассматриваются ежеквартально, после закрытия бухгалтерской отчётности. Между заседаниями проходит 3 месяца.<br><br>
+<strong>Конкретный пример из материалов.</strong> Стоимость склада АТИ в 2025 году росла каждый месяц: с 8 907 млн руб. (январь) до 12 434 млн руб. (декабрь) — рост на 40% за год. Но на КЭиФ эта динамика рассматривается постфактум: данные за 3 квартал (оборачиваемость группы 1.1 — <strong>472 дня при цели 300</strong>) обсуждаются лишь на заседании в марте 2026. Критическое превышение произошло в сентябре, а решение принято через 5 месяцев.<br>
+Аналогично: просроченная ДЗ на 01.01.2025 составляла 0,99 млн руб., а к 01.04.2025 резко выросла до 116 млн. Между этими датами — квартал без контроля.<br><br>
+<strong>Предложение.</strong> Набор триггерных порогов на основе данных 2025:
+<ul style="margin:6px 0 6px 18px">
+<li><strong>Триггер «Просрочка»:</strong> новая просроченная ДЗ >25 млн руб. по одному контрагенту → уведомление ТД + ЭУ в течение 3 рабочих дней</li>
+<li><strong>Триггер «Склад»:</strong> стоимость склада группы 1 выросла >5% за месяц → уведомление ЭУ</li>
+<li><strong>Триггер «Оборачиваемость»:</strong> превышение норматива >20% за квартал → включение в повестку ближайшего заседания КЭиФ</li>
+<li><strong>Триггер «ВЭД-ограничения»:</strong> контрагент попал под внешнеторговые ограничения → немедленное уведомление ТД + правовое управление</li>
+</ul></div>
+<div class="gr">Рекомендация: определить пороговые значения на основе статистики 2025; реализовать автоматические уведомления из учётных систем; не заменяет квартальные заседания, а дополняет оперативным контролем</div>
+</div>
+
+<div class="gap-card" style="border-left:3px solid var(--yellow)">
+<div class="gn"><span class="gi">GAP-6</span> Поручения КЭиФ не отслеживаются системно</div>
+<div class="ip-badge" style="background:var(--yellow-bg);color:var(--yellow);margin-bottom:8px;font-size:10px">Измерение: Исполнение решений</div>
+<div class="gd"><strong>Что сейчас.</strong> Решения КЭиФ фиксируются в протоколе, который рассылается ответственным лицам. Контроль исполнения — на начальнике ОСКО. Нет единой системы трекинга поручений.<br><br>
+<strong>Конкретный пример из материалов.</strong> Протокол КЭиФ от 12.03.2026 содержит следующие поручения:
+<ul style="margin:6px 0 6px 18px">
+<li>Ответственные ТД — анализ факторов роста складских запасов АТИ относительно 2023, оценка минимизации с эффектом на денежный поток — срок <strong>13.04.2026</strong></li>
+<li>Ответственный ТД — анализ остатков неликвидного имущества ПАО, предложения по снижению запасов — срок <strong>13.04.2026</strong></li>
+<li>Ответственный правового управления — упрощённый механизм реализации неликвидного имущества — срок <strong>«на следующем рассмотрении»</strong> (не определён)</li>
+<li>Доклад по отдельному контрагенту — срок <strong>«на следующем заседании»</strong></li>
+</ul>
+Обратите внимание: два поручения из четырёх не имеют конкретной даты («на следующем рассмотрении» — когда?). Нет статуса исполнения предыдущих поручений. Нет механизма напоминания за 5 дней до срока.<br><br>
+<strong>Предложение.</strong> Структурированный реестр поручений КЭиФ:
+<ul style="margin:6px 0 6px 18px">
+<li>Каждое поручение = задача с полями: ответственный, срок (конкретная дата), статус (новое / в работе / выполнено / просрочено), результат</li>
+<li>Автоматическое напоминание за 5 и 1 рабочий день до срока</li>
+<li>Дашборд ОСКО: % исполнения в срок, среднее время исполнения, хронически откладываемые темы</li>
+</ul></div>
+<div class="gr">Рекомендация: перевести трекинг поручений в структурированный реестр; запретить формулировки без конкретных дат; начать с текущих поручений (4 шт. от 12.03.2026)</div>
+</div>
+
+<div class="gap-card" style="border-left:3px solid var(--yellow)">
+<div class="gn"><span class="gi">GAP-7</span> Отчётность не интерактивна — нет возможности «провалиться» в детали</div>
+<div class="ip-badge" style="background:var(--yellow-bg);color:var(--yellow);margin-bottom:8px;font-size:10px">Измерение: Reporting</div>
+<div class="gd"><strong>Что сейчас.</strong> Материалы к КЭиФ — набор статичных файлов. Для просмотра данных по конкретному контрагенту нужно переключаться между вкладками Excel, искать строку, сверять с другим файлом.<br><br>
+<strong>Конкретный пример из материалов.</strong> Чтобы ответить на вопрос «Какова полная картина по крупнейшему просроченному контрагенту?» на заседании КЭиФ, нужно открыть:
+<ul style="margin:6px 0 6px 18px">
+<li>«Расшифровка просроченной ДЗ» → найти строку контрагента, столбцы по кварталам — сумма, год, комментарий</li>
+<li>«Материалы по ДЗ КЗ» → лист расшифровки — найти строку среди десятков контрагентов</li>
+<li>«Расшифровка резервов» → найти контрагента — начисленный резерв</li>
+<li>«Задолженность с ВЭД-ограничениями» → найти в матрице 41 колонка — валюта, суммы по датам</li>
+<li>Доклад-PDF → слайд с просрочкой ПЛГ</li>
+</ul>
+Пять файлов, пять разных форматов, ручной поиск строки в каждом. На заседании это занимает время и создаёт риск неполного ответа.<br><br>
+<strong>Предложение.</strong> Дашборд с drill-down по трём уровням:
+<ul style="margin:6px 0 6px 18px">
+<li><strong>Уровень 1:</strong> CCC + оборачиваемость по группам + aging overview + топ-5 рисков</li>
+<li><strong>Уровень 2:</strong> клик на группу → список контрагентов с ABC-маркировкой, сумма, срок, статус</li>
+<li><strong>Уровень 3:</strong> клик на контрагента → карточка: история ДЗ поквартально, резерв, статус ВЭД-ограничений, стадия взыскания, комментарии ТД</li>
+</ul></div>
+<div class="gr">Рекомендация: создать интерактивный дашборд с 3 уровнями детализации; использовать его на заседаниях КЭиФ (проектор/экран) вместо статичных слайдов</div>
+</div>
+
+<div class="gap-card" style="border-left:3px solid var(--blue)">
+<div class="gn"><span class="gi">GAP-8</span> Претензионная работа отделена от системы контроля задолженности</div>
+<div class="ip-badge" style="background:var(--blue-bg);color:var(--blue);margin-bottom:8px;font-size:10px">Измерение: Претензионная работа</div>
+<div class="gd"><strong>Что сейчас.</strong> Претензионно-исковая работа регулируется отдельным регламентом КД-РГ-039. В КД-РГ-110-05 задолженность 3-го типа лишь упоминается в классификации. Детали — в другом контуре.<br><br>
+<strong>Конкретный пример из материалов.</strong> Из расшифровки просроченной ДЗ видно, что по крупнейшим дебиторам ведётся активная юридическая работа, но КЭиФ видит её фрагментарно — только из комментариев в Excel:
+<ul style="margin:6px 0 6px 18px">
+<li><strong>Контрагент А (358 млн)</strong> — «есть решение суда и исполнительный лист, ожидается исполнение» → на какой стадии исполнительное производство? Когда ожидается поступление денег?</li>
+<li><strong>Контрагент Ж (5 млн)</strong> — «есть решение суда и исполнительный лист; прорабатывается уступка долга третьему лицу и закрытие поставкой АТИ» → два варианта урегулирования, какой выбран?</li>
+<li><strong>Контрагент И (4 млн)</strong> — «направлены письма о возврате авансов, ПФМ уведомлён» → претензия направлена или только письма? Какой следующий шаг?</li>
+<li><strong>5 контрагентов с ВЭД-ограничениями</strong> — «сотрудничество приостановлено» → это не стадия претензионной работы, это тупик. Какова стратегия: ожидание снятия ограничений, списание, уступка долга?</li>
+</ul>
+Вся эта информация разбросана по комментариям в Excel-ячейках. Нет единого поля «стадия» с перечнем значений. Нет прогноза вероятности возврата.<br><br>
+<strong>Предложение.</strong> Воронка взыскания с обязательными полями для каждого просроченного контрагента:
+<ul style="margin:6px 0 6px 18px">
+<li><strong>Стадия:</strong> досудебная переписка → претензия → суд → решение → исполнительное производство → закрыто</li>
+<li><strong>Вероятность возврата:</strong> % (для контрагентов с ВЭД-ограничениями — 0–10%, при наличии судебного решения — 50–70%, при исполнительном листе — 70–90%)</li>
+<li><strong>Ожидаемый срок:</strong> конкретная дата или квартал</li>
+<li><strong>Стратегия:</strong> взыскание / зачёт / уступка / списание / ожидание снятия ограничений</li>
+</ul></div>
+<div class="gr">Рекомендация: для каждого просроченного дебитора категории A и B заполнить карточку претензионной работы; интегрировать воронку взыскания в доклад КЭиФ; пример: Контрагент А → стадия «исполнительное производство», вероятность возврата 80%, ожидаемый срок Q3 2026</div>
+</div>
+
+</div>
+</div>
+
+<div class="section">
+<h2>Roadmap рекомендаций</h2>
+<div class="roadmap">
+<div class="rm-col qw">
+<h4>Quick Wins</h4>
+<div class="rm-period">0–3 месяца</div>
+<ul>
+<li>Рассчитать CCC как headline-метрику</li>
+<li>Добавить aging buckets в формат доклада</li>
+<li>Единый формат «Управление оборотным капиталом» (решение КБИИ)</li>
+<li>ABC-сегментация топ-20 контрагентов</li>
+</ul>
+</div>
+<div class="rm-col st">
+<h4>Short-term</h4>
+<div class="rm-period">3–6 месяцев</div>
+<ul>
+<li>Автоматизация выгрузок из 1С/SAP</li>
+<li>BI-дашборд с drill-down (замена Excel/PowerPoint)</li>
+<li>Risk scoring контрагентов (история платежей)</li>
+<li>Триггерные алерты по пороговым значениям</li>
+</ul>
+</div>
+<div class="rm-col mt">
+<h4>Medium-term</h4>
+<div class="rm-period">6–12 месяцев</div>
+<ul>
+<li>Predicting defaults / expected credit loss</li>
+<li>Integrated WCM модель (ДЗ+КЗ+ТМЦ)</li>
+<li>Event-driven monitoring (real-time)</li>
+<li>Автогенерация протоколов и поручений</li>
+</ul>
+</div>
+</div>
+</div>
+
+</div>
+
+<!-- ═══════════════ TAB 3: WCM CYCLE ═══════════════ -->
+<div class="view" id="v3">
+
+<div class="section">
+<h2>Цикл управления оборотным капиталом <span class="badge">Working Capital Management</span></h2>
+<p style="font-size:12px;color:var(--text2);margin-bottom:20px;max-width:900px">Оборотный капитал = то, что компания вкладывает в текущую деятельность до того, как получит деньги обратно. Цикл показывает, как деньги проходят через четыре стадии: закупки → запасы → продажи/услуги → получение оплаты, и сколько дней капитал «заморожен» на каждом этапе.</p>
+
+<div class="wcm-cycle">
+<div class="wcm-ring">
+
+<div class="wcm-center">
+<div class="ccc-val">~392</div>
+<div class="ccc-label">дней — цикл конвертации денежных средств (CCC)</div>
+<div class="ccc-formula">DSO 87 + DIO 365 − DPO 60</div>
+<div style="font-size:10px;color:var(--text2);margin-top:8px">Оценка по 4 кв. 2025</div>
+</div>
+
+<div class="wcm-node" style="top:10px;left:250px;border-color:var(--red)">
+<div class="wn-icon">💰</div>
+<div class="wn-title">Закупки и авансы</div>
+<div class="wn-val" style="color:var(--red)">7 575</div>
+<div class="wn-unit">млн ₽ — авансы поставщикам</div>
+<div class="wn-days">DPO ≈ <span style="color:var(--cyan)">60 дней</span></div>
+</div>
+
+<div class="wcm-node" style="top:250px;right:10px;border-color:var(--yellow)">
+<div class="wn-icon">📦</div>
+<div class="wn-title">Запасы АТИ (Rotable + Expendable)</div>
+<div class="wn-val" style="color:var(--yellow)">12 434</div>
+<div class="wn-unit">млн ₽ — Rotable 1.1 + Consumable 1.2 + WIP</div>
+<div class="wn-days">DIO ≈ <span style="color:var(--red)">365 дней</span></div>
+</div>
+
+<div class="wcm-node" style="bottom:10px;left:250px;border-color:var(--blue)">
+<div class="wn-icon">✈️</div>
+<div class="wn-title">Оказание услуг</div>
+<div class="wn-val" style="color:var(--blue)">2 221</div>
+<div class="wn-unit">млн ₽ — ДЗ покупателей</div>
+<div class="wn-days">DSO покуп. ≈ <span style="color:var(--yellow)">45 дней</span></div>
+</div>
+
+<div class="wcm-node" style="top:250px;left:10px;border-color:var(--cyan)">
+<div class="wn-icon">🏦</div>
+<div class="wn-title">Кредиторская задолженность</div>
+<div class="wn-val" style="color:var(--cyan)">6 670</div>
+<div class="wn-unit">млн ₽ — КЗ перед поставщиками</div>
+<div class="wn-days">DPO ≈ <span style="color:var(--green)">60 дней</span></div>
+</div>
+
+<div class="wcm-arrow" style="top:180px;right:120px">↘</div>
+<div class="wcm-arrow" style="bottom:180px;right:120px">↙</div>
+<div class="wcm-arrow" style="bottom:180px;left:120px">↖</div>
+<div class="wcm-arrow" style="top:180px;left:120px">↗</div>
+
+</div>
+</div>
+</div>
+
+<div class="wcm-cols">
+
+<div class="wcm-block">
+<h3>Движение денежных средств в цикле <span class="wb-badge" style="background:var(--blue-bg);color:var(--blue)">Cash Flow</span></h3>
+<div class="wcm-flow">
+<span class="wf-box" style="background:var(--red-bg);color:var(--red)">Деньги уходят</span>
+<span class="wf-arrow">→</span>
+<span class="wf-box" style="background:var(--yellow-bg);color:var(--yellow)">Лежат в запасах</span>
+<span class="wf-arrow">→</span>
+<span class="wf-box" style="background:var(--blue-bg);color:var(--blue)">Услуга оказана</span>
+<span class="wf-arrow">→</span>
+<span class="wf-box" style="background:var(--green-bg);color:var(--green)">Деньги вернулись</span>
+</div>
+<div style="font-size:12px;color:var(--text2);line-height:1.7;margin-top:10px">
+<strong>Этап 1. Закупки и авансы.</strong> Компания перечисляет авансы поставщикам ПЛГ за запчасти, ремонт авиадвигателей и ВСУ. На 01.01.2026 в авансах «заморожено» 7 575 млн руб. Средний срок закрытия авансов за ремонт АД — <strong>255 дней</strong> (при плане 131). Это означает, что деньги уходят к поставщику за 8,5 месяцев до получения результата.<br><br>
+<strong>Этап 2. Запасы на складе.</strong> Закупленные запчасти и материалы хранятся на 11 станциях по всей маршрутной сети. Стоимость склада — 12 434 млн руб., из которых 6 178 млн — слабооборачиваемое АТИ, а 490 млн — неликвид. Оборачиваемость группы 1.1 — 365 дней, то есть запас «живёт» на складе год, прежде чем будет использован.<br><br>
+<strong>Этап 3. Оказание услуг.</strong> Запчасти устанавливаются на воздушные суда, выполняются перевозки. Возникает дебиторская задолженность покупателей и заказчиков — 2 221 млн руб. Сюда же входят субсидии (+149 млн из-за сдвига оплаты на следующий месяц) и нерегулярные перевозки (+638 млн).<br><br>
+<strong>Этап 4. Возврат денег.</strong> Покупатели оплачивают услуги в среднем за 45 дней. Параллельно компания рассчитывается с поставщиками (КЗ 6 670 млн руб.), что отсрочивает отток и частично финансирует цикл.
+</div>
+</div>
+
+<div class="wcm-block">
+<h3>Потребности vs обязательства <span class="wb-badge" style="background:var(--orange-bg);color:var(--orange)">Balance</span></h3>
+<div style="font-size:12px;color:var(--text2);line-height:1.7">
+<strong>Потребности (куда вложены деньги):</strong>
+<ul style="margin:6px 0 10px 18px">
+<li>Авансы поставщикам ПЛГ: <strong>7 575 млн ₽</strong> (из них 1 762 млн — ДЗ с ВЭД-ограничениями, деньги фактически «застряли»)</li>
+<li>Запасы АТИ на складах: <strong>12 434 млн ₽</strong> (рост +40% за 2025, из них 490 млн — неликвид, 6 178 млн — слабооборачиваемое)</li>
+<li>ДЗ покупателей: <strong>2 221 млн ₽</strong> (просрочка 578 млн, из которых 548 млн — 5 контрагентов)</li>
+<li>ДЗ агентов: <strong>200 млн ₽</strong> (снижение с 728 млн за год — позитивная динамика)</li>
+</ul>
+<strong>Обязательства (источники финансирования цикла):</strong>
+<ul style="margin:6px 0 10px 18px">
+<li>КЗ поставщикам: <strong>~4 130 млн ₽</strong> (отсрочка платежей — бесплатный источник)</li>
+<li>Авансы от покупателей: <strong>~1 470 млн ₽</strong> (предоплата за услуги)</li>
+<li>Прочие кредиторы: <strong>~1 070 млн ₽</strong></li>
+</ul>
+<strong>Чистая потребность в оборотном капитале:</strong>
+</div>
+<div style="background:var(--surface2);border-radius:6px;padding:14px;margin-top:8px;text-align:center">
+<div style="font-size:11px;color:var(--text2)">Потребности − Обязательства</div>
+<div style="font-size:11px;color:var(--text2);margin-top:4px;font-family:'JetBrains Mono',monospace">(7 575 + 12 434 + 2 221 + 200) − 6 670</div>
+<div style="font-size:32px;font-weight:700;color:var(--orange);font-family:'JetBrains Mono',monospace;margin-top:4px">≈ 15 760</div>
+<div style="font-size:11px;color:var(--text2)">млн ₽ — капитал, «замороженный» в цикле</div>
+</div>
+</div>
+
+</div>
+
+<div class="section">
+<h3 style="font-size:14px;margin-bottom:14px">Ключевые KPI цикла оборотного капитала</h3>
+<div class="wcm-kpi-grid">
+<div class="wcm-kpi"><div class="wk-val" style="color:var(--orange)">~392</div><div class="wk-label">CCC (дни)</div></div>
+<div class="wcm-kpi"><div class="wk-val" style="color:var(--blue)">87</div><div class="wk-label">DSO — ДЗ ПЛГ (дни)</div></div>
+<div class="wcm-kpi"><div class="wk-val" style="color:var(--yellow)">365</div><div class="wk-label">DIO — запасы 1.1 (дни)</div></div>
+<div class="wcm-kpi"><div class="wk-val" style="color:var(--cyan)">~60</div><div class="wk-label">DPO — КЗ (дни)</div></div>
+<div class="wcm-kpi"><div class="wk-val" style="color:var(--red)">255</div><div class="wk-label">Закрытие авансов АД (дни)</div></div>
+<div class="wcm-kpi"><div class="wk-val" style="color:var(--yellow)">472</div><div class="wk-label">Оборач. 1.1, Q3'25 (дни)</div></div>
+<div class="wcm-kpi"><div class="wk-val" style="color:var(--red)">1 762</div><div class="wk-label">ДЗ с ВЭД-огр. (млн ₽)</div></div>
+<div class="wcm-kpi"><div class="wk-val" style="color:var(--green)">−528</div><div class="wk-label">ДЗ агенты г/г (млн ₽)</div></div>
+</div>
+</div>
+
+<div class="section">
+<h3 style="font-size:14px;margin-bottom:14px">Бенчмарки IATA для управления авиазапасами <span class="badge" style="font-size:9px">Guidance Material, 2nd Ed.</span></h3>
+<div style="overflow-x:auto">
+<table class="dt">
+<thead><tr><th>Показатель</th><th>Бенчмарк IATA</th><th>Факт (оценка)</th><th>Комментарий</th><th style="white-space:nowrap">Источник</th></tr></thead>
+<tbody>
+<tr><td><strong>Inventory Turns (Rotable)</strong><br><span style="font-size:10px;color:var(--text2)">Оборачиваемость ротируемых</span></td><td>≥1.0 (владение оправдано)</td><td style="color:var(--yellow)">~1.0</td><td style="font-size:11px;color:var(--text2)">365 дней ≈ 1.0 оборот/год. В Q3'25 — 472 дня (0.77 оборота), ниже порога оправданности владения</td><td style="font-size:10px;color:var(--text2)">IATA, Section 4.1, p.68</td></tr>
+<tr><td><strong>Carrying Cost</strong><br><span style="font-size:10px;color:var(--text2)">Полная стоимость содержания</span></td><td>≈20%+ в год<br><span style="font-size:9px;color:var(--text2)">(T&I 6% + капитал 15% + амортизация 8%)</span></td><td style="color:var(--red)">~2 500 млн ₽/год</td><td style="font-size:11px;color:var(--text2)">12 434 × 20% = 2 487 млн руб. — скрытые затраты: амортизация, налоги, страхование, стоимость капитала, устаревание</td><td style="font-size:10px;color:var(--text2)">IATA, Section 3.3.1, p.59</td></tr>
+<tr><td><strong>Ownership vs Lease</strong><br><span style="font-size:10px;color:var(--text2)">Полная стоимость владения vs лизинг</span></td><td>Ownership: 37% в год<br>Lease: 18–28% в год</td><td style="color:var(--text2)">—</td><td style="font-size:11px;color:var(--text2)">При fleet plan <10 лет NPV лизинга часто выгоднее покупки. IATP лизинг — 18% от стоимости</td><td style="font-size:10px;color:var(--text2)">IATA, Table 8-9, p.61-62</td></tr>
+<tr><td><strong>Slow-moving</strong><br><span style="font-size:10px;color:var(--text2)">Позиции со спросом <1 снятия/год</span></td><td>Не покупать; использовать Exchange/Pool/Borrow</td><td style="color:var(--red)">50% баланса</td><td style="font-size:11px;color:var(--text2)">6 178 из 12 434 млн — половина. IATA: для таких позиций — Exchange (~10% FMV за событие) или Pool</td><td style="font-size:10px;color:var(--text2)">IATA, Section 3.4, p.54-55</td></tr>
+<tr><td><strong>WIP = dd × TAT</strong><br><span style="font-size:10px;color:var(--text2)">Pipeline Inventory ремонтов</span></td><td>TAT контролировать по NTE SLA;<br>типичный TAT 28–45 дней</td><td style="color:var(--red)">TAT факт 255 дн. (план 131)</td><td style="font-size:11px;color:var(--text2)">Рост TAT на 95% → WIP вырос пропорционально (+1 800 млн в авансах). TAT в 5–9 раз выше типичного</td><td style="font-size:10px;color:var(--text2)">IATA, Section 3.2.8, p.41; Table 23, p.120</td></tr>
+<tr><td><strong>Salvage Value</strong><br><span style="font-size:10px;color:var(--text2)">Ликвидационная стоимость</span></td><td>~20% от стоимости<br><span style="font-size:9px;color:var(--text2)">(«fortunate to recover 20%»)</span></td><td style="color:var(--text2)">490 млн неликвид</td><td style="font-size:11px;color:var(--text2)">При ликвидации 490 млн неликвида реалистичный возврат — ~100 млн руб. При объявлении о выводе типа ВС цена падает сразу</td><td style="font-size:10px;color:var(--text2)">IATA, Section 3.3.3, p.62</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="section">
+<h3 style="font-size:14px;margin-bottom:14px">Узкие места и рычаги влияния</h3>
+<div class="cards">
+
+<div class="card open">
+<div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+<span class="ic" style="color:var(--red)">⚠️</span>
+<span class="tt">Узкое место 1: запасы АТИ — крупнейший «замораживатель» капитала</span>
+<span class="chev">›</span>
+</div>
+<div class="card-body">
+<strong>Масштаб:</strong> 12 434 млн руб. — больше, чем вся ДЗ и КЗ вместе взятые. Рост +40% за 2025 год (с 8 907 до 12 434 млн). По IATA (Section 3.3.1, p.59), полная стоимость содержания запасов достигает 20%+ в год — это означает, что компания тратит ~2 500 млн руб./год только на то, чтобы держать эти запасы (амортизация, страхование, стоимость замороженного капитала). Кроме того, полная стоимость владения (ownership) — до 37% в год (IATA, Table 8, p.61).<br><br>
+<strong>Структура через призму авиационной классификации:</strong>
+<ul>
+<li><strong>Группа 1.1 — Rotable Inventory</strong> (ротируемые компоненты: колёса, тормоза, гидронасосы, LRU) — 3 305 млн руб. Scrap rate низкий, живут весь срок службы ВС. Оборачиваемость 365 дней. По IATA, оборачиваемость ≈1.0 для Rotable — нормально, но при 365 днях значит каждая единица используется 1 раз в год — для активного парка это сигнал избыточного запаса или длинного TAT (Turn Around Time) ремонтов.</li>
+<li><strong>Группа 1.2 — Expendable/Consumable Inventory</strong> (расходные: фильтры, крепёж, уплотнения, прокладки) — 2 132 млн руб. По IATA, Expendables составляют 25–33% от баланса, здесь ~17% — в норме. Но оборачиваемость 357 дней vs цель 300 указывает на избыточные закупки или плохое планирование Min/Max.</li>
+<li><strong>Слабооборачиваемое АТИ</strong> — 6 178 млн руб. (50% от всего склада). По IATA (Section 3.4, p.54): для позиций со спросом менее 1 снятия в год рекомендуется <strong>не покупать</strong>, а использовать Borrow/Pool/Exchange. Для очень редких снятий — Exchange (~10% FMV за событие, IATA p.57).</li>
+<li><strong>Неликвид</strong> — 490 млн руб. IATA: реалистичная ликвидационная стоимость — <strong>~20% FMV</strong> (Fair Market Value), часто ниже. При объявлении о выводе типа ВС рыночная цена падает немедленно.</li>
+</ul>
+<strong>Рычаги (по методологии IATA):</strong>
+<ul>
+<li><strong>Component Pooling (IATP):</strong> для Rotable с редким спросом (<1 снятия/год) — участие в международном пуле обмена. Стоимость ~18% CLP в год, при 2+ участниках — 6–9% каждый. Альтернатива владению запасом</li>
+<li><strong>PBH (Power By the Hour):</strong> для двигателей и крупных агрегатов — оплата за лётный час вместо авансов на ремонт. Исключает заморозку капитала в WIP</li>
+<li><strong>Distributive Model:</strong> ежесуточная доставка запчастей на станции рейсами авиакомпании из центрального склада. 80%+ спроса предсказуемы — их можно планировать централизованно. Результат: меньший баланс запасов на станциях</li>
+<li><strong>WIP-мониторинг:</strong> WIP = Daily Demand × TAT. Если TAT ремонта растёт с 30 до 45 дней → WIP растёт на 50%. Нужен контроль TAT каждого MRO-провайдера</li>
+<li><strong>Surplus disposal:</strong> для 490 млн неликвида — аукционы (квартальные), консигнационные продажи через брокера, sale-leaseback. IATA: surplus revenue может покрыть 100%+ годовых закупок</li>
+<li><strong>NFF-аудит:</strong> No Fault Found — при высоком % NFF (>30%) WIP раздут из-за ложных снятий. Снижение NFF на 10% → прямое сокращение WIP и потребности в запасах</li>
+</ul>
+</div>
+</div>
+
+<div class="card">
+<div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+<span class="ic" style="color:var(--yellow)">⚠️</span>
+<span class="tt">Узкое место 2: авансы ПЛГ — MRO pipeline и портфель с ВЭД-ограничениями</span>
+<span class="chev">›</span>
+</div>
+<div class="card-body">
+<strong>Масштаб:</strong> 7 575 млн руб. в авансах, основная часть — ремонт авиадвигателей и ВСУ (+1 800 млн за год).<br><br>
+<strong>В терминологии IATA:</strong> авансы за ремонт АД/ВСУ — это <strong>WIP (Work In Process / Pipeline Inventory)</strong>. Формула IATA: <strong>WIP = Daily Demand × TAT</strong>. Средний TAT ремонта АД фактически составляет 255 дней при плане 131 — то есть ремонтный конвейер работает вдвое медленнее целевого. По формуле IATA: если TAT вырос с 131 до 255 дней, WIP должен был вырасти на 95% — что объясняет прирост авансов на +1 800 млн. Проблема не в объёме закупок, а в <strong>длительности ремонтного цикла</strong>.<br><br>
+<strong>Фактор ВЭД-ограничений:</strong> 1 762 млн руб. — авансы контрагентам, с которыми сотрудничество приостановлено из-за внешнеторговых ограничений. Это не WIP в классическом смысле — это <strong>замороженные активы</strong> без ожидаемого TAT. IATA классифицирует такие позиции как <strong>Beyond Economical Repair / Write-off candidates</strong>.<br><br>
+<strong>Рычаги (MRO best practices):</strong>
+<ul>
+<li><strong>TAT-SLA с MRO-провайдерами:</strong> по IATA стандарт — 95% деталей возвращаются в пределах NTE TAT (Not To Exceed). За каждый день сверх NTE — штрафные меры по SLA или предоставление обменного фонда (Exchange). Текущий разрыв (255 vs 131 дней) указывает на отсутствие эффективных SLA</li>
+<li><strong>Exchange programs:</strong> вместо ожидания ремонта 255 дней — мгновенный обмен неисправного АД на исправный с оплатой ~10% FMV за событие + стоимость ремонта. Исключает WIP-заморозку</li>
+<li><strong>PBH / Power By the Hour:</strong> для двигателей — фиксированная оплата за лётный час, MRO-провайдер обеспечивает наличие исправных АД. Переносит WIP-риск на провайдера</li>
+<li><strong>Quick Engine Change (QEC):</strong> комплекты для быстрой замены двигателей на станции — сокращает ACOOS (Aircraft Out Of Service) и потребность в запасных АД</li>
+<li><strong>Портфель с ВЭД-ограничениями:</strong> выделить 1 762 млн в отдельную категорию с индивидуальной стратегией по каждому контрагенту: зачёт встречных обязательств, судебное взыскание (при наличии исполнительного листа), резервирование или списание</li>
+</ul>
+</div>
+</div>
+
+<div class="card">
+<div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+<span class="ic" style="color:var(--green)">✅</span>
+<span class="tt">Позитив: агентская ДЗ снизилась на 528 млн за год</span>
+<span class="chev">›</span>
+</div>
+<div class="card-body">
+<strong>Факт:</strong> ДЗ агентов по реализации перевозок снизилась с 728 млн (01.01.2025) до 200 млн (01.01.2026) — сокращение на 73%. Оборачиваемость улучшилась с 5 дней до 2 дней при нормативе 5.<br><br>
+<strong>Причина успеха:</strong> вероятно, переход на более быстрые расчёты с агентами (BSP/ARC-сеттлмент, предоплатные схемы). Это пример того, как целевое управление одним компонентом оборотного капитала даёт измеримый результат.<br><br>
+<strong>Вывод:</strong> подход, сработавший для агентов (установление жёсткого норматива + контроль исполнения), можно распространить на другие категории. Экономический эффект: 528 млн руб. высвобожденного оборотного капитала.
+</div>
+</div>
+
+<div class="card">
+<div class="card-head" onclick="this.parentElement.classList.toggle('open')">
+<span class="ic" style="color:var(--cyan)">💡</span>
+<span class="tt">Рычаг: кредиторская задолженность как инструмент финансирования</span>
+<span class="chev">›</span>
+</div>
+<div class="card-body">
+<strong>Факт:</strong> КЗ снизилась на 628 млн за год (с 7 298 до 6 670 млн руб.). С точки зрения платёжной дисциплины это позитивно, но с точки зрения управления оборотным капиталом — спорно.<br><br>
+<strong>Парадокс:</strong> Кредиторская задолженность перед поставщиками — это фактически бесплатный (или дешёвый) источник финансирования оборотного капитала. Пока компания не заплатила поставщику, деньги остаются в обороте. Формула CCC показывает это: чем выше DPO, тем ниже CCC.<br><br>
+<strong>Баланс:</strong> Нельзя бесконечно наращивать КЗ (это ухудшает отношения с поставщиками и создаёт юридические риски — просроченная КЗ уже 2 005 млн, 32.6%). Но и сокращать КЗ, когда ДЗ и запасы растут — значит увеличивать потребность в оборотном капитале. Нужен баланс: <strong>DPO должен расти примерно пропорционально DSO и DIO</strong>, чтобы CCC оставался стабильным.
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+
+<!-- ═══════════════ BPMN XML (ревизированный) ═══════════════ -->
+<script id="bpmn-xml" type="text/xml">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+
+  <bpmn:collaboration id="Collab_1">
+    <bpmn:participant id="Part_Control" name="Корпоративный контроль над ДЗ, КЗ и ТМЦ (КД-РГ-110-05)" processRef="Proc_Control" />
+    <bpmn:participant id="Part_KBII" name="КБИИ (Комитет по бюджету, инновациям и инвестициям)" processRef="Proc_KBII" />
+    <bpmn:messageFlow id="MF_1" name="Рекомендации по формату и периодичности" sourceRef="Task_KBII_Dir" targetRef="Part_Control" />
+  </bpmn:collaboration>
+
+  <!-- ══ MAIN PROCESS ══ -->
+  <bpmn:process id="Proc_Control" isExecutable="false">
+    <bpmn:laneSet id="LS_1">
+      <bpmn:lane id="Lane_KEIF" name="КЭиФ (Комитет по экономике и финансам)">
+        <bpmn:flowNodeRef>Start_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Select</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Meeting</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ApproveKPI</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_Cycle</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_1</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_OSKO" name="Начальник ОСКО">
+        <bpmn:flowNodeRef>Task_Plan</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_ForkPrep</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Protocol</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_ForkExec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_JoinExec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Control</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_EU" name="Ответственный сотрудник ЭУ">
+        <bpmn:flowNodeRef>GW_JoinCheck</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Check</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Comp" name="Руководители Компаний">
+        <bpmn:flowNodeRef>Task_DataC</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AnalC</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ExecC</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_PFM" name="Руководители ПФМ Авиакомпании">
+        <bpmn:flowNodeRef>Task_DataP</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AnalP</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ExecP</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+
+    <bpmn:startEvent id="Start_1" name="Закрытие бухгалтерской отчётности">
+      <bpmn:outgoing>F1</bpmn:outgoing>
+    </bpmn:startEvent>
+
+    <bpmn:userTask id="Task_Select" name="Определение объектов Контроля">
+      <bpmn:documentation>КД-РГ-110-05, п.7.2
+Определение Компаний и ПФМ, ДЗ/КЗ/ТМЦ которых подлежат Контролю в текущем цикле. Выбор с учётом влияния на денежные потоки Группы, доли в объёме задолженности, стратегических задач.
+Ответственный: КЭиФ</bpmn:documentation>
+      <bpmn:incoming>F1</bpmn:incoming>
+      <bpmn:outgoing>F2</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:userTask id="Task_Plan" name="Планирование и организация заседания КЭиФ">
+      <bpmn:documentation>КД-РГ-110-05, п.7.3
+Организация заседания КЭиФ по рассмотрению ДЗ/КЗ/ТМЦ в соответствии с Положением о КЭиФ. Определение повестки, участников, даты.
+Ответственный: Начальник ОСКО</bpmn:documentation>
+      <bpmn:incoming>F2</bpmn:incoming>
+      <bpmn:incoming>F21</bpmn:incoming>
+      <bpmn:outgoing>F3</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:parallelGateway id="GW_ForkPrep" name="Параллельная подготовка">
+      <bpmn:incoming>F3</bpmn:incoming>
+      <bpmn:outgoing>F4</bpmn:outgoing>
+      <bpmn:outgoing>F5</bpmn:outgoing>
+    </bpmn:parallelGateway>
+
+    <bpmn:userTask id="Task_DataC" name="Выгрузка и проверка данных Компаний">
+      <bpmn:documentation>КД-РГ-110-05, п.7.6
+Выгрузка данных из учётной системы (бухучёт), проверка и устранение выявленных ошибок. Подготовка данных о ДЗ/КЗ/ТМЦ Компаний.
+Ответственный: Руководители Компаний</bpmn:documentation>
+      <bpmn:incoming>F4</bpmn:incoming>
+      <bpmn:outgoing>F6</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:userTask id="Task_DataP" name="Выгрузка и проверка данных ПФМ">
+      <bpmn:documentation>КД-РГ-110-05, п.7.6
+Выгрузка данных из учётной системы (бухучёт), проверка и устранение выявленных ошибок. Подготовка данных о ДЗ/КЗ/ТМЦ ПФМ.
+Ответственный: Руководители ПФМ</bpmn:documentation>
+      <bpmn:incoming>F5</bpmn:incoming>
+      <bpmn:outgoing>F7</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:userTask id="Task_AnalC" name="Анализ и подготовка материалов Компаний">
+      <bpmn:documentation>КД-РГ-110-05, п.7.6-7.7
+Анализ данных и подготовка материалов к докладу КЭиФ: презентация, таблицы Excel, графики, расшифровки.
+Ответственный: Руководители Компаний</bpmn:documentation>
+      <bpmn:incoming>F6</bpmn:incoming>
+      <bpmn:outgoing>F8</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:userTask id="Task_AnalP" name="Анализ и подготовка материалов ПФМ">
+      <bpmn:documentation>КД-РГ-110-05, п.7.6-7.7
+Анализ данных и подготовка материалов к докладу КЭиФ: презентация, таблицы Excel, графики, расшифровки.
+Ответственный: Руководители ПФМ</bpmn:documentation>
+      <bpmn:incoming>F7</bpmn:incoming>
+      <bpmn:outgoing>F9</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:parallelGateway id="GW_JoinCheck" name="Синхронизация">
+      <bpmn:incoming>F8</bpmn:incoming>
+      <bpmn:incoming>F9</bpmn:incoming>
+      <bpmn:outgoing>F10</bpmn:outgoing>
+    </bpmn:parallelGateway>
+
+    <bpmn:userTask id="Task_Check" name="Проверка расчётов контрольных показателей">
+      <bpmn:documentation>КД-РГ-110-05, п.6.4, 7.7
+Проверка расчёта нормативных значений контрольных показателей по ДЗ/КЗ/ТМЦ. Методическое обеспечение при подготовке материалов к заседаниям КЭиФ.
+Ответственный: Ответственный сотрудник ЭУ</bpmn:documentation>
+      <bpmn:incoming>F10</bpmn:incoming>
+      <bpmn:outgoing>F11</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:userTask id="Task_Meeting" name="Рассмотрение материалов на заседании КЭиФ">
+      <bpmn:documentation>КД-РГ-110-05, п.7.5
+Рассмотрение состояния ДЗ/КЗ/ТМЦ на отчётную дату, динамики, причин изменений, уровня и причин просроченной задолженности. Оценка результатов работы Компаний/ПФМ с контрагентами.
+Ответственный: КЭиФ</bpmn:documentation>
+      <bpmn:incoming>F11</bpmn:incoming>
+      <bpmn:outgoing>F12</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:userTask id="Task_ApproveKPI" name="Утверждение КП и нормативов, выдача поручений">
+      <bpmn:documentation>КД-РГ-110-05, п.7.5
+Утверждение контрольных показателей и нормативных значений. Рассмотрение отклонений факта от нормативов. Выдача поручений по корректирующим мероприятиям.
+Ответственный: КЭиФ</bpmn:documentation>
+      <bpmn:incoming>F12</bpmn:incoming>
+      <bpmn:outgoing>F13</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:userTask id="Task_Protocol" name="Протоколирование и рассылка решений">
+      <bpmn:documentation>КД-РГ-110-05, п.7.3 + Положение о КЭиФ
+Протоколирование решений КЭиФ и рассылка протокола ответственным лицам.
+Ответственный: Начальник ОСКО</bpmn:documentation>
+      <bpmn:incoming>F13</bpmn:incoming>
+      <bpmn:outgoing>F14</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:parallelGateway id="GW_ForkExec" name="Параллельное исполнение">
+      <bpmn:incoming>F14</bpmn:incoming>
+      <bpmn:outgoing>F15</bpmn:outgoing>
+      <bpmn:outgoing>F16</bpmn:outgoing>
+    </bpmn:parallelGateway>
+
+    <bpmn:userTask id="Task_ExecC" name="Исполнение решений КЭиФ Компаниями">
+      <bpmn:documentation>КД-РГ-110-05, п.6.5
+Исполнение поручений КЭиФ в установленные сроки. Обеспечение соблюдения нормативных уровней контрольных показателей.
+Ответственный: Руководители Компаний</bpmn:documentation>
+      <bpmn:incoming>F15</bpmn:incoming>
+      <bpmn:outgoing>F17</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:userTask id="Task_ExecP" name="Исполнение решений КЭиФ ПФМ">
+      <bpmn:documentation>КД-РГ-110-05, п.6.5
+Исполнение поручений КЭиФ в установленные сроки. Обеспечение соблюдения нормативных уровней контрольных показателей.
+Ответственный: Руководители ПФМ</bpmn:documentation>
+      <bpmn:incoming>F16</bpmn:incoming>
+      <bpmn:outgoing>F18</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:parallelGateway id="GW_JoinExec" name="Синхронизация исполнения">
+      <bpmn:incoming>F17</bpmn:incoming>
+      <bpmn:incoming>F18</bpmn:incoming>
+      <bpmn:outgoing>F19</bpmn:outgoing>
+    </bpmn:parallelGateway>
+
+    <bpmn:userTask id="Task_Control" name="Контроль исполнения решений">
+      <bpmn:documentation>КД-РГ-110-05, п.7.3-7.4
+Мониторинг исполнения поручений КЭиФ: сроки, качество выполнения. Подготовка информации для следующего цикла контроля.
+Ответственный: Начальник ОСКО</bpmn:documentation>
+      <bpmn:incoming>F19</bpmn:incoming>
+      <bpmn:outgoing>F20</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:exclusiveGateway id="GW_Cycle" name="Следующий цикл?" default="F22">
+      <bpmn:incoming>F20</bpmn:incoming>
+      <bpmn:outgoing>F21</bpmn:outgoing>
+      <bpmn:outgoing>F22</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:endEvent id="End_1" name="Процесс завершён">
+      <bpmn:incoming>F22</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:sequenceFlow id="F1" sourceRef="Start_1" targetRef="Task_Select" />
+    <bpmn:sequenceFlow id="F2" sourceRef="Task_Select" targetRef="Task_Plan" />
+    <bpmn:sequenceFlow id="F3" sourceRef="Task_Plan" targetRef="GW_ForkPrep" />
+    <bpmn:sequenceFlow id="F4" sourceRef="GW_ForkPrep" targetRef="Task_DataC" />
+    <bpmn:sequenceFlow id="F5" sourceRef="GW_ForkPrep" targetRef="Task_DataP" />
+    <bpmn:sequenceFlow id="F6" sourceRef="Task_DataC" targetRef="Task_AnalC" />
+    <bpmn:sequenceFlow id="F7" sourceRef="Task_DataP" targetRef="Task_AnalP" />
+    <bpmn:sequenceFlow id="F8" sourceRef="Task_AnalC" targetRef="GW_JoinCheck" />
+    <bpmn:sequenceFlow id="F9" sourceRef="Task_AnalP" targetRef="GW_JoinCheck" />
+    <bpmn:sequenceFlow id="F10" sourceRef="GW_JoinCheck" targetRef="Task_Check" />
+    <bpmn:sequenceFlow id="F11" sourceRef="Task_Check" targetRef="Task_Meeting" />
+    <bpmn:sequenceFlow id="F12" sourceRef="Task_Meeting" targetRef="Task_ApproveKPI" />
+    <bpmn:sequenceFlow id="F13" sourceRef="Task_ApproveKPI" targetRef="Task_Protocol" />
+    <bpmn:sequenceFlow id="F14" sourceRef="Task_Protocol" targetRef="GW_ForkExec" />
+    <bpmn:sequenceFlow id="F15" sourceRef="GW_ForkExec" targetRef="Task_ExecC" />
+    <bpmn:sequenceFlow id="F16" sourceRef="GW_ForkExec" targetRef="Task_ExecP" />
+    <bpmn:sequenceFlow id="F17" sourceRef="Task_ExecC" targetRef="GW_JoinExec" />
+    <bpmn:sequenceFlow id="F18" sourceRef="Task_ExecP" targetRef="GW_JoinExec" />
+    <bpmn:sequenceFlow id="F19" sourceRef="GW_JoinExec" targetRef="Task_Control" />
+    <bpmn:sequenceFlow id="F20" sourceRef="Task_Control" targetRef="GW_Cycle" />
+    <bpmn:sequenceFlow id="F21" name="Да (следующий цикл)" sourceRef="GW_Cycle" targetRef="Task_Plan">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">nextCycle</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="F22" name="Нет (конец периода)" sourceRef="GW_Cycle" targetRef="End_1" />
+  </bpmn:process>
+
+  <!-- ══ КБИИ PROCESS ══ -->
+  <bpmn:process id="Proc_KBII" isExecutable="false">
+    <bpmn:startEvent id="Start_K" name="Отчётный период">
+      <bpmn:outgoing>FK1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_KBII_Rev" name="Рассмотрение отчёта по оборотному капиталу">
+      <bpmn:documentation>Положение о КБИИ
+Рассмотрение отчёта по оборотному капиталу в контексте стратегии и целевых параметров деятельности ПФМ и обществ Группы.
+Ответственный: КБИИ</bpmn:documentation>
+      <bpmn:incoming>FK1</bpmn:incoming>
+      <bpmn:outgoing>FK2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_KBII_Dir" name="Поручения и рекомендации">
+      <bpmn:documentation>Положение о КБИИ, п.2.3
+Поручения и рекомендации по формату отчётности, периодичности контроля, целевым параметрам. Координация с КЭиФ по вопросам оборотного капитала.
+Ответственный: КБИИ</bpmn:documentation>
+      <bpmn:incoming>FK2</bpmn:incoming>
+      <bpmn:outgoing>FK3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="End_K" name="Решения доведены">
+      <bpmn:incoming>FK3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="FK1" sourceRef="Start_K" targetRef="Task_KBII_Rev" />
+    <bpmn:sequenceFlow id="FK2" sourceRef="Task_KBII_Rev" targetRef="Task_KBII_Dir" />
+    <bpmn:sequenceFlow id="FK3" sourceRef="Task_KBII_Dir" targetRef="End_K" />
+  </bpmn:process>
+
+  <!-- ══ DIAGRAM ══ -->
+  <bpmndi:BPMNDiagram id="Diagram_1">
+    <bpmndi:BPMNPlane id="Plane_1" bpmnElement="Collab_1">
+
+      <!-- Pools -->
+      <bpmndi:BPMNShape id="Part_Control_di" bpmnElement="Part_Control" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="3000" height="820" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Part_KBII_di" bpmnElement="Part_KBII" isHorizontal="true">
+        <dc:Bounds x="160" y="960" width="3000" height="130" />
+      </bpmndi:BPMNShape>
+
+      <!-- Lanes -->
+      <bpmndi:BPMNShape id="Lane_KEIF_di" bpmnElement="Lane_KEIF" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="2970" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_OSKO_di" bpmnElement="Lane_OSKO" isHorizontal="true">
+        <dc:Bounds x="190" y="260" width="2970" height="160" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_EU_di" bpmnElement="Lane_EU" isHorizontal="true">
+        <dc:Bounds x="190" y="420" width="2970" height="140" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Comp_di" bpmnElement="Lane_Comp" isHorizontal="true">
+        <dc:Bounds x="190" y="560" width="2970" height="160" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_PFM_di" bpmnElement="Lane_PFM" isHorizontal="true">
+        <dc:Bounds x="190" y="720" width="2970" height="180" />
+      </bpmndi:BPMNShape>
+
+      <!-- Main process shapes -->
+      <bpmndi:BPMNShape id="Start_1_di" bpmnElement="Start_1">
+        <dc:Bounds x="270" y="152" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="244" y="195" width="88" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Select_di" bpmnElement="Task_Select">
+        <dc:Bounds x="370" y="130" width="160" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Plan_di" bpmnElement="Task_Plan">
+        <dc:Bounds x="580" y="300" width="160" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_ForkPrep_di" bpmnElement="GW_ForkPrep">
+        <dc:Bounds x="790" y="315" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_DataC_di" bpmnElement="Task_DataC">
+        <dc:Bounds x="890" y="600" width="170" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_DataP_di" bpmnElement="Task_DataP">
+        <dc:Bounds x="890" y="770" width="170" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_AnalC_di" bpmnElement="Task_AnalC">
+        <dc:Bounds x="1110" y="600" width="170" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_AnalP_di" bpmnElement="Task_AnalP">
+        <dc:Bounds x="1110" y="770" width="170" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_JoinCheck_di" bpmnElement="GW_JoinCheck">
+        <dc:Bounds x="1330" y="465" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Check_di" bpmnElement="Task_Check">
+        <dc:Bounds x="1430" y="450" width="180" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Meeting_di" bpmnElement="Task_Meeting">
+        <dc:Bounds x="1660" y="130" width="160" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ApproveKPI_di" bpmnElement="Task_ApproveKPI">
+        <dc:Bounds x="1870" y="130" width="180" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Protocol_di" bpmnElement="Task_Protocol">
+        <dc:Bounds x="2100" y="300" width="160" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_ForkExec_di" bpmnElement="GW_ForkExec">
+        <dc:Bounds x="2310" y="315" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ExecC_di" bpmnElement="Task_ExecC">
+        <dc:Bounds x="2410" y="600" width="170" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ExecP_di" bpmnElement="Task_ExecP">
+        <dc:Bounds x="2410" y="770" width="170" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_JoinExec_di" bpmnElement="GW_JoinExec">
+        <dc:Bounds x="2630" y="315" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Control_di" bpmnElement="Task_Control">
+        <dc:Bounds x="2730" y="300" width="160" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_Cycle_di" bpmnElement="GW_Cycle" isMarkerVisible="true">
+        <dc:Bounds x="2940" y="145" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2920" y="115" width="90" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_1_di" bpmnElement="End_1">
+        <dc:Bounds x="3052" y="152" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="3030" y="195" width="80" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <!-- КБИИ shapes -->
+      <bpmndi:BPMNShape id="Start_K_di" bpmnElement="Start_K">
+        <dc:Bounds x="1660" y="1007" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_KBII_Rev_di" bpmnElement="Task_KBII_Rev">
+        <dc:Bounds x="1750" y="985" width="200" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_KBII_Dir_di" bpmnElement="Task_KBII_Dir">
+        <dc:Bounds x="2000" y="985" width="180" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_K_di" bpmnElement="End_K">
+        <dc:Bounds x="2230" y="1007" width="36" height="36" />
+      </bpmndi:BPMNShape>
+
+      <!-- ── EDGES: Main process ── -->
+      <bpmndi:BPMNEdge id="F1_di" bpmnElement="F1">
+        <di:waypoint x="306" y="170" /><di:waypoint x="370" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F2_di" bpmnElement="F2">
+        <di:waypoint x="530" y="170" /><di:waypoint x="555" y="170" /><di:waypoint x="555" y="340" /><di:waypoint x="580" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F3_di" bpmnElement="F3">
+        <di:waypoint x="740" y="340" /><di:waypoint x="790" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F4_di" bpmnElement="F4">
+        <di:waypoint x="840" y="340" /><di:waypoint x="865" y="340" /><di:waypoint x="865" y="640" /><di:waypoint x="890" y="640" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F5_di" bpmnElement="F5">
+        <di:waypoint x="815" y="365" /><di:waypoint x="815" y="810" /><di:waypoint x="890" y="810" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F6_di" bpmnElement="F6">
+        <di:waypoint x="1060" y="640" /><di:waypoint x="1110" y="640" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F7_di" bpmnElement="F7">
+        <di:waypoint x="1060" y="810" /><di:waypoint x="1110" y="810" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F8_di" bpmnElement="F8">
+        <di:waypoint x="1280" y="640" /><di:waypoint x="1305" y="640" /><di:waypoint x="1305" y="490" /><di:waypoint x="1330" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F9_di" bpmnElement="F9">
+        <di:waypoint x="1280" y="810" /><di:waypoint x="1355" y="810" /><di:waypoint x="1355" y="515" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F10_di" bpmnElement="F10">
+        <di:waypoint x="1380" y="490" /><di:waypoint x="1430" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F11_di" bpmnElement="F11">
+        <di:waypoint x="1610" y="490" /><di:waypoint x="1635" y="490" /><di:waypoint x="1635" y="170" /><di:waypoint x="1660" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F12_di" bpmnElement="F12">
+        <di:waypoint x="1820" y="170" /><di:waypoint x="1870" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F13_di" bpmnElement="F13">
+        <di:waypoint x="1960" y="210" /><di:waypoint x="1960" y="340" /><di:waypoint x="2100" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F14_di" bpmnElement="F14">
+        <di:waypoint x="2260" y="340" /><di:waypoint x="2310" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F15_di" bpmnElement="F15">
+        <di:waypoint x="2360" y="340" /><di:waypoint x="2385" y="340" /><di:waypoint x="2385" y="640" /><di:waypoint x="2410" y="640" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F16_di" bpmnElement="F16">
+        <di:waypoint x="2335" y="365" /><di:waypoint x="2335" y="810" /><di:waypoint x="2410" y="810" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F17_di" bpmnElement="F17">
+        <di:waypoint x="2580" y="640" /><di:waypoint x="2655" y="640" /><di:waypoint x="2655" y="365" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F18_di" bpmnElement="F18">
+        <di:waypoint x="2580" y="810" /><di:waypoint x="2605" y="810" /><di:waypoint x="2605" y="340" /><di:waypoint x="2630" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F19_di" bpmnElement="F19">
+        <di:waypoint x="2680" y="340" /><di:waypoint x="2730" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F20_di" bpmnElement="F20">
+        <di:waypoint x="2890" y="340" /><di:waypoint x="2965" y="340" /><di:waypoint x="2965" y="195" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F21_di" bpmnElement="F21">
+        <di:waypoint x="2965" y="145" /><di:waypoint x="2965" y="60" /><di:waypoint x="660" y="60" /><di:waypoint x="660" y="300" />
+        <bpmndi:BPMNLabel><dc:Bounds x="1600" y="38" width="140" height="14" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F22_di" bpmnElement="F22">
+        <di:waypoint x="2990" y="170" /><di:waypoint x="3052" y="170" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2995" y="148" width="55" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+      <!-- ── EDGES: КБИИ ── -->
+      <bpmndi:BPMNEdge id="FK1_di" bpmnElement="FK1">
+        <di:waypoint x="1696" y="1025" /><di:waypoint x="1750" y="1025" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="FK2_di" bpmnElement="FK2">
+        <di:waypoint x="1950" y="1025" /><di:waypoint x="2000" y="1025" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="FK3_di" bpmnElement="FK3">
+        <di:waypoint x="2180" y="1025" /><di:waypoint x="2230" y="1025" />
+      </bpmndi:BPMNEdge>
+
+      <!-- ── MESSAGE FLOW ── -->
+      <bpmndi:BPMNEdge id="MF_1_di" bpmnElement="MF_1">
+        <di:waypoint x="2090" y="985" /><di:waypoint x="2090" y="900" />
+        <bpmndi:BPMNLabel><dc:Bounds x="2095" y="930" width="160" height="27" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+</script>
+
+<!-- bpmn-js NavigatedViewer -->
+<script src="https://unpkg.com/bpmn-js@17.11.1/dist/bpmn-navigated-viewer.production.min.js"></script>
+
+<script>
+let viewer;
+
+function switchTab(n) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('on', i===n));
+  document.querySelectorAll('.view').forEach((v,i) => v.classList.toggle('on', i===n));
+  if (n === 0 && viewer) setTimeout(() => { try { viewer.get('canvas').zoom('fit-viewport'); } catch(e){} }, 150);
+}
+
+function zoomIn() { viewer && viewer.get('zoomScroll').stepZoom(1); }
+function zoomOut() { viewer && viewer.get('zoomScroll').stepZoom(-1); }
+function fitDiagram() { viewer && viewer.get('canvas').zoom('fit-viewport'); }
+function toggleFullscreen() {
+  const w = document.querySelector('.bpmn-wrapper');
+  const btn = document.getElementById('fsBtn');
+  w.classList.toggle('fullscreen');
+  const isFs = w.classList.contains('fullscreen');
+  btn.textContent = isFs ? 'Exit' : 'Fullscreen';
+  document.body.style.overflow = isFs ? 'hidden' : '';
+  setTimeout(() => fitDiagram(), 200);
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.querySelector('.bpmn-wrapper.fullscreen')) toggleFullscreen(); });
+
+function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+function getTypeName(t) {
+  const m = {'bpmn:UserTask':'Пользовательская задача','bpmn:ServiceTask':'Сервисная задача','bpmn:StartEvent':'Начальное событие','bpmn:EndEvent':'Конечное событие','bpmn:ParallelGateway':'Параллельный шлюз (AND)','bpmn:ExclusiveGateway':'Исключающий шлюз (XOR)','bpmn:Participant':'Пул','bpmn:Lane':'Дорожка','bpmn:SequenceFlow':'Поток','bpmn:MessageFlow':'Поток сообщений'};
+  return m[t] || t.replace('bpmn:','');
+}
+
+function getTypeBadge(t) {
+  if (t.includes('Task')) return 'background:var(--blue-bg);color:var(--blue)';
+  if (t.includes('Gateway')) return 'background:var(--yellow-bg);color:var(--yellow)';
+  if (t.includes('Event')) return 'background:var(--green-bg);color:var(--green)';
+  return 'background:var(--surface2);color:var(--text2)';
+}
+
+function showInfo(el) {
+  const bo = el.businessObject;
+  if (!bo || el.type === 'bpmn:Process' || el.type === 'bpmn:Collaboration') return;
+  const name = bo.name || '(без названия)';
+  const docText = bo.documentation && bo.documentation[0] ? bo.documentation[0].text : '';
+  const panel = document.getElementById('ip-body');
+
+  let h = '';
+  h += '<div class="ip-label">Название</div>';
+  h += '<div class="ip-val" style="font-weight:600;font-size:14px">' + escHtml(name) + '</div>';
+  h += '<div class="ip-label">Тип</div>';
+  h += '<div class="ip-val"><span class="ip-badge" style="' + getTypeBadge(el.type) + '">' + getTypeName(el.type) + '</span></div>';
+  h += '<div class="ip-label">ID</div>';
+  h += '<div class="ip-val" style="font-family:\'JetBrains Mono\',monospace;font-size:10px;color:var(--text2)">' + escHtml(el.id) + '</div>';
+
+  if (docText) {
+    const lines = docText.split('\n').filter(l => l.trim());
+    let source = '', desc = '', responsible = '';
+    lines.forEach(l => {
+      const lt = l.trim();
+      if (lt.match(/^(КД-РГ|Положение)/)) source = lt;
+      else if (lt.match(/^Ответственный:/)) responsible = lt.replace('Ответственный:','').trim();
+      else if (desc) desc += '\n' + lt;
+      else desc = lt;
+    });
+    if (source) {
+      h += '<div class="ip-label">Источник</div>';
+      h += '<div class="ip-val" style="color:var(--orange)">' + escHtml(source) + '</div>';
+    }
+    if (desc) {
+      h += '<div class="ip-label">Описание</div>';
+      h += '<div class="ip-doc">' + escHtml(desc) + '</div>';
+    }
+    if (responsible) {
+      h += '<div class="ip-label">Ответственный</div>';
+      h += '<div class="ip-val" style="color:var(--cyan)">' + escHtml(responsible) + '</div>';
+    }
+  }
+  panel.innerHTML = h;
+}
+
+const GLOSSARY = {
+  'CCC':'Cash Conversion Cycle — цикл конвертации денежных средств. Показывает, сколько дней капитал «заморожен» от оплаты поставщику до получения денег от покупателя. Формула: DSO + DIO − DPO',
+  'DSO':'Days Sales Outstanding — среднее число дней, за которое покупатели оплачивают счета. Чем ниже, тем быстрее компания получает деньги',
+  'DIO':'Days Inventory Outstanding — среднее число дней, которое запасы проводят на складе до использования. Чем ниже, тем меньше капитала заморожено в запасах',
+  'DPO':'Days Payable Outstanding — среднее число дней, за которое компания оплачивает поставщикам. Чем выше, тем дольше деньги остаются в обороте компании',
+  'TAT':'Turn Around Time — время оборота ремонта: от снятия компонента с воздушного судна до возврата в исправное состояние',
+  'WIP':'Work In Process — запасы «в конвейере ремонта». Компоненты, отправленные на ремонт и ещё не вернувшиеся. Формула: Daily Demand × TAT',
+  'MRO':'Maintenance, Repair, Overhaul — техническое обслуживание, ремонт и капремонт воздушных судов и их компонентов',
+  'PBH':'Power By the Hour — модель оплаты за лётный час. MRO-провайдер обеспечивает наличие исправных компонентов, авиакомпания платит фиксированную ставку за каждый час налёта',
+  'LRU':'Line Replaceable Unit — блок, заменяемый на линии без снятия в цех. Замена выполняется на стоянке ВС силами линейного ТО',
+  'NFF':'No Fault Found — «дефект не подтверждён» при ремонте. Компонент отправлен на ремонт, но дефект не обнаружен. Высокий % NFF раздувает WIP',
+  'AOG':'Aircraft On Ground — воздушное судно на земле из-за отсутствия запчасти или незавершённого ТО. Критическая ситуация, требующая немедленного решения',
+  'QEC':'Quick Engine Change — комплект для быстрой замены двигателя на стоянке. Сокращает время простоя ВС при замене АД',
+  'IATP':'International Airline Technical Pooling — международный пул обмена запчастями между авиакомпаниями через IATA Clearing House',
+  'FMV':'Fair Market Value — справедливая рыночная стоимость компонента. При ликвидации авиазапасов реалистичная цена — ~20% от FMV',
+  'CLP':'Catalogue List Price — каталожная цена производителя (OEM). Базовая цена, от которой рассчитываются лизинговые и exchange-ставки',
+  'SLA':'Service Level Agreement — соглашение об уровне обслуживания. В MRO: гарантия возврата деталей из ремонта в согласованный срок (NTE TAT)',
+  'NTE':'Not To Exceed — максимально допустимый срок. В контексте ремонта: TAT не должен превышать NTE, иначе штрафные меры по SLA',
+  'KPI':'Key Performance Indicators — ключевые показатели эффективности. Измеримые метрики для оценки достижения целей',
+  'IATA':'International Air Transport Association — Международная ассоциация воздушного транспорта. Устанавливает отраслевые стандарты, включая управление запасами',
+  'ABC':'ABC-анализ — метод классификации по Парето: A — 20% позиций, дающих 80% стоимости (приоритетный контроль); B — средние; C — мелкие',
+  'ДЗ':'Дебиторская задолженность — деньги, которые должны компании покупатели, заказчики и другие контрагенты',
+  'КЗ':'Кредиторская задолженность — деньги, которые компания должна своим поставщикам и подрядчикам',
+  'ТМЦ':'Товарно-материальные ценности — материальные активы организации: запчасти, материалы, товары',
+  'АТИ':'Авиационно-техническое имущество — запасные части, компоненты и материалы для обслуживания воздушных судов',
+  'ПЛГ':'Провайдеры лётной годности — организации, обеспечивающие техническое обслуживание, ремонт и поддержание лётной годности ВС',
+  'КЭиФ':'Комитет по экономике и финансам Правления ПАО «Авиакомпания «ЮТэйр»',
+  'КБИИ':'Комитет по бюджету, инновациям и инвестициям Правления ПАО «Авиакомпания «ЮТэйр»',
+  'ОСКО':'Отдел секретариата коллегиальных органов — организует заседания комитетов, документирует решения',
+  'ЭУ':'Экономическое управление — проверяет расчёты нормативов и контрольных показателей, обеспечивает методическую поддержку',
+  'ПФМ':'Подразделение финансового менеджмента — функциональное подразделение авиакомпании, участвующее в производственных и управленческих процессах',
+  'АД':'Авиадвигатель — силовая установка воздушного судна',
+  'ВСУ':'Вспомогательная силовая установка — бортовой газотурбинный агрегат для запуска основных двигателей и питания систем на стоянке',
+  'ВС':'Воздушное судно — самолёт или вертолёт',
+  'ВБК':'Ведомости банковского контроля — документы валютного контроля по внешнеэкономическим контрактам',
+  'ЭДО':'Электронный документооборот — система обмена документами в электронном виде',
+  'EOQ':'Economic Order Quantity — оптимальный размер заказа, минимизирующий суммарные затраты на заказ и хранение',
+  'MTBR':'Mean Time Between Removal — средняя наработка на съём компонента с ВС. Чем выше, тем реже нужна замена',
+  'NPV':'Net Present Value — чистая приведённая стоимость. Метод оценки инвестиций с учётом стоимости денег во времени',
+  'Rotable':'Ротируемый компонент — запчасть, которую экономически целесообразно ремонтировать многократно. Живёт весь срок службы ВС. Примеры: колёса, тормоза, гидронасосы',
+  'Expendable':'Расходный материал — одноразовая запчасть, списывается при установке. 100% scrap rate. Примеры: фильтры, крепёж, уплотнения, прокладки',
+  'Consumable':'Расходный материал (синоним Expendable) — одноразовые материалы и запчасти для ТО воздушных судов',
+};
+
+function addTooltips() {
+  const skip = new Set(['SCRIPT','STYLE','ABBR','CODE','PRE','INPUT','TEXTAREA','SVG','svg']);
+  const keys = Object.keys(GLOSSARY).sort((a,b) => b.length - a.length);
+  const pat = new RegExp('(?<![а-яА-Яa-zA-Z])(' + keys.map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|') + ')(?![а-яА-Яa-zA-Z])','g');
+
+  function walk(node) {
+    if (node.nodeType === 3) {
+      const txt = node.textContent;
+      if (!pat.test(txt)) return;
+      pat.lastIndex = 0;
+      const frag = document.createDocumentFragment();
+      let last = 0;
+      let m;
+      pat.lastIndex = 0;
+      while ((m = pat.exec(txt)) !== null) {
+        if (m.index > last) frag.appendChild(document.createTextNode(txt.slice(last, m.index)));
+        const abbr = document.createElement('abbr');
+        abbr.className = 'tip';
+        abbr.setAttribute('data-tip', GLOSSARY[m[1]]);
+        abbr.textContent = m[1];
+        frag.appendChild(abbr);
+        last = pat.lastIndex;
+      }
+      if (last < txt.length) frag.appendChild(document.createTextNode(txt.slice(last)));
+      node.parentNode.replaceChild(frag, node);
+    } else if (node.nodeType === 1 && !skip.has(node.tagName) && !node.closest('#bpmn-canvas') && !node.closest('.bpmn-toolbar')) {
+      Array.from(node.childNodes).forEach(walk);
+    }
+  }
+
+  document.querySelectorAll('.view, .header').forEach(v => walk(v));
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  viewer = new BpmnJS({ container: '#bpmn-canvas' });
+  const xml = document.getElementById('bpmn-xml').textContent;
+  try {
+    await viewer.importXML(xml);
+    viewer.get('canvas').zoom('fit-viewport');
+    viewer.on('element.click', e => showInfo(e.element));
+  } catch (err) {
+    console.error('BPMN error:', err);
+    document.getElementById('bpmn-canvas').innerHTML = '<div style="padding:40px;text-align:center;color:#e74c3c">Ошибка загрузки BPMN: ' + err.message + '</div>';
+  }
+  addTooltips();
+  initTooltipSystem();
+});
+
+function initTooltipSystem() {
+  const tip = document.createElement('div');
+  tip.id = 'gltip';
+  document.body.appendChild(tip);
+
+  document.addEventListener('mouseenter', e => {
+    const el = e.target.closest('abbr.tip');
+    if (!el) return;
+    tip.textContent = el.getAttribute('data-tip');
+    tip.style.display = 'block';
+    const r = el.getBoundingClientRect();
+    let left = r.left + r.width / 2 - tip.offsetWidth / 2;
+    let top = r.top - tip.offsetHeight - 10;
+    if (left < 8) left = 8;
+    if (left + tip.offsetWidth > window.innerWidth - 8) left = window.innerWidth - tip.offsetWidth - 8;
+    if (top < 8) { top = r.bottom + 10; tip.style.setProperty('--arrow','top'); } else { tip.style.removeProperty('--arrow'); }
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+    el._tipActive = true;
+  }, true);
+
+  document.addEventListener('mouseleave', e => {
+    const el = e.target.closest('abbr.tip');
+    if (el && el._tipActive) { tip.style.display = 'none'; el._tipActive = false; }
+  }, true);
+}
+</script>
+
+</body>
+</html>
