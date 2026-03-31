@@ -46,7 +46,27 @@ poc/**                      → POC эксперименты
 tests/**                    → тесты (код тестов, не fixtures)
 ```
 
-## Формат сдачи (после реализации)
+## Handoff-протокол coder'а
+
+### H5: Coder → Validator (сдача работы)
+```yaml
+handoff: H5_code_to_postgate
+to: validator
+payload:
+  task: TASK-NNN
+  iteration: "1/3"
+  validation_mode: code       # code | bpmn
+  files_changed:
+    - path: scripts/...
+      action: NEW | MODIFIED
+      lines: N
+  files_not_touched:
+    - [non-goals файлы]
+  risks: ["..."]
+  checks_requested: [pytest_pass, diff_in_scope, ownership_ok, decisions_no_conflict]
+```
+
+### Формат сдачи (H5 в тексте)
 ```
 📦 СДАЧА TASK-NNN (итерация N/3)
 Изменено: [список файлов с кратким описанием]
@@ -55,6 +75,8 @@ tests/**                    → тесты (код тестов, не fixtures)
 Тесты: pytest [результат]
 Риски: [если есть]
 ```
+
+При fast-track: coder обязан запустить pytest самостоятельно и включить результат в сдачу. Если обнаружил сложность → отмена fast-track, эскалация к orchestrator.
 
 ## Зона другого агента (не трогать)
 - `docs/**`, `.cursor/state/**`, `tests/fixtures/gold/**` → scribe

@@ -11,7 +11,7 @@ mode: agent
 Ведёт память проекта. Обновляет документацию, записывает решения в граф состояния, запускает валидации. Работает по команде orchestrator'а.
 
 ## МОЖЕТ
-- `docs/**` — DECISIONS.md, CURRENT_STATE.md, changelog.md, reports
+- `docs/**` — DECISIONS.md, CURRENT_STATE.md, reports
 - `.cursor/state/**` — dev_state.sqlite (LangGraph state)
 - `tests/fixtures/gold/**` — Gold Standard разметка
 - Запускать pytest и RAGAS метрики (read-only к коду)
@@ -68,33 +68,30 @@ mode: agent
 }
 ```
 
-### 4. changelog.md
-После мерджа задачи — хронологическая запись (паттерн Helicomponents):
-```markdown
-## [YYYY-MM-DD] — 🔧 TASK-NNN: [название]
-### [подсистема]
-- [что изменено, кратко]
-- [что изменено, кратко]
-```
-
-### 5. Валидации (по команде orchestrator'а)
-- `pytest tests/` — запустить, записать результат
-- Schema check: ProcessSpec.yaml валиден
-- Consistency: docs ссылки согласованы
-- Scope check: diff coder'а ⊆ scope плана
-
-### 6. Governance check (анти-дрейф)
+### 4. Governance check (анти-дрейф)
 Перед тем как orchestrator создаст новый план, scribe проверяет:
 - План не противоречит записям в DECISIONS.md
 - Scope не пересекается с другими открытыми задачами
 - Если противоречие — scribe **блокирует** и сообщает orchestrator'у
 
-## Формат отчёта (после валидации)
+## Handoff-протокол scribe'а
+
+### H8: Scribe → Orchestrator (запись завершена)
+После получения H7 от orchestrator'а — обновить docs и state, затем доложить:
+```yaml
+handoff: H8_scribe_done
+to: orchestrator
+payload:
+  recorded:
+    - dev_state.sqlite: updated
+    - CURRENT_STATE.md: updated
+    - DECISIONS.md: [appended | no changes]
+```
+
+### Формат отчёта
 ```
 📋 ОТЧЁТ SCRIBE для TASK-NNN
-Tests: ✅ 15/15 pass (0.4s)
-Scope check: ✅ diff ⊆ plan scope
-Docs updated: ✅ CURRENT_STATE + changelog
+Docs updated: ✅ CURRENT_STATE
 Decisions recorded: ✅ D-012 (OCR choice)
 State updated: ✅ ingestion → done
 Governance: ✅ no conflicts with DECISIONS.md

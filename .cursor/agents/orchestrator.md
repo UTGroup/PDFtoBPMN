@@ -47,10 +47,66 @@ mode: plan
 - Scope lock: план фиксирует non-goals, расширение scope запрещено.
 - Одна задача = одна подсистема = минимальный дифф.
 
+## Handoff-протокол orchestrator'а
+
+### H2: Orchestrator → Validator (pre-gate)
+```yaml
+handoff: H2_plan_to_pregate
+to: validator
+payload:
+  plan_file: .cursor/plans/TASK-NNN.md
+  validation_mode: pre
+  checks_requested: [plan_vs_decisions, scope_valid, ownership_ok, dependencies_ok]
+```
+
+### H4: Orchestrator → Coder (задание)
+```yaml
+handoff: H4_plan_to_coder
+to: coder
+payload:
+  plan_file: .cursor/plans/TASK-NNN.md
+  pre_gate: PASS
+  iteration: "1/3"
+  instructions: |
+    Scope: [файлы НОВЫЙ/ИЗМЕНИТЬ/ТЕСТЫ]
+    Non-goals: [что НЕ трогать]
+    При сдаче: формат H5.
+```
+
+### H7: Orchestrator → Scribe (запись результата)
+Только после ALL PASS на post-gate.
+```yaml
+handoff: H7_accept_to_scribe
+to: scribe
+payload:
+  task: TASK-NNN
+  status: done
+  record_instructions:
+    - update_component: {name: "...", status: "...", tests_pass: true}
+    - log_decision: {title: "...", decision: "..."}
+    - update_current_state: true
+```
+
+### H9: Orchestrator → Human (доклад)
+```markdown
+## Доклад по TASK-NNN: [название]
+**Статус:** DONE ✅ | BLOCKED ❌
+**Итерации:** N/3
+### Что сделано
+- [файл]: [описание]
+### Gates
+- Pre-gate: PASS/FAIL
+- Post-gate: PASS/FAIL (N/N tests)
+### Решения (если были)
+- D-NNN: [описание]
+### Следующий шаг
+### Готово к коммиту
+git add -A && git commit -m "TASK-NNN: [описание]"
+```
+
 ## Checkpoint перед retry
 
-Перед каждым retry (H4' и далее) orchestrator ОБЯЗАН зафиксировать контрольную точку.
-Формат — в теле handoff H4':
+Перед каждым retry (H4') orchestrator ОБЯЗАН зафиксировать контрольную точку в теле handoff:
 
 ```yaml
 checkpoint:
@@ -61,20 +117,31 @@ checkpoint:
   decision: continue | adjust_scope | escalate
 ```
 
-Правила:
-- `drift=true` + `decision=adjust_scope` → пересогласовать с human, не продолжать самостоятельно.
-- `drift=true` + `decision=escalate` → H9(BLOCKED), отчёт human.
-- `decision=continue` допустим только при `drift=false`.
+- `drift=true` + `adjust_scope` → пересогласовать с human.
+- `drift=true` + `escalate` → H9(BLOCKED), отчёт human.
+- `continue` допустим только при `drift=false`.
 
 ## Fast-track
 
-Orchestrator может объявить fast-track для мелких изменений (≤1 файл, ≤30 строк, без API/архитектуры/core).
-Подробные критерии и формат — `docs/Handoff_Protocol.md`, секция 5.
+Для мелких изменений (≤1 файл, ≤30 строк, без API/архитектуры/core).
+Все условия одновременно: нет новых решений, не затрагивает `core/**`, тип — рефакторинг/docstring/опечатка/unit-тест.
 
-При fast-track:
-- План (TASK-NNN.md) не создаётся
-- Цепочка: H1 → H4(fast_track) → Coder → H9 → Human
-- Если coder сообщает о сложности → отмена, полный цикл
+Укороченная цепочка: H1 → H4(fast_track) → Coder → H9 → Human.
+Пропускаются: pre-gate, post-gate, scribe.
+
+```yaml
+handoff: H4_fast_track
+to: coder
+payload:
+  plan_file: null
+  fast_track: true
+  iteration: "1/1"
+  reason: "docstring update, 5 lines, no logic change"
+  instructions: "[описание]. pytest обязателен."
+```
+
+- Если coder обнаружил сложность → отмена fast-track, полный цикл.
+- Fast-track FAIL → полный цикл (не retry).
 
 ## Формат ревью (после coder)
 ```

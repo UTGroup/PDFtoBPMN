@@ -85,20 +85,51 @@ validation_mode: code | bpmn | pre
 - Писать код
 - Интерпретировать бизнес-логику (только проверка трассировки)
 
-## Формат отчёта (H3 / H6)
+## Handoff-протокол validator'а
+
+### H3: Validator → Orchestrator (pre-gate result)
 ```yaml
-gate: pre | post
-validation_mode: pre | code | bpmn
-result: PASS | FAIL
-iteration: "1/3"
-checks:
-  check_name: {pass: true|false, details: "..."}
-failures:
-  - check: check_name
-    reason: "..."
-    suggestion: "..."
-retry_count: 0
+handoff: H3_pregate_result
+to: orchestrator
+payload:
+  gate: pre
+  result: PASS | FAIL
+  checks:
+    plan_vs_decisions: {pass: true}
+    scope_valid: {pass: true}
+    ownership_ok: {pass: true}
+    dependencies_ok: {pass: true}
+  failures:              # только при FAIL
+    - check: plan_vs_decisions
+      reason: "D-007 says no NetworkX, plan includes graph_builder.py"
+      suggestion: "Remove graph components from scope"
 ```
+
+### H6: Validator → Orchestrator (post-gate result)
+```yaml
+handoff: H6_postgate_result
+to: orchestrator
+payload:
+  gate: post
+  validation_mode: code | bpmn
+  result: PASS | FAIL
+  iteration: "1/3"
+  checks:
+    pytest_pass: {pass: true, details: "15/15 tests, 0.4s"}
+    diff_in_scope: {pass: true, files_in_scope: 3, files_out_scope: 0}
+    ownership_ok: {pass: true}
+    decisions_no_conflict: {pass: true}
+  retry_count: 0         # 0/1/2, на 3 → BLOCK → human
+  failures:              # только при FAIL
+    - check: pytest_pass
+      reason: "test_page_classifier FAILED"
+      suggestion: "Fix classification logic"
+```
+
+### Retry-логика
+- Post-gate FAIL, retry < 3 → orchestrator делает checkpoint → H4' → coder fixes → H5' → validator
+- Post-gate FAIL, retry = 3 → BLOCK → H9(BLOCKED) → Human
+- Pre-gate FAIL → orchestrator переписывает план → H2' → validator (макс. 2 переписки)
 
 ## Температура 0.0
 Максимальная детерминированность. Тест прошёл или нет. Schema валидна или нет.

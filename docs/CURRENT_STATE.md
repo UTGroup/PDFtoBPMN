@@ -1,19 +1,23 @@
 # Текущее состояние
 
 ## Фаза: 0_setup (мультиагент + архитектура)
-## Задача: TASK-006 — POC Qwen VLM описание графики
+## Задача: донастройка мультиагента и MCP
 ## Статус: completed
 ## Ветка: v2-graphrag
 
 ### Компоненты
 - ✅ **cursor_rules**: 7 .mdc файлов (v1 удалены, v2 синхронизированы с DECISIONS)
 - ✅ **cursor_hooks**: 4 хука — синтаксис OK, базовая логика OK, executable
-- ✅ **cursor_agents**: 5 агентов (orchestrator, coder, validator, scribe, extractor)
+- ✅ **cursor_agents**: 5 агентов (orchestrator, coder, validator, scribe, extractor) — обновлены: checkpoint, fast-track, out-of-scope, validator 3 режима (D-019)
 - ✅ **langgraph_state**: dev_graph + batch_graph — pip install OK, 6/6 тестов pass
-- ✅ **docs**: Architecture_v2.1, DECISIONS (D-001..D-012), Handoff Protocol — готовы
+- ✅ **docs**: Architecture_v2.1, DECISIONS (D-001..D-019), Handoff Protocol (обновлён: iteration, checkpoint, fast-track, validation_mode) — готовы
 - ✅ **core_types**: KnowledgeType (13), EdgeType (19), GraphStore/VectorStore Protocol — импорт OK
 - ✅ **docling**: v2.80.0 — парсит PDF, таблицы, структуру
 - ✅ **easyocr**: v1.7.2 — OCR winner (D-012), lang=["ru","en"], GPU
+- ✅ **mcp_domino**: два MCP-сервера Domino KEEP — db01 (ЭСЗ, СУБП) + db02 (БНД dflib, 1380 документов, 247 уникальных номеров)
+- ✅ **mcp_superset**: Superset API (bi.utair.io)
+- ✅ **mcp_jira**: Jira Server (jira.utair.ru)
+- ✅ **mcp_singularity**: Singularity App
 
 ### Сделано
 - Bootstrap v2.1 выполнен (ветка v2-graphrag, 2 коммита)
@@ -62,11 +66,40 @@
   - Инфраструктура: 3 venv (DeepSeek-OCR/venv, venv, ocr_bench_venv)
   - Артефакты: poc/benchmark_results/ (7 JSON + summary.json), poc/bench_*.py (9 скриптов)
 
+### Донастройка мультиагента (29.03.2026)
+- Handoff Protocol обновлён: IterationCount в H4/H5/H9, checkpoint перед retry, fast-track цикл, validation_mode в H2/H5
+- Validator: 3 режима (pre, code, bpmn) — BPMN review готов к Фазе 3B
+- Все 5 agents: добавлена секция "Зона другого агента" (перекрёстные ссылки)
+- Orchestrator: checkpoint перед retry, fast-track правила
+- 00_global_always.mdc: расширена секция "Разрешено без согласования" (auto-approved class)
+- Исправлены опечатки dev_state.json → dev_state.sqlite в orchestrator.md и scribe.md
+
+### Донастройка MCP (29.03.2026)
+- Добавлен MCP-сервер `domino-keep-bnd` (domino-db02.utair.ru:8880) — База Нормативных Документов
+- БНД (dflib.nsf): 97 views, 1380 записей, 247 уникальных номеров документов
+- Типы НД: КД (136), ДП (32), РГ (22), РД (19), РИ (12), СТ (11), ДВС (5), ИОТ (3)
+- View `(DocumentByNumberForAll)` — действующие документы, поля: DocNum, DocDate, DocDateActual, DocSubject, @unid
+- Старый `domino-keep` (db01) — ЭСЗ (dfesz24-26), Контроль, СУБП — без изменений
+
+### Разведка структуры БНД (29.03.2026, D-020)
+- **Три типа вложений**: PDF-образы (`v_ImagesForDocRead`), Word-проекты (`v_ImagesForDoc`), ссылки ImageLink (РПП, РОНО)
+- **PDF-образы**: ~18 254 записей, Form: Image, привязаны через ParentUIN, содержат $FILES с PDF
+- **Word-проекты**: ~1928 действующих (.doc/.docx), фильтр `$13 == "Действующий"`, 135 НД с Word + PDF
+- **Составные документы** — множество карточек (основная + N изменений):
+  - КД-РД-В3.049-01 «РОНО»: 73 карточки, 8 частей по типам ВС, 216 PDF + 317 Word
+  - ПР-073-15 «Учетная политика»: 15 карточек, 6+ частей, 16 PDF-эталонов + 28 PDF изменений + 24 Word
+- **Эталоны** — актуальные полные версии частей в основной карточке (имя содержит "Эталон №N для ознакомления")
+- **Стратегия**: эталоны из основной карточки → Word (Действующий) → Docling; ImageLink — отложено
+- **ImageLink** (Form: ImageLink): для составных документов (РПП), поле Link = rich text, требует дополнительного исследования
+
 ### Следующее
 - Фаза 0 POC завершена. Следующий шаг: планирование Фазы 1 (production pipeline).
 - OCR стратегия определена (D-018): DeepSeek-OCR v1 primary, GLM-OCR fast fallback.
 - Ансамбль OCR моделей — Фаза 2.
 - Qwen-7B VLM тестирование — на машине с RTX 5090 (дома).
+- Интеграция с БНД (dflib) через MCP — синхронизация реестра документов с Lotus Notes.
+- **БНД ingestion pipeline**: скачивание эталонов PDF + действующих Word из dflib → Docling parsing → graph population.
+- **ImageLink исследование**: уточнить с админом доступ к РПП и другим документам с Form: ImageLink.
 - Отложено: POC 2 (LightRAG, нет API) → Фаза 3, POC 5 (BS) → Фаза 4
 
 ### Блокеры
@@ -81,3 +114,6 @@
 - H9: Orchestrator → Human (18.03.2026) — TASK-005 completed, Page Classifier POC 397 pages classified
 - H9: Orchestrator → Human (19.03.2026) — TASK-006 completed, Qwen VLM POC: 2B работает, для production нужна 7B
 - H10: Orchestrator → Human (20.03.2026) — TASK-007 completed, OCR/VLM Benchmark: 7 моделей, D-018
+- Human (29.03.2026) — Донастройка мультиагента: D-019, обновление протоколов и агентов
+- Human (29.03.2026) — Донастройка MCP: domino-keep-bnd (db02, dflib) подключён
+- Human (29.03.2026) — Разведка структуры БНД: 3 типа вложений, составные документы, стратегия extraction (D-020)

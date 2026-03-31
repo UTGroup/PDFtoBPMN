@@ -12,6 +12,23 @@ alwaysApply: true
 - Код без плана в `.cursor/plans/` — запрещён.
 - Один plan = одна подсистема = один агент = минимальный дифф (≤3 файлов, ≤150 строк).
 
+## Handoff-цепочка (полный цикл задачи)
+```
+H1: Human → Orchestrator (задание)
+H2: Orchestrator → Validator (pre-gate: план vs DECISIONS, scope, ownership)
+H3: Validator → Orchestrator (PASS/FAIL)
+H4: Orchestrator → Coder (задание на код, iteration N/3)
+H5: Coder → Validator (сдача: diff + тесты, validation_mode: code|bpmn)
+H6: Validator → Orchestrator (PASS/FAIL, retry_count)
+H7: Orchestrator → Scribe (запись: state, CURRENT_STATE, DECISIONS)
+H8: Scribe → Orchestrator (подтверждение записи)
+H9: Orchestrator → Human (доклад, готово к коммиту)
+```
+- Fast-track (≤1 файл, ≤30 строк): H1 → H4 → Coder → H9 (без gates и scribe).
+- Retry: макс. 3 итерации, checkpoint обязателен перед каждым retry.
+- Git commit: только human после H9. Агенты не коммитят.
+- Форматы handoff'ов — в `.cursor/agents/*.md` каждого агента.
+
 ## Governance (анти-дрейф)
 - Orchestrator ОБЯЗАН прочитать `docs/DECISIONS.md` + `docs/CURRENT_STATE.md` перед планированием.
 - Scribe БЛОКИРУЕТ план, если он противоречит существующим решениям в DECISIONS.md.
@@ -34,7 +51,7 @@ alwaysApply: true
 - Рефакторинг внутри scope плана без изменения публичного API.
 - Добавление/обновление unit-тестов к существующему коду.
 - Обновление docstrings и комментариев (без изменения логики).
-- Fast-track задачи (≤1 файл, ≤30 строк, без API/архитектуры/core) — см. `docs/Handoff_Protocol.md`, секция 5.
+- Fast-track задачи (≤1 файл, ≤30 строк, без API/архитектуры/core).
 
 ## Ownership (жёсткий)
 ```
@@ -53,11 +70,10 @@ tests/fixtures/gold/** → scribe only
 - Extraction confidence < 0.5 → не включать в граф, сохранить в `_low_confidence.json`.
 
 ## Документация
-- 4 файла должны быть согласованы:
+- 3 файла должны быть согласованы:
   1. `docs/Architecture_v2.1.md`
   2. `docs/DECISIONS.md`
   3. `docs/CURRENT_STATE.md`
-  4. `docs/changelog.md`
 
 ## Source of truth
 - Архитектура: `docs/Architecture_v2.1.md`
