@@ -46,6 +46,8 @@ validation_mode: code | bpmn | pre
 | decisions_no_conflict | Diff не противоречит DECISIONS.md |
 | error_handling | Нет try/except без логирования |
 | api_stability | Публичные API не изменены без указания в плане |
+| scope_creep | Каждая изменённая группа строк присутствует в `H5.diff_trace` и ссылается на пункт плана; правок без `plan_ref` нет (FAIL при нарушении) |
+| simplicity | **WARNING (не блокирующий).** Diff > 150 строк или > 3 файлов, либо средняя длина новой функции > 40 строк. Сообщается в `failures` с `severity: warning`, не влияет на PASS/FAIL |
 
 ---
 
