@@ -1,0 +1,571 @@
+# Онтология ЦУП (AS-IS) — справочники и связи
+# Артефакт §7.1 шага 4 из input2/ЦУП_md/ANALYSIS_AS-IS_RCA_и_Сбойные.md
+# Назначение: единая модель сущностей для ИИ-ассистента ЦУП.
+# Принцип: дословное соответствие нормативке (РД-Б8.005-09, КД-ДП-Б8.007-05,
+# КД-РГ-147(148)-08, РИ-М1.016-08, РИ-Б8.014-07, РГ-128-06).
+
+meta:
+  version: 2.1
+  status: synced_with_analysis_v2.1
+  source_doc: input2/ЦУП_md/ANALYSIS_AS-IS_RCA_и_Сбойные.md
+  authority_docs:
+    - КД-ДП-Б8.007-05
+    - КД-РГ-147(148)-08
+    - КД-РИ-Б1.071-06
+    - РГ-128-06
+    - РД-Б8.003-11
+    - РД-Б8.005-09
+    - РИ-Б8.014-07
+    - РИ-Б8.1.018-06
+    - РИ-М1.016-08
+    - КД-РД-Б1.041-04  # изм.32 от 24.04.2026 — добавлен в v2.1
+  external_triggers:
+    - КК62-26  # повестка Комитета по производственной деятельности от 23.04.2026
+
+# ─────────────────────────────────────────────────────────────────────────
+# 1. РОЛИ И ПОДРАЗДЕЛЕНИЯ
+# ─────────────────────────────────────────────────────────────────────────
+roles:
+  - id: ROLE-DISP-TsUP
+    name: Диспетчер ЦУП
+    unit: ЦУП
+    decision_points: [A1]
+  - id: ROLE-NS-TsUP
+    name: НС ЦУП (начальник смены)
+    unit: ЦУП
+    decision_points: [A2, B1, B2]
+  - id: ROLE-HEAD-TsUP
+    name: Начальник ЦУП / зам. начальника
+    unit: ЦУП
+    decision_points: [A3, A4, B2, B4]
+  - id: ROLE-MGR-SCHED
+    name: Ведущий менеджер по управлению расписанием
+    unit: ЦУП
+    decision_points: []
+    note: |
+      v2.1: больше не владелец отдельного DP. Recovery-72ч убрано как отдельный DP B3.
+      Менеджер расписания участвует в B3 как один из исполнителей команд НС ЦУП.
+  - id: ROLE-NS-OPDO
+    name: НС ОПДО САОП ЛД
+    unit: ЛД
+  - id: ROLE-DONO
+    name: ДОНО (диспетчер ООНО)
+    unit: ЛД/Хэндлинг
+  - id: ROLE-SPiOU
+    name: СПиОУ ЛД (служба планирования и обеспечения)
+    unit: ЛД
+  - id: ROLE-CUTO
+    name: ЦУТО ВС / ТД
+    unit: ТД
+  - id: ROLE-DUTiZ
+    name: ДУТиЗ (управление тарифами и загрузкой)
+    unit: КД
+  - id: ROLE-UTG-DC
+    name: ДЦ АО «Ю-Ти-Джи»
+    unit: external
+    contact:
+      phone: "(3452) 281100"
+      anchor: КД-РГ-147(148)-08
+  # v2.1: новые роли из КД-РД-Б1.041-04 (изм.32)
+  - id: ROLE-KC
+    name: Контактный центр (КЦ)
+    unit: КД
+    decision_points: []
+    note: владелец АСБ Leonardo и сервиса KYFO; расставляет ремарки DEGR/CVIP/PDTS, контролирует ФАП-82
+  - id: ROLE-OKR
+    name: ОКР (Отдел контроля регистрации)
+    unit: ЛД/Хэндлинг
+    decision_points: []
+    note: владелец данных DCS Astra и листа трансферных пассажиров
+  - id: ROLE-KAE-KLO
+    name: КАЭ / КЛО (командир авиаэскадрильи / лётного отряда)
+    unit: ЛД
+    decision_points: []
+    note: согласует префикс t/t* для ВС с двигательными ограничениями (Meridian.OPS)
+
+units:
+  - id: UNIT-TsUP
+    name: ЦУП — Центр управления полётами
+    parent: ЛД
+  - id: UNIT-LD
+    name: ЛД — Лётный департамент
+  - id: UNIT-TD
+    name: ТД — Технический департамент
+  - id: UNIT-KD
+    name: КД — Коммерческий департамент
+  - id: UNIT-DONO
+    name: Дирекция организации наземного обслуживания
+  - id: UNIT-OPiAA
+    name: Отдел планирования и анализа авиаперевозок
+    note: владелец отчёта UT-DSP.1-06 (РИ-М1.016 §6)
+
+# ─────────────────────────────────────────────────────────────────────────
+# 2. DECISION POINTS
+# ─────────────────────────────────────────────────────────────────────────
+decision_points:
+  - id: A1
+    cycle: RCA
+    actor: ROLE-DISP-TsUP
+    decision: Предварительная формулировка причины задержки + IATA-код
+    time_window: <=15 мин от планового времени
+    anchor: РД-Б8.005-09 §14.2 табл.1
+  - id: A2
+    cycle: RCA
+    actor: ROLE-NS-TsUP
+    decision: Окончательная формулировка причины + код AHM 730
+    time_window: по смене
+    anchor: РД-Б8.005-09 §14.2 шаги 3,6; КД-ДП-Б8.007 §10
+  - id: A3
+    cycle: RCA
+    actor: ROLE-HEAD-TsUP
+    decision: Решение о доп. расследовании, эскалация виновникам
+    time_window: до 11:00 тюм. ежедневно
+    anchor: КД-ДП-Б8.007 §11 табл.1 (ежедневный)
+  - id: A4
+    cycle: RCA
+    actor: ROLE-HEAD-TsUP
+    decision: Корректирующие/предупреждающие действия, спец.аудит подрядчика
+    time_window: неделя/месяц/год
+    anchor: КД-ДП-Б8.007 §11 (глубокий); РИ-М1.016 §9; РД-Б8.003-11 §8.4
+  # v2.1: B-цикл переинтерпретирован как «Оперативное управление регулярностью»
+  # (ранее в v1 — Disrupt / Сбойная ситуация). Триггер — каждое отклонение в ПП.
+  - id: B1
+    cycle: OperationalRegularity
+    actor: ROLE-DISP-TsUP
+    co_actors: [ROLE-CUTO, ROLE-NS-OPDO, ROLE-SPiOU, ROLE-DONO]
+    decision: Сбор оперативной картины по конкретному отклонению
+    trigger: каждое прогнозируемое или фактическое отклонение в плане полётов
+    time_window: <=30 мин от получения информации
+    anchor: КД-ДП-Б8.007 §11 табл.1 (оперативный); РД-Б8.005-09 §14.2 шаг 1
+  - id: B2
+    cycle: OperationalRegularity
+    actor: ROLE-NS-TsUP
+    decision: Окончательное решение по отклонению (выбор + обоснование)
+    options:
+      - Ждать
+      - Замена ВС
+      - Резервный экипаж
+      - Перенос
+      - Совмещение
+      - Отмена
+      - Стыковки пассажиров
+      - Запасной а/д
+    inputs_v2_1:  # 4 новых входа из КД-РД-Б1.041-04 изм.32
+      - SYS-LEONARDO (DEGR/CVIP/PDTS — приоритеты пассажиров)
+      - SYS-MER-OPS-TT (флаг t/t* — ограничения двигателей)
+      - SYS-KYFO (статусы услуг ФАП-82)
+      - SYS-DCS-ASTRA (факт чек-инов, закрытие рейса)
+    sla_timers_v2_1:  # триггеры B-петли из изм.32
+      - T-6h: расстановка DEGR/CVIP/PDTS в АСБ Leonardo
+      - T-3h_or_T-2h: подготовка протокола по трансферным паксам
+      - T+1h_after_delay: контроль сервисов ФАП-82 через KYFO
+      - flag_tt: фильтр при выборе подмены ВС
+    time_window: минуты–часы (для каждого рейса)
+    anchor: РД-Б8.005-09 §14.1.3; КД-РД-Б1.041-04 §6, §10–§14, §17 (изм.32)
+  - id: B3
+    cycle: OperationalRegularity
+    actor: ROLE-NS-TsUP
+    executors: [ROLE-UTG-DC, ROLE-CUTO, ROLE-SPiOU, ROLE-DONO, ROLE-DUTiZ, ROLE-DISP-TsUP, ROLE-MGR-SCHED]
+    decision: Команды исполнителям по регламентированным каналам
+    time_window: минуты
+    anchor: РД-Б8.005-09 §15.1.3.2.2.1–§15.1.3.2.2.8; КД-РГ-147(148)-08 табл.1–5
+  - id: B4
+    cycle: OperationalRegularity
+    actor: ROLE-NS-TsUP
+    escalates_to: ROLE-HEAD-TsUP  # либо начальник ЛД
+    decision: Эскалация при превышении компетенции НС ЦУП (иерархическая, не ERP)
+    time_window: по факту
+    anchor: РД-Б8.005-09 §14.1.4
+  # Out-of-scope для v2.1 MVP, но сохранены как ссылки
+  - id: B-LEGACY-DISRUPT
+    cycle: Disrupt-Legacy
+    status: out_of_scope_for_mvp
+    actor: ROLE-NS-TsUP
+    decision: Присвоение статуса «Сбойная ситуация»
+    trigger: ≥10 задержек по одной причине
+    anchor: РД-Б8.005-09 §15.1.3.3.2–§15.1.3.3.4
+    note: фаза 2 (плейбуки КК62-26 поверх B-петли)
+  - id: B-LEGACY-ERP
+    cycle: ERP
+    status: out_of_scope_for_ai_assistant
+    actor: ROLE-HEAD-TsUP
+    decision: Эскалация в оперштаб ERP (АНВ / АП)
+    anchor: РГ-128-06 §1.1, §5.6–5.7
+
+# ─────────────────────────────────────────────────────────────────────────
+# 3. СПРАВОЧНИКИ
+# ─────────────────────────────────────────────────────────────────────────
+
+# 3.1 Категории задержек (21 категория, РИ-М1.016-08 §8.1.2)
+delay_categories_ri_m1_016:
+  scheme: РИ-М1.016-08 §8.1.2
+  count: 21
+  classes:
+    - id: DC-AC
+      name: Авиакомпания (внутренние причины)
+      example_codes_iata: [PR, MX, FX]
+    - id: DC-HND
+      name: Наземное обслуживание (хэндлинг)
+      example_codes_iata: [GD, GH]
+    - id: DC-WX
+      name: Метеоусловия
+      example_codes_iata: [WO]
+    - id: DC-ATC
+      name: ОрВД / слоты
+      example_codes_iata: [AT]
+    - id: DC-PAX
+      name: Пассажиры (трансфер, опоздания, медицина)
+      example_codes_iata: [PD, PL]
+    - id: DC-AIR
+      name: Аэропорт (инфраструктура, ВПП)
+      example_codes_iata: [AS, AE]
+    - id: DC-TECH
+      name: Техническое обслуживание ВС
+      example_codes_iata: [TD, TM]
+    - id: DC-CREW
+      name: Экипаж (резерв, раб. время, медотстранение)
+      example_codes_iata: [FC]
+    - id: DC-FUEL
+      name: Топливо
+      example_codes_iata: [FS]
+    - id: DC-CARGO
+      name: Загрузка / груз / NOTOC
+      example_codes_iata: [LR]
+    - id: DC-CATERING
+      name: Бортпитание
+      example_codes_iata: [CD]
+    - id: DC-CLEAN
+      name: Уборка ВС
+      example_codes_iata: [CC]
+    - id: DC-DICE
+      name: Противообледенение
+      example_codes_iata: [WI]
+    - id: DC-SECURITY
+      name: Авиабезопасность
+      example_codes_iata: [SA]
+    - id: DC-DOCS
+      name: Документация (load sheet, дисп.разрешение)
+      example_codes_iata: [LD]
+    - id: DC-ROUTE
+      name: Маршрут / FPL / запасной а/д
+      example_codes_iata: [AT]
+    - id: DC-SLOT
+      name: Слоты ЦБРС / ГЦ ЕС ОрВД
+      example_codes_iata: [AT]
+    - id: DC-CUSTOMS
+      name: Таможня / погранконтроль
+      example_codes_iata: [GO]
+    - id: DC-BAGS
+      name: Багаж (поиск, разногласия)
+      example_codes_iata: [LB]
+    - id: DC-ROTATION
+      name: Связанные задержки (rotation)
+      example_codes_iata: [RA]
+    - id: DC-OTHER
+      name: Прочее
+      example_codes_iata: [MI]
+  note: |
+    Точные коды AHM 730 берутся из КД-ДП-Б8.007 §10. В YAML указаны примерные —
+    финальный mapping заполняется на основании актуальной редакции AHM 730.
+
+# 3.2 IATA AHM 730 — справочник кодов (полный заполняется отдельно)
+iata_ahm_730:
+  source: КД-ДП-Б8.007-05 §10
+  storage: внешний справочник (CSV/JSON), импортируется в ИС
+  mapping_to_ri_m1_016: см. delay_categories_ri_m1_016.classes[*].example_codes_iata
+
+# 3.2.1 Ремарки приоритетов пассажиров (v2.1, КД-РД-Б1.041-04 изм.32)
+passenger_priority_remarks:
+  source: КД-РД-Б1.041-04 §10–§14 (изм.32)
+  storage: АСБ Leonardo (SYS-LEONARDO)
+  remarks:
+    - id: REM-DEGR
+      name: DEGR
+      meaning: пассажир, для которого допустима добровольная замена (downgrade/voluntary denial)
+      sla_set_at: T-6h до СОВ
+      owner: ROLE-KC
+    - id: REM-CVIP
+      name: CVIP
+      meaning: VIP-уровень или приравненный (требует приоритетного сервиса)
+      sla_set_at: T-6h до СОВ
+      owner: ROLE-KC
+    - id: REM-PDTS
+      name: PDTS
+      meaning: пассажир с особыми условиями (upgrade/специальный приоритет)
+      sla_set_at: T-6h до СОВ
+      owner: ROLE-KC
+
+# 3.3 Каналы коммуникации
+communication_channels:
+  - id: CH-AFTN
+    name: AFTN (телеграммы MVT/MVT-OUT/RSP/OKR)
+    type: feed
+    machine_readable: true
+  - id: CH-SITA
+    name: SITA / SITATEX
+    type: feed
+    machine_readable: true
+  - id: CH-LOTUS
+    name: Lotus Notes (e-mail)
+    type: mail
+    machine_readable: semi
+  - id: CH-PHONE
+    name: Телефон / ГГС / радиосвязь
+    type: voice
+    machine_readable: false
+  - id: CH-FAX
+    name: Факс
+    type: paper
+    machine_readable: false
+  - id: CH-WHATSAPP
+    name: WhatsApp (по 148-08)
+    type: msg
+    machine_readable: semi
+    anchor: КД-РГ-147(148)-08
+  - id: CH-SMS-2H
+    name: СМС-рассылка «>2 ч»
+    type: sms
+    machine_readable: semi
+  - id: CH-SMS-VIP
+    name: СМС-рассылка «ВИП»
+    type: sms
+    machine_readable: semi
+  - id: CH-OPS-MOD
+    name: Модуль OPS (Ю-Ти-Джи Внуково)
+    type: web-form
+    machine_readable: semi
+  # v2.1: новые каналы из КД-РД-Б1.041-04
+  - id: CH-LEO-PUSH
+    name: Push-уведомления АСБ Leonardo (DEGR/CVIP/PDTS)
+    type: webhook
+    machine_readable: true
+    anchor: КД-РД-Б1.041-04 (изм.32)
+  - id: CH-KYFO-PUSH
+    name: Push-уведомления KYFO (статус ФАП-82-услуг)
+    type: webhook
+    machine_readable: true
+    anchor: КД-РД-Б1.041-04 (изм.32)
+
+# 3.4 Системы (детально — в data_sources_catalog_TsUP.md)
+systems:
+  - id: SYS-MER-NET
+    name: Meridian.Net
+    domain: расписание/СПП
+  - id: SYS-MER-OPS
+    name: Meridian.Ops
+    domain: оперативное управление
+  - id: SYS-MER-NAV
+    name: Meridian.Nav
+    domain: полётная информация / штурм. расчёт
+  - id: SYS-MER-CREW
+    name: Meridian.Crew/Sal
+    domain: экипажи
+  - id: SYS-MER-WEB
+    name: Meridian.Web
+    domain: web-портал
+  - id: SYS-PROD-REP
+    name: ИС «Производственная отчётность»
+    domain: отчётность UT-DSP.*
+  - id: SYS-CBRS
+    name: ЦБРС / ГЦ ЕС ОрВД
+    domain: слоты, расписание
+  - id: SYS-LOTUS
+    name: Lotus Notes
+    domain: корпоративная почта
+  # v2.1: новые системы из КД-РД-Б1.041-04 (изм.32)
+  - id: SYS-LEONARDO
+    name: АСБ Leonardo
+    domain: бронирование, ремарки приоритетов пассажиров (DEGR/CVIP/PDTS)
+    owner: ROLE-KC
+    consumer_dp: [B2]
+  - id: SYS-DCS-ASTRA
+    name: DCS Astra
+    domain: регистрация, факт чек-инов, закрытие рейса
+    owner: ROLE-OKR
+    consumer_dp: [B2]
+  - id: SYS-KYFO
+    name: KYFO
+    domain: автоматизированное оформление услуг по ФАП-82 (питание, гостиница, трансфер)
+    owner: ROLE-KC
+    consumer_dp: [B2]
+  - id: SYS-MER-OPS-TT
+    name: Префикс t / t* в Meridian.OPS
+    domain: машиночитаемая отметка ВС с двигательными ограничениями (высота / T наружного воздуха)
+    owner: ROLE-KAE-KLO
+    consumer_dp: [B2]
+
+# 3.5 Записи / документы / отчёты
+records:
+  - id: REC-UT-DSP-101-1
+    name: Отчёт по рейсам UT-DSP.1-01.1
+    cadence: 2 раза/сутки (04:00, 16:00 МСК)
+    consumer_dp: [A3]
+  - id: REC-UT-DSP-106
+    name: Отчёт UT-DSP.1-06 «Регулярность»
+    cadence: месяц / год
+    consumer_dp: [A4]
+    anchor: РИ-М1.016-08 §8.1.2
+  - id: REC-ACT-DELAY
+    name: Акт на задержку
+    issuer: ПДС аэропорта
+    consumer_dp: [A3]
+  - id: REC-LOG-SHIFT
+    name: Журнал приёма-передачи смены
+    issuer: НС ЦУП
+    medium: paper
+    consumer_dp: [A2, B1]
+  - id: REC-LOG-REQ
+    name: Журнал регистрации заявок
+    issuer: ООП ЦУП
+    medium: paper
+    consumer_dp: [B2]
+  - id: REC-FPL
+    name: Полётный план / штурм. расчёт
+    issuer: ОПДО САОП ЛД
+    consumer_dp: [B2]
+  - id: REC-MEL
+    name: MEL/CDL
+    issuer: ЦУТО ВС / ТД
+    consumer_dp: [B2]
+  - id: REC-NOTOC
+    name: NOTOC
+    issuer: ДОНО
+    consumer_dp: [B2]
+  - id: REC-ERP-CARDS
+    name: Карты действий (Annex 6/7/13/15/16)
+    issuer: РГ-128
+    consumer_dp: [B-LEGACY-ERP]
+  # v2.1: новые записи
+  - id: REC-TRANSFER-LIST
+    name: Лист трансферных пассажиров
+    issuer: ROLE-OKR (выгрузка из АСБ + DCS)
+    consumer_dp: [B2]
+    cadence: T-3h / T-2h перед СОВ
+    anchor: КД-РД-Б1.041-04 (изм.32)
+  - id: REC-KYFO-LOG
+    name: Журнал сервиса KYFO
+    issuer: SYS-KYFO
+    consumer_dp: [B2]
+    cadence: real-time
+  - id: REC-FLEET-STATE
+    name: Отчёт «Состояние парка ВС»
+    issuer: ROLE-CUTO
+    consumer_dp: [B2]
+    cadence: ежедневно
+
+# ─────────────────────────────────────────────────────────────────────────
+# 4. ОТНОШЕНИЯ ДОКУМЕНТОВ (cross-reference граф)
+# ─────────────────────────────────────────────────────────────────────────
+doc_relations:
+  - from: РД-Б8.005-09
+    to: КД-ДП-Б8.007-05
+    relation: defines_delay_classification
+    note: §14.2 ссылается на §10 КД-ДП-Б8.007 (классификатор IATA AHM 730)
+  - from: РД-Б8.005-09
+    to: КД-РГ-147(148)-08
+    relation: defines_communication_with_handler
+    note: §15.1.3.3.6 + табл.1 п.4
+  - from: РД-Б8.005-09
+    to: РГ-128-06
+    relation: escalates_to
+    note: B4 — переход в ERP-контур
+  - from: КД-ДП-Б8.007-05
+    to: РИ-М1.016-08
+    relation: feeds_reporting
+    note: A4 → UT-DSP.1-06
+  - from: РИ-М1.016-08
+    to: РД-Б8.003-11
+    relation: implements_quality_loop
+    note: ДП-М1.003 / РД-М1.014
+  - from: РИ-Б8.014-07
+    to: РД-Б8.005-09
+    relation: feeds_flight_plan
+    note: РП готовится по РИ-Б8.014, операт. план — в РД-Б8.005
+  # v2.1: связи КД-РД-Б1.041-04 как поставщика данных в B-петлю
+  - from: КД-РД-Б1.041-04
+    to: РД-Б8.005-09
+    relation: enriches_inputs_to_dp_b2
+    note: |
+      изм.32 (24.04.2026): добавляет 4 машиночитаемых входа (DEGR/CVIP/PDTS, t/t*, KYFO, DCS)
+      и 4 SLA-таймера (T-6h, T-3h/-2h, T+1h, флаг t/t*) в DP B2 «Окончательное решение по отклонению».
+  - from: КК62-26
+    to: КД-РД-Б1.041-04
+    relation: external_trigger_for_amendment
+    note: повестка Комитета по производственной деятельности 23.04.2026 — основание для изменения 32
+
+# ─────────────────────────────────────────────────────────────────────────
+# 5. СОБЫТИЯ
+# ─────────────────────────────────────────────────────────────────────────
+events:
+  - id: EVT-DELAY-DETECTED
+    name: Зафиксирована задержка
+    sources: [SYS-MER-OPS, FEED-AFTN-MVT, FEED-SITA]
+    consumers_dp: [A1, B1]  # v2.1: то же событие порождает обе петли A и B
+  - id: EVT-DELAY-CLASSIFIED
+    name: Задержке присвоен IATA-код
+    sources: [DP A2 output]
+    consumers_dp: [A3, A4]
+  # v2.1: новый основной триггер B-петли (вместо EVT-DISRUPT-TRIGGER)
+  - id: EVT-DEVIATION-DETECTED
+    name: Прогноз/факт отклонения от планового времени (любой рейс, без порога)
+    sources: [SYS-MER-OPS, FEED-AFTN-MVT, FEED-SITA, FEED-METEO]
+    consumers_dp: [B1, B2]
+    note: основной триггер B-петли в v2.1 (рутинно, сотни раз в сутки)
+  # v2.1: SLA-таймеры из КД-РД-Б1.041-04 как события
+  - id: EVT-SLA-T-MINUS-6H
+    name: T-6h до СОВ — ожидаются ремарки DEGR/CVIP/PDTS
+    sources: [SYS-LEONARDO]
+    consumers_dp: [B2]
+    anchor: КД-РД-Б1.041-04 (изм.32)
+  - id: EVT-SLA-T-MINUS-3H
+    name: T-3h/T-2h до СОВ — протокол по трансферным паксам
+    sources: [SYS-LEONARDO, SYS-DCS-ASTRA]
+    consumers_dp: [B2]
+    anchor: КД-РД-Б1.041-04 (изм.32)
+  - id: EVT-SLA-T-PLUS-1H
+    name: T+1h после фактической задержки — контроль ФАП-82 через KYFO
+    sources: [SYS-KYFO]
+    consumers_dp: [B2]
+    anchor: КД-РД-Б1.041-04 (изм.32)
+  - id: EVT-FLIGHT-3SYS-DESYNC
+    name: Расхождение состояния рейса между АСБ Leonardo, DCS Astra и Meridian.OPS
+    sources: [SYS-LEONARDO, SYS-DCS-ASTRA, SYS-MER-OPS]
+    consumers_dp: [B2]
+    note: gap-06/GAP-10 — основа для CDC или event-bus
+  - id: EVT-SCENARIO-CHOSEN
+    name: Выбрано окончательное решение по отклонению
+    sources: [DP B2 output]
+    consumers_dp: [B3, исполнители]
+  - id: EVT-ESCALATE-HIERARCHY
+    name: Эскалация по иерархии (нач. ЦУП / нач. ЛД)
+    sources: [DP B4 output]
+    consumers_dp: [ROLE-HEAD-TsUP]
+    anchor: РД-Б8.005-09 §14.1.4
+  # v2.1: legacy события — out of scope MVP
+  - id: EVT-DISRUPT-TRIGGER
+    name: ≥10 задержек по одной причине
+    sources: [SYS-MER-OPS]
+    consumers_dp: [B-LEGACY-DISRUPT]
+    status: out_of_scope_for_mvp
+    anchor: РД-Б8.005-09 §15.1.3.3.2
+  - id: EVT-ESCALATE-ERP
+    name: Эскалация в оперштаб ERP (АНВ/АП)
+    sources: [DP B-LEGACY-ERP output]
+    consumers_dp: [внешние органы]
+    status: out_of_scope_for_ai_assistant
+    anchor: РГ-128-06
+
+# ─────────────────────────────────────────────────────────────────────────
+# 6. СПРАВОЧНИКИ-ЗАГЛУШКИ (заполняются из MDM ЮТэйр)
+# ─────────────────────────────────────────────────────────────────────────
+master_data_pointers:
+  aircraft:
+    source: SYS-MER-NET (борт.номер, тип ВС, конфигурация, MEL-статус)
+  crews:
+    source: SYS-MER-CREW (ID экипажа, категория, медосмотр, рабочее время)
+  airports:
+    source: SYS-CBRS + Meridian.Nav (IATA/ICAO, режимы, слоты, инфраструктура)
+  routes:
+    source: SYS-MER-NAV (FPL, запасные а/д, топливо)
+  customers:
+    source: ООП ЦУП (заказчики, заявки)

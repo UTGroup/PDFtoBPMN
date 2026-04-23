@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Оперативное управление регулярностью — AS-IS (v2.1)
+  Источник: input2/ЦУП_md/ANALYSIS_AS-IS_RCA_и_Сбойные.md §4 + §4.1 (v2.1).
+  Замещает прежний Disrupt_AS-IS.bpmn (см. там примечание).
+  Триггер B-петли: каждое прогнозируемое или фактическое отклонение в плане полётов (без порога).
+  Включены 4 машиночитаемых входа из КД-РД-Б1.041-04 (изм.32):
+    - SYS-LEONARDO (DEGR/CVIP/PDTS), SYS-MER-OPS-TT (t/t*), SYS-KYFO, SYS-DCS-ASTRA.
+-->
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  id="Definitions_OpReg_ASIS_v2_1"
+                  targetNamespace="http://utair.aero/bpmn/tsup">
+  <bpmn:collaboration id="Collab_OpReg">
+    <bpmn:participant id="Pool_TsUP_OpReg" name="Оперативное управление регулярностью (AS-IS, v2.1)" processRef="Proc_OpReg"/>
+  </bpmn:collaboration>
+
+  <bpmn:process id="Proc_OpReg" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_OpReg">
+      <bpmn:lane id="Lane_Inputs_Picture" name="Источники картины (M1–M8): метео, парк, экипажи, маршруты, наземное обсл., коммерч., слоты, заявки">
+        <bpmn:flowNodeRef>Start_Deviation</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Aggregate_Picture</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Inputs_Decision_v21" name="Входы решения (v2.1, КД-РД-Б1.041-04 изм.32): АСБ Leonardo (DEGR/CVIP/PDTS), Meridian.OPS (t/t*), KYFO, DCS Astra">
+        <bpmn:flowNodeRef>Task_New_Inputs</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Disp" name="Диспетчер ЦУП + смежные дежурные (DP B1)">
+        <bpmn:flowNodeRef>Task_B1</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_NS" name="НС ЦУП (DP B2)">
+        <bpmn:flowNodeRef>Task_B2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gw_Competence</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Head" name="Начальник ЦУП / нач. ЛД (DP B4 — иерархическая эскалация, §14.1.4)">
+        <bpmn:flowNodeRef>Task_B4</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Exec" name="Исполнители (DP B3): Ю-Ти-Джи 148-08, ЦУТО ВС, СПиОУ, ДОНО, ДУТиЗ, ДО ЦУП, КЦ, ОКР">
+        <bpmn:flowNodeRef>Task_B3</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_Resolved</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+
+    <bpmn:startEvent id="Start_Deviation" name="Прогноз/факт отклонения в ПП (триггер: каждое отклонение, без порога)"/>
+    <bpmn:task id="Task_Aggregate_Picture" name="Сбор оперативной картины (M1–M8: метео, парк, экипажи, маршруты, наземное, коммерч., слоты, заявки)"/>
+    <bpmn:task id="Task_New_Inputs" name="Подача машиночитаемых входов решения (v2.1): DEGR/CVIP/PDTS, t/t*, KYFO, DCS — напрямую в B2; SLA-таймеры -6ч/-3ч/-2ч/+1ч"/>
+    <bpmn:task id="Task_B1" name="B1: Сбор картины по конкретному отклонению (≤30 мин, КД-ДП-Б8.007 §11)"/>
+    <bpmn:task id="Task_B2" name="B2: Окончательное решение по отклонению (ждать / заменить ВС / резерв экипажа / перенести / совместить / отменить / стыковки / запасной а/д)"/>
+    <bpmn:exclusiveGateway id="Gw_Competence" name="В компетенции НС ЦУП?"/>
+    <bpmn:task id="Task_B4" name="B4: Иерархическая эскалация нач. ЦУП / нач. ЛД (§14.1.4)"/>
+    <bpmn:task id="Task_B3" name="B3: Команды исполнителям (Meridian.Ops, 148-08, Lotus, ГГС/тел., СМС &gt;2ч/ВИП)"/>
+    <bpmn:endEvent id="End_Resolved" name="Рейс возвращён в управляемое состояние (или новая итерация B)"/>
+
+    <bpmn:sequenceFlow id="O1" sourceRef="Start_Deviation" targetRef="Task_Aggregate_Picture"/>
+    <bpmn:sequenceFlow id="O2" sourceRef="Task_Aggregate_Picture" targetRef="Task_B1"/>
+    <bpmn:sequenceFlow id="O3" sourceRef="Task_B1" targetRef="Task_B2"/>
+    <bpmn:sequenceFlow id="O3a" sourceRef="Task_New_Inputs" targetRef="Task_B2"/>
+    <bpmn:sequenceFlow id="O4" sourceRef="Task_B2" targetRef="Gw_Competence"/>
+    <bpmn:sequenceFlow id="O5" name="нет (вне компетенции)" sourceRef="Gw_Competence" targetRef="Task_B4"/>
+    <bpmn:sequenceFlow id="O6" name="да" sourceRef="Gw_Competence" targetRef="Task_B3"/>
+    <bpmn:sequenceFlow id="O7" name="согласовано" sourceRef="Task_B4" targetRef="Task_B3"/>
+    <bpmn:sequenceFlow id="O8" sourceRef="Task_B3" targetRef="End_Resolved"/>
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="Diag_OpReg">
+    <bpmndi:BPMNPlane id="Plane_OpReg" bpmnElement="Collab_OpReg">
+      <bpmndi:BPMNShape id="DS_Pool" bpmnElement="Pool_TsUP_OpReg" isHorizontal="true">
+        <dc:Bounds x="120" y="60" width="1700" height="900"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DS_Lane_Inputs_Picture" bpmnElement="Lane_Inputs_Picture" isHorizontal="true">
+        <dc:Bounds x="150" y="60" width="1670" height="140"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DS_Lane_Inputs_Decision_v21" bpmnElement="Lane_Inputs_Decision_v21" isHorizontal="true">
+        <dc:Bounds x="150" y="200" width="1670" height="140"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DS_Lane_Disp" bpmnElement="Lane_Disp" isHorizontal="true">
+        <dc:Bounds x="150" y="340" width="1670" height="140"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DS_Lane_NS" bpmnElement="Lane_NS" isHorizontal="true">
+        <dc:Bounds x="150" y="480" width="1670" height="140"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DS_Lane_Head" bpmnElement="Lane_Head" isHorizontal="true">
+        <dc:Bounds x="150" y="620" width="1670" height="120"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DS_Lane_Exec" bpmnElement="Lane_Exec" isHorizontal="true">
+        <dc:Bounds x="150" y="740" width="1670" height="220"/>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="DS_Start" bpmnElement="Start_Deviation">
+        <dc:Bounds x="200" y="105" width="36" height="36"/>
+        <bpmndi:BPMNLabel><dc:Bounds x="180" y="145" width="200" height="40"/></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DS_Agg" bpmnElement="Task_Aggregate_Picture">
+        <dc:Bounds x="320" y="95" width="280" height="60"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DS_NewIn" bpmnElement="Task_New_Inputs">
+        <dc:Bounds x="700" y="240" width="380" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DS_B1" bpmnElement="Task_B1">
+        <dc:Bounds x="320" y="380" width="280" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DS_B2" bpmnElement="Task_B2">
+        <dc:Bounds x="700" y="510" width="420" height="100"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DS_GwC" bpmnElement="Gw_Competence" isMarkerVisible="true">
+        <dc:Bounds x="1180" y="540" width="40" height="40"/>
+        <bpmndi:BPMNLabel><dc:Bounds x="1160" y="585" width="120" height="30"/></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DS_B4" bpmnElement="Task_B4">
+        <dc:Bounds x="1280" y="640" width="320" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DS_B3" bpmnElement="Task_B3">
+        <dc:Bounds x="700" y="800" width="500" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DS_End" bpmnElement="End_Resolved">
+        <dc:Bounds x="1260" y="822" width="36" height="36"/>
+        <bpmndi:BPMNLabel><dc:Bounds x="1305" y="830" width="280" height="30"/></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="DE_O1" bpmnElement="O1">
+        <di:waypoint x="236" y="123"/><di:waypoint x="320" y="125"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DE_O2" bpmnElement="O2">
+        <di:waypoint x="460" y="155"/><di:waypoint x="460" y="380"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DE_O3" bpmnElement="O3">
+        <di:waypoint x="600" y="420"/><di:waypoint x="900" y="510"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DE_O3a" bpmnElement="O3a">
+        <di:waypoint x="900" y="320"/><di:waypoint x="900" y="510"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DE_O4" bpmnElement="O4">
+        <di:waypoint x="1120" y="560"/><di:waypoint x="1180" y="560"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DE_O5" bpmnElement="O5">
+        <di:waypoint x="1200" y="580"/><di:waypoint x="1200" y="680"/><di:waypoint x="1280" y="680"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DE_O6" bpmnElement="O6">
+        <di:waypoint x="1200" y="580"/><di:waypoint x="1200" y="800"/><di:waypoint x="1100" y="840"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DE_O7" bpmnElement="O7">
+        <di:waypoint x="1440" y="720"/><di:waypoint x="1440" y="840"/><di:waypoint x="1200" y="840"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DE_O8" bpmnElement="O8">
+        <di:waypoint x="1200" y="840"/><di:waypoint x="1260" y="840"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

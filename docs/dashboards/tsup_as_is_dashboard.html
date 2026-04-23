@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ЦУП — AS-IS v2.1: RCA по задержкам и оперативное управление регулярностью</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<style>
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#1c2333;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--blue:#58a6ff;--blue-bg:rgba(88,166,255,.08);--green:#3fb950;--green-bg:rgba(63,185,80,.08);--yellow:#d29922;--yellow-bg:rgba(210,153,34,.08);--red:#f85149;--red-bg:rgba(248,81,73,.08);--purple:#bc8cff;--purple-bg:rgba(188,140,255,.08);--orange:#f0883e;--orange-bg:rgba(240,136,62,.08);--cyan:#39d2c0;--cyan-bg:rgba(57,210,192,.08);--r:8px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px}
+.header{text-align:center;margin-bottom:18px}
+.header h1{font-size:22px;font-weight:700;margin-bottom:4px}
+.header .sub{font-size:13px;color:var(--text2);max-width:900px;margin:0 auto}
+.header .src{margin-top:8px;font-size:11px;color:var(--text2);font-family:'JetBrains Mono',monospace}
+.header .src a{color:var(--blue);text-decoration:none}
+.tabs{display:flex;gap:2px;justify-content:center;margin-bottom:22px;background:var(--surface);border-radius:var(--r);padding:3px;flex-wrap:wrap;width:fit-content;margin-left:auto;margin-right:auto;max-width:100%}
+.tab{padding:8px 16px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;border-radius:6px;transition:.2s;user-select:none;white-space:nowrap}
+.tab:hover{color:var(--text)}.tab.on{background:var(--surface2);color:var(--blue)}
+.view{display:none}.view.on{display:block}
+.section{max-width:1280px;margin:0 auto 28px}
+.section h2{font-size:16px;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.section h2 .badge{font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 8px;border-radius:4px;background:var(--blue-bg);color:var(--blue)}
+.section h3{font-size:13px;font-weight:600;margin:18px 0 8px;color:var(--text)}
+.cards{display:grid;gap:10px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.card-head{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;user-select:none;transition:.15s}
+.card-head:hover{background:var(--surface2)}
+.card-head .ic{font-size:14px;font-family:'JetBrains Mono',monospace;font-weight:700;padding:3px 8px;border-radius:4px;background:var(--blue-bg);color:var(--blue)}
+.card-head .ic.cycle-b{background:var(--purple-bg);color:var(--purple)}
+.card-head .tt{font-size:13px;font-weight:600;flex:1}
+.card-head .st{font-size:11px;color:var(--text2)}
+.card-head .chev{color:var(--text2);font-size:14px;transition:.2s}
+.card.open .chev{transform:rotate(90deg)}
+.card-body{display:none;padding:14px 16px;border-top:1px solid var(--border);font-size:12px;line-height:1.7;color:var(--text2)}
+.card.open .card-body{display:block}
+.card-body strong{color:var(--text)}
+.card-body ul{margin:6px 0 6px 18px}
+.card-body li{margin-bottom:3px}
+.card-body code{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--surface2);padding:1px 5px;border-radius:3px;color:var(--text)}
+table.dt{width:100%;border-collapse:collapse;font-size:12px}
+table.dt th{background:var(--surface2);padding:8px 10px;text-align:left;font-weight:600;font-size:11px;color:var(--text2);border-bottom:1px solid var(--border);white-space:nowrap}
+table.dt td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+table.dt tr:hover{background:var(--surface)}
+.r-cell{text-align:center;font-weight:700;font-size:11px;font-family:'JetBrains Mono',monospace;padding:6px 8px;border-radius:4px;display:inline-block;min-width:36px}
+.r-green{color:var(--green);background:var(--green-bg)}.r-yellow{color:var(--yellow);background:var(--yellow-bg)}.r-red{color:var(--red);background:var(--red-bg)}.r-blue{color:var(--blue);background:var(--blue-bg)}.r-purple{color:var(--purple);background:var(--purple-bg)}.r-orange{color:var(--orange);background:var(--orange-bg)}.r-cyan{color:var(--cyan);background:var(--cyan-bg)}
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:900px){.metric-grid{grid-template-columns:repeat(2,1fr)}}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.metric .mv{font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.metric .ml{font-size:11px;color:var(--text2);margin-bottom:4px}
+.metric .md{font-size:11px;margin-top:6px;color:var(--text2)}
+.mermaid-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;overflow-x:auto;margin-bottom:14px}
+.mermaid{display:flex;justify-content:center}
+.roadmap{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+@media(max-width:900px){.roadmap{grid-template-columns:1fr}}
+.rm-col{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.rm-col h4{font-size:12px;font-weight:700;margin-bottom:4px}
+.rm-col .rm-period{font-size:10px;color:var(--text2);margin-bottom:10px}
+.rm-col ul{margin:0;padding:0 0 0 16px;font-size:12px;color:var(--text2);line-height:1.7}
+.rm-col ul li{margin-bottom:3px}
+.rm-col.p0{border-top:3px solid var(--green)}.rm-col.p1{border-top:3px solid var(--blue)}.rm-col.p2{border-top:3px solid var(--purple)}.rm-col.p3{border-top:3px solid var(--orange)}.rm-col.p4{border-top:3px solid var(--cyan)}
+.gap-cards{display:grid;gap:10px}
+.gap-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;border-left:3px solid var(--text2)}
+.gap-card.sev1{border-left-color:var(--red)}.gap-card.sev2{border-left-color:var(--yellow)}.gap-card.sev3{border-left-color:var(--text2)}
+.gap-card .gn{font-size:13px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.gap-card .gn .gi{font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 6px;border-radius:3px;background:var(--surface2);color:var(--text)}
+.gap-card .gn .sev{font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 6px;border-radius:3px}
+.gap-card .gn .sev.s1{background:var(--red-bg);color:var(--red)}.gap-card .gn .sev.s2{background:var(--yellow-bg);color:var(--yellow)}.gap-card .gn .sev.s3{background:rgba(139,148,158,.15);color:var(--text2)}
+.gap-card .gn .eff{font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 6px;border-radius:3px;background:var(--surface2);color:var(--text2)}
+.gap-card .gd{font-size:12px;color:var(--text2);margin-bottom:6px;line-height:1.6}
+.gap-card .gr{font-size:11px;color:var(--green);line-height:1.5}
+.dp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:1100px){.dp-grid{grid-template-columns:repeat(2,1fr)}}
+.dp-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;border-top:3px solid var(--blue)}
+.dp-card.cycle-b{border-top-color:var(--purple)}
+.dp-card .dp-id{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--blue);margin-bottom:4px}
+.dp-card.cycle-b .dp-id{color:var(--purple)}
+.dp-card .dp-actor{font-size:13px;font-weight:600;margin-bottom:4px}
+.dp-card .dp-decision{font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:8px}
+.dp-card .dp-meta{font-size:10px;color:var(--text2);font-family:'JetBrains Mono',monospace;line-height:1.6}
+.dp-card .dp-meta .lab{color:var(--text)}
+.infra{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.infra{grid-template-columns:1fr}}
+.infra-col{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.infra-col h4{font-size:13px;font-weight:700;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.infra-col ul{margin:0;padding-left:18px;font-size:12px;color:var(--text2);line-height:1.8}
+.infra-col ul li code{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text)}
+.links{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+@media(max-width:900px){.links{grid-template-columns:1fr}}
+.links a{display:block;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;text-decoration:none;color:var(--text);font-size:12px;transition:.15s}
+.links a:hover{border-color:var(--blue);background:var(--surface2)}
+.links a .lt{font-weight:600;font-size:13px;margin-bottom:4px;color:var(--blue)}
+.links a .ld{color:var(--text2);font-size:11px;line-height:1.5}
+.callout{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--blue);border-radius:var(--r);padding:12px 14px;font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:14px}
+.callout strong{color:var(--text)}
+.callout.warn{border-left-color:var(--orange)}
+.callout.ok{border-left-color:var(--green)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--text2);margin-bottom:10px}
+.legend .li{display:flex;align-items:center;gap:6px}
+.legend .li .sw{width:10px;height:10px;border-radius:2px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>ЦУП — AS-IS v2.1: RCA по задержкам &amp; оперативное управление регулярностью</h1>
+  <div class="sub">Карта потоков данных, сходящихся в decision points человека (диспетчер ЦУП, НС ЦУП, начальник ЦУП). Цель — оценка достаточности данных для развёртывания ИИ-ассистента.<br/><strong>v2.1:</strong> добавлены КД-РД-Б1.041-04 (изм.32) и КК62-26 — DEGR/CVIP/PDTS, KYFO, DCS Astra, t/t*; SLA-таймеры -6ч/-3ч/-2ч/+1ч; новый GAP-10 «несинхронность 3 систем». Сбойная ситуация ≥10 и ERP/РГ-128 вынесены из основной B-петли.</div>
+  <div class="src">источник истины: <a href="../../input2/ЦУП_md/ANALYSIS_AS-IS_RCA_и_Сбойные.md">input2/ЦУП_md/ANALYSIS_AS-IS_RCA_и_Сбойные.md</a> (v2.1)</div>
+</div>
+
+<div class="tabs">
+  <div class="tab on" data-tab="0">Обзор и DP</div>
+  <div class="tab" data-tab="1">RCA-цикл (A1–A4)</div>
+  <div class="tab" data-tab="2">Опер. управление регулярностью (B1–B4)</div>
+  <div class="tab" data-tab="3">Источники данных</div>
+  <div class="tab" data-tab="4">Матрица DP ↔ Data</div>
+  <div class="tab" data-tab="5">AI Readiness &amp; Roadmap</div>
+</div>
+
+<!-- ═══════════════ TAB 0: ОБЗОР ═══════════════ -->
+<div class="view on" id="v0">
+
+  <div class="section">
+    <h2>Decision Points <span class="badge">8 точек × 2 цикла</span></h2>
+    <h3>A. Цикл RCA</h3>
+    <div class="dp-grid">
+      <div class="dp-card"><div class="dp-id">DP A1</div><div class="dp-actor">Диспетчер ЦУП</div><div class="dp-decision">Предв. формулировка причины задержки + IATA-код</div><div class="dp-meta"><span class="lab">окно:</span> ≤15 мин<br/><span class="lab">якорь:</span> РД-Б8.005-09 §14.2</div></div>
+      <div class="dp-card"><div class="dp-id">DP A2</div><div class="dp-actor">НС ЦУП</div><div class="dp-decision">Согласование/корректировка окончательной формулировки и кода AHM 730</div><div class="dp-meta"><span class="lab">окно:</span> по смене<br/><span class="lab">якорь:</span> §14.2 ш.3,6 + КД-ДП §10</div></div>
+      <div class="dp-card"><div class="dp-id">DP A3</div><div class="dp-actor">Нач./зам. нач. ЦУП</div><div class="dp-decision">Решение о доп. расследовании, эскалация виновникам</div><div class="dp-meta"><span class="lab">окно:</span> до 11:00 тюм. ежедневно<br/><span class="lab">якорь:</span> КД-ДП-Б8.007 §11</div></div>
+      <div class="dp-card"><div class="dp-id">DP A4</div><div class="dp-actor">Нач. ЦУП → ген.дир.</div><div class="dp-decision">Корректирующие/предупреждающие действия, спец.аудиты подрядчика</div><div class="dp-meta"><span class="lab">окно:</span> неделя/месяц/год<br/><span class="lab">якорь:</span> РИ-М1.016 §9</div></div>
+    </div>
+    <h3>B. Цикл оперативного управления регулярностью (v2.1, по каждому отклонению)</h3>
+    <div class="dp-grid">
+      <div class="dp-card cycle-b"><div class="dp-id">DP B1</div><div class="dp-actor">Диспетчер ЦУП + смежные дежурные</div><div class="dp-decision">Сбор оперативной картины по конкретному отклонению</div><div class="dp-meta"><span class="lab">триггер:</span> каждое отклонение в ПП (без порога)<br/><span class="lab">якорь:</span> КД-ДП-Б8.007 §11; РД-Б8.005-09 §14.2 ш.1</div></div>
+      <div class="dp-card cycle-b"><div class="dp-id">DP B2</div><div class="dp-actor">НС ЦУП</div><div class="dp-decision">Окончательное решение по отклонению (12 категорий входов: 8 базовых + 4 v2.1: DEGR/CVIP/PDTS, t/t*, KYFO, DCS); SLA-таймеры -6ч/-3ч/-2ч/+1ч</div><div class="dp-meta"><span class="lab">окно:</span> минуты–часы (на рейс)<br/><span class="lab">якорь:</span> РД-Б8.005-09 §14.1.3 + КД-РД-Б1.041-04 §6, §10–§17 (изм.32)</div></div>
+      <div class="dp-card cycle-b"><div class="dp-id">DP B3</div><div class="dp-actor">НС ЦУП → исполнители (148-08, ЦУТО ВС, СПиОУ, ДОНО, ДУТиЗ, КЦ, ОКР, ДО ЦУП)</div><div class="dp-decision">Команды исполнителям по регламентированным каналам</div><div class="dp-meta"><span class="lab">окно:</span> минуты<br/><span class="lab">якорь:</span> РД-Б8.005-09 §15.1.3.2.2.1–8; КД-РГ-147(148)-08 табл.1–5</div></div>
+      <div class="dp-card cycle-b"><div class="dp-id">DP B4</div><div class="dp-actor">НС ЦУП → начальник ЦУП / нач. ЛД</div><div class="dp-decision">Иерархическая эскалация при превышении компетенции (не ERP)</div><div class="dp-meta"><span class="lab">окно:</span> по факту<br/><span class="lab">якорь:</span> РД-Б8.005-09 §14.1.4</div></div>
+    </div>
+    <div class="callout"><strong>Out-of-scope основной B-петли v2.1:</strong> «Сбойная ситуация» (триггер ≥10, §15.1.3.3) — фаза 2 (плейбуки <code>КК62-26</code> поверх B-петли); ERP/РГ-128 (АНВ/АП) — отдельный проект, вне ИИ-ассистента.</div>
+  </div>
+
+  <div class="section">
+    <h2>Универсальная инфраструктура ЦУП <span class="badge">3 контура</span></h2>
+    <div class="infra">
+      <div class="infra-col">
+        <h4>Системы</h4>
+        <ul>
+          <li><code>Meridian.Net</code> — расписание / СПП</li>
+          <li><code>Meridian.Ops</code> — оперативное управление</li>
+          <li><code>Meridian.Nav</code> — полётная информация</li>
+          <li><code>Meridian.Crew/Sal</code> — экипажи</li>
+          <li><code>Meridian.Web</code> — портал ЛС</li>
+          <li><code>ИС «Производственная отчётность»</code> — UT-DSP.1-06</li>
+          <li><code>ЦБРС / ГЦ ЕС ОрВД</code> — слоты, режимы</li>
+          <li><code>АСБ Leonardo</code> — DEGR/CVIP/PDTS <em>(v2.1)</em></li>
+          <li><code>DCS Astra</code> — регистрация <em>(v2.1)</em></li>
+          <li><code>KYFO</code> — ФАП-82-сервисы <em>(v2.1)</em></li>
+          <li><code>Meridian.OPS — флаг t/t*</code> <em>(v2.1)</em></li>
+          <li><code>ERP RG-128</code> — кризисный контур <em>(вне scope MVP)</em></li>
+        </ul>
+      </div>
+      <div class="infra-col">
+        <h4>Каналы связи</h4>
+        <ul>
+          <li>AFTN (MVT/MVT-OUT/RSP/OKR)</li>
+          <li>SITA / SITATEX</li>
+          <li>Lotus Notes (e-mail смены)</li>
+          <li>Телефон / ГГС / радиосвязь</li>
+          <li>Факс</li>
+          <li>WhatsApp по 148-08</li>
+          <li>СМС-рассылки «&gt;2 ч» / «ВИП»</li>
+          <li>Модуль OPS Ю-Ти-Джи</li>
+        </ul>
+      </div>
+      <div class="infra-col">
+        <h4>Записи</h4>
+        <ul>
+          <li>Журнал приёма-передачи смены (бумажный)</li>
+          <li>Журнал регистрации заявок</li>
+          <li>Акт на задержку (ПДС а/п)</li>
+          <li>Отчёт по рейсам UT-DSP.1-01.1</li>
+          <li>Отчёт UT-DSP.1-06 (регулярность)</li>
+          <li>Карты действий (Annex 6/7/13/15/16)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Связанные артефакты <span class="badge">5 файлов</span></h2>
+    <div class="links">
+      <a href="../../input2/ЦУП_md/ANALYSIS_AS-IS_RCA_и_Сбойные.md"><div class="lt">📄 ANALYSIS_AS-IS_RCA_и_Сбойные.md</div><div class="ld">Утверждённый текст AS-IS-анализа: DP, схемы, матрица, рекомендации</div></a>
+      <a href="../data_sources_catalog_TsUP.md"><div class="lt">📊 data_sources_catalog_TsUP.md</div><div class="ld">Каталог 30+ источников данных c MR/доступом/готовностью и phase-плана</div></a>
+      <a href="../knowledge_gaps_TsUP.md"><div class="lt">⚠ knowledge_gaps_TsUP.md</div><div class="ld">Реестр 9 пробелов с severity/effort/owner и митигацией</div></a>
+      <a href="../ontology_TsUP.yaml"><div class="lt">🧬 ontology_TsUP.yaml</div><div class="ld">Онтология: роли, DP, справочники, события, cross-ref документов</div></a>
+      <a href="../bpmn/RCA_AS-IS.bpmn"><div class="lt">🔧 RCA_AS-IS.bpmn</div><div class="ld">BPMN 2.0 collaboration: цикл RCA с lanes по подразделениям</div></a>
+      <a href="../bpmn/Operational_Regularity_AS-IS.bpmn"><div class="lt">🔧 Operational_Regularity_AS-IS.bpmn (v2.1)</div><div class="ld">BPMN 2.0: оперативное управление регулярностью с lane v2.1 «Входы решения (DEGR/CVIP/PDTS, t/t*, KYFO, DCS)»</div></a>
+      <a href="../bpmn/Disrupt_AS-IS.bpmn"><div class="lt">🔧 Disrupt_AS-IS.bpmn (legacy v1)</div><div class="ld">BPMN 2.0: legacy «Сбойная ситуация» (триггер ≥10, ERP) — фаза 2 / out-of-scope MVP</div></a>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════ TAB 1: RCA ═══════════════ -->
+<div class="view" id="v1">
+
+  <div class="section">
+    <h2>AS-IS поток данных: цикл RCA <span class="badge">4 уровня анализа</span></h2>
+    <div class="callout"><strong>Контекст:</strong> 3 уровня анализа задержек по <code>КД-ДП-Б8.007-05 §11 табл.1</code>: оперативный (диспетчер/смена), ежедневный (до 11:00 тюм. — нач. ЦУП), глубокий (нач. ЦУП → ген.директор, корректирующие действия по ДП-М1.003).</div>
+    <div class="mermaid-wrap"><div class="mermaid">
+flowchart TD
+  subgraph SRC["ИСТОЧНИКИ СОБЫТИЯ"]
+    AFTN["MVT / AFTN / SITA<br/>(аэропорт, handling-агент)<br/>факт. вылет/посадка/задержка"]
+    KVS["КВС / экипаж<br/>(тел., супервайзер, радио)<br/>состояние ВС, экипажа"]
+    UTG["ДЦ АО Ю-Ти-Джи (Внуково)<br/>тел. (3452) 281100, Модуль OPS<br/>п.1 нарушение ТГО &gt;15 мин<br/>п.2 движение, п.6 прогноз нарушения<br/>п.13–17 неисправности, опоздания паксов"]
+    OPDO["НС ОПДО САОП ЛД<br/>метео, НОТАМ, режимы"]
+    DONO["ДОНО — диспетчер ООНО<br/>наземное обслуживание, трансфер"]
+    SPiOU["СПиОУ ЛД<br/>экипажи, резерв, мед.отстранение"]
+    CUTO["ЦУТО ВС / ТД<br/>AOG, MEL, NOTOC"]
+    MM["Meridian.Alliance<br/>план, расстановка, брифинг"]
+  end
+
+  A1Q[["DP A1 — Диспетчер ЦУП<br/>Сформулировать предв.<br/>причину + код IATA"]]
+  A2Q[["DP A2 — НС ЦУП<br/>Окончательная формулировка<br/>и код AHM 730"]]
+  A3Q[["DP A3 — Начальник ЦУП<br/>(до 11:00 ежедневно)<br/>Нужно ли расследование?"]]
+  A4Q[["DP A4 — Нач. ЦУП → Ген.директор<br/>Корректирующие действия,<br/>аудит подрядчика"]]
+
+  AFTN --> A1Q
+  KVS --> A1Q
+  UTG --> A1Q
+  MM  --> A1Q
+
+  A1Q -- "запись в Meridian.Ops" --> A2Q
+  OPDO --> A2Q
+  DONO --> A2Q
+  SPiOU --> A2Q
+  CUTO --> A2Q
+
+  A2Q -- "Согласованная формулировка<br/>+ IATA-код" --> REP["Отчёт UT-DSP.1-01.1<br/>(2 раза/сутки 04:00, 16:00)"]
+  REP --> A3Q
+  ACT["Акт на задержку<br/>(ПДС а/п, в течение суток)"] --> A3Q
+  REPR["Отчёт представителя"] --> A3Q
+
+  A3Q -- "Lotus Notes:<br/>уведомление руководителям" --> AGGR["ИС «Производственная отчётность»"]
+  AGGR -- "UT-DSP.1-06: регулярность,<br/>21 категория задержек" --> A4Q
+
+  A4Q -- "Корректирующие действия<br/>(ДП-М1.003)" --> LOOP["Изменение процедур,<br/>спец.аудит подрядчика<br/>(РД-М1.014)"]
+  LOOP -.обновление СМК.-> AFTN
+  LOOP -.обновление СМК.-> UTG
+    </div></div>
+  </div>
+
+  <div class="section">
+    <h2>Decision points цикла A — детально</h2>
+    <div class="cards">
+      <div class="card"><div class="card-head" onclick="this.parentElement.classList.toggle('open')"><span class="ic">A1</span><span class="tt">Диспетчер ЦУП — предв. формулировка причины задержки + IATA</span><span class="st">≤15 мин · РД-Б8.005-09 §14.2</span><span class="chev">›</span></div><div class="card-body">
+        <strong>Входы:</strong> MVT/AFTN/SITA, сообщения Ю-Ти-Джи (Модуль OPS, тел.), КВС/экипаж по радио/телефону, контекст из Meridian.Ops.<br/>
+        <strong>Выход:</strong> запись в Meridian.Ops с предварительной формулировкой и кодом IATA.<br/>
+        <strong>Узкое место:</strong> голосовые уточнения не фиксируются (см. <code>GAP-01</code>).<br/>
+        <strong>Возможность ИИ:</strong> заполнение чек-листа источников опроса + предложение IATA-кода по тексту входящих сообщений.
+      </div></div>
+      <div class="card"><div class="card-head" onclick="this.parentElement.classList.toggle('open')"><span class="ic">A2</span><span class="tt">НС ЦУП — окончательная формулировка + AHM 730</span><span class="st">по смене · §14.2 ш.3,6</span><span class="chev">›</span></div><div class="card-body">
+        <strong>Входы:</strong> результат A1, уточнения от ОПДО / ДОНО / СПиОУ / ЦУТО ВС, e-mail в Lotus Notes, журнал смены.<br/>
+        <strong>Выход:</strong> согласованная запись в Meridian.Alliance, попадает в отчёт UT-DSP.1-01.1.<br/>
+        <strong>Узкое место:</strong> агрегация в голове НС ЦУП (см. <code>GAP-05</code> — бумажный журнал смены).<br/>
+        <strong>Возможность ИИ:</strong> сводка всех источников за смену по конкретному рейсу/задержке.
+      </div></div>
+      <div class="card"><div class="card-head" onclick="this.parentElement.classList.toggle('open')"><span class="ic">A3</span><span class="tt">Начальник ЦУП — анализ материалов и решение об эскалации</span><span class="st">до 11:00 тюм. ежедневно · КД-ДП-Б8.007 §11</span><span class="chev">›</span></div><div class="card-body">
+        <strong>Входы:</strong> отчёт UT-DSP.1-01.1, акт на задержку (ПДС а/п), отчёт представителя.<br/>
+        <strong>Выход:</strong> Lotus Notes — уведомления руководителям подразделений-виновников; накопление в ИС «Производственная отчётность».<br/>
+        <strong>Узкое место:</strong> акты разнородны по формату (см. <code>GAP-02</code>).<br/>
+        <strong>Возможность ИИ:</strong> авто-классификация актов + предложенный список адресатов уведомления.
+      </div></div>
+      <div class="card"><div class="card-head" onclick="this.parentElement.classList.toggle('open')"><span class="ic">A4</span><span class="tt">Начальник ЦУП → ген.директор — корректирующие действия</span><span class="st">неделя/месяц/год · РИ-М1.016 §9; ДП-М1.003</span><span class="chev">›</span></div><div class="card-body">
+        <strong>Входы:</strong> отчёт UT-DSP.1-06 (регулярность, 21 категория задержек).<br/>
+        <strong>Выход:</strong> запуск корректирующих/предупреждающих действий (по ДП-М1.003), спец.аудиты подрядчика (РД-М1.014).<br/>
+        <strong>Готовность:</strong> высокая — данные структурированы.<br/>
+        <strong>Возможность ИИ:</strong> детектор повторяющихся коренных причин, ранжирование по эффекту на регулярность.
+      </div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════ TAB 2: DISRUPT ═══════════════ -->
+<div class="view" id="v2">
+
+  <div class="section">
+    <h2>AS-IS поток данных: оперативное управление регулярностью <span class="badge">v2.1 · 12 многофакторных входов (8+4)</span></h2>
+    <div class="callout warn"><strong>Триггер B-петли:</strong> <strong>каждое прогнозируемое или фактическое отклонение в плане полётов</strong> (без порога). На уровне B2 регламент требует рассмотреть <strong>не менее двух вариантов</strong> разрешения и зафиксировать обоснование. SLA-таймеры из <code>КД-РД-Б1.041-04</code> (изм.32): <strong>−6ч</strong> DEGR/CVIP/PDTS · <strong>−3ч/−2ч</strong> трансферный лист · <strong>+1ч</strong> контроль ФАП-82 (KYFO) · <strong>флаг t/t*</strong> в фильтре подмены ВС.</div>
+    <div class="mermaid-wrap"><div class="mermaid">
+flowchart TD
+  subgraph IN["МНОГОФАКТОРНЫЕ ВХОДЫ КАРТИНЫ (M1–M8)"]
+    M1["МЕТЕО / НОТАМ / РЕЖИМЫ<br/>НС ОПДО САОП ЛД"]
+    M2["ПАРК ВС<br/>ЦУТО ВС: AOG, MEL,<br/>температурные ограничения,<br/>винглеты"]
+    M3["ЭКИПАЖИ<br/>СПиОУ ЛД: резерв,<br/>раб.время, категорированные"]
+    M4["МАРШРУТЫ / ТОПЛИВО<br/>ОПДО САОП ЛД:<br/>расчёт, запасные а/д"]
+    M5["НАЗЕМНОЕ ОБСЛ.<br/>ДОНО, хэндл-агенты,<br/>ДЦ Ю-Ти-Джи (148-08)"]
+    M6["КОММЕРЦ. ЗАГРУЗКА<br/>ДУТиЗ, приоритеты<br/>VIP / ПК / еврокомпоновка"]
+    M7["СЛОТЫ / РАСПИСАНИЕ<br/>ЦБРС, ГЦ ЕС ОрВД"]
+    M8["ВНЕШНИЕ ЗАЯВКИ<br/>ООП ЦУП от заказчиков"]
+  end
+
+  subgraph IN21["v2.1: ВХОДЫ РЕШЕНИЯ (M9–M12, КД-РД-Б1.041-04 изм.32)"]
+    M9["DEGR / CVIP / PDTS<br/>АСБ Leonardo, КЦ<br/>SLA: T-6h"]
+    M10["t / t* префикс<br/>Meridian.OPS / КАЭ-КЛО<br/>фильтр подмены ВС"]
+    M11["KYFO ФАП-82<br/>сервисы паксам<br/>SLA: T+1h"]
+    M12["DCS Astra<br/>факт чек-инов,<br/>трансферный лист (T-3h/-2h)"]
+  end
+
+  TRG{{"Триггер: каждое отклонение<br/>в плане полётов<br/>(прогноз или факт)"}}
+
+  M1 --> TRG
+
+  B1Q[["DP B1 — Диспетчер ЦУП + смежные<br/>Сбор картины по конкретному<br/>отклонению (≤30 мин)"]]
+  B2Q[["DP B2 — НС ЦУП<br/>Окончательное решение по отклонению<br/>(ждать / заменить ВС / резерв экипажа /<br/>перенести / совместить / отменить /<br/>стыковки / запасной а/д)"]]
+  B3Q[["DP B3 — Исполнители<br/>148-08, ЦУТО ВС, СПиОУ,<br/>ДОНО, ДУТиЗ, КЦ, ОКР, ДО ЦУП"]]
+  B4Q[["DP B4 — Иерархическая эскалация<br/>нач. ЦУП / нач. ЛД<br/>(§14.1.4, не ERP)"]]
+
+  TRG --> B1Q
+  B1Q --> B2Q
+  M2 & M3 & M4 & M5 & M6 & M7 & M8 --> B2Q
+  M9 & M10 & M11 & M12 --> B2Q
+
+  B2Q -- "Команды:<br/>• Meridian.Ops (изменения ПП)<br/>• ДЦ Ю-Ти-Джи (148-08)<br/>• ЦУТО ВС (замена/резерв)<br/>• СПиОУ (экипажи)<br/>• ДОНО (паксы, ФАП-82)<br/>• ДУТиЗ (оповещение)<br/>• KYFO (ФАП-82 push)<br/>• СМС «&gt;2ч» / «ВИП»" --> B3Q
+
+  B3Q --> CYCLE["Рейс возвращён в управляемое состояние<br/>(или новая итерация B)"]
+
+  B2Q -.при превышении компетенции.-> B4Q
+  B4Q -.согласовано.-> B3Q
+
+  classDef v21 fill:#1c2333,stroke:#bc8cff,stroke-width:2px,color:#e6edf3
+  class IN21,M9,M10,M11,M12 v21
+    </div></div>
+  </div>
+
+  <div class="section">
+    <h2>Decision points цикла B — детально</h2>
+    <div class="cards">
+      <div class="card"><div class="card-head" onclick="this.parentElement.classList.toggle('open')"><span class="ic cycle-b">B1</span><span class="tt">Диспетчер ЦУП + смежные дежурные — сбор оперативной картины</span><span class="st">≤30 мин · триггер: каждое отклонение · КД-ДП-Б8.007 §11; РД-Б8.005-09 §14.2 ш.1</span><span class="chev">›</span></div><div class="card-body">
+        <strong>Входы:</strong> поток MVT/AFTN/SITA + IATA-коды из Meridian.Ops + метео + сообщения от ОПДО/ДОНО/СПиОУ/ЦУТО ВС.<br/>
+        <strong>Выход:</strong> сводная картина по конкретному отклонению (передаётся в B2).<br/>
+        <strong>Готовность:</strong> высокая — большинство данных машиночитаемо.<br/>
+        <strong>Возможность ИИ:</strong> Co-pilot диспетчера — авто-сборка картины по конкретному рейсу.
+      </div></div>
+      <div class="card"><div class="card-head" onclick="this.parentElement.classList.toggle('open')"><span class="ic cycle-b">B2</span><span class="tt">НС ЦУП — окончательное решение по отклонению</span><span class="st">минуты–часы (на рейс) · РД-Б8.005-09 §14.1.3 + КД-РД-Б1.041-04 §6, §10–§17 (изм.32)</span><span class="chev">›</span></div><div class="card-body">
+        <strong>Входы базовые (8):</strong> метео/НОТАМ; парк ВС (AOG, MEL, винглеты, темп.ограничения); экипажи (резерв, раб.время); маршруты/топливо/запасные а/д; наземное обслуживание; коммерц. загрузка/приоритеты; слоты ЦБРС; внешние заявки.<br/>
+        <strong>Входы v2.1 (4, КД-РД-Б1.041-04 изм.32):</strong> <code>DEGR/CVIP/PDTS</code> из АСБ Leonardo (T-6ч); <code>t/t*</code> в Meridian.OPS (фильтр подмены ВС); <code>KYFO</code> (контроль ФАП-82, T+1ч); <code>DCS Astra</code> (трансферный лист T-3ч/-2ч).<br/>
+        <strong>Выход:</strong> решение + команды исполнителям + СМС-рассылки + РД в МТУ Росавиации (&gt;2 ч / &gt;6 ч).<br/>
+        <strong>Узкие места:</strong> обоснование не сохраняется (<code>GAP-03</code>, КРИТИЧНО — главный блокер MVP); рассинхрон АСБ↔DCS↔OPS (<code>GAP-10/gap-06</code>, новый в v2.1).<br/>
+        <strong>Возможность ИИ:</strong> Co-pilot НС ЦУП по B2 — генератор альтернатив с карточкой обоснования (учтённые ограничения, SLA, ожидаемый эффект, риски).
+      </div></div>
+      <div class="card"><div class="card-head" onclick="this.parentElement.classList.toggle('open')"><span class="ic cycle-b">B3</span><span class="tt">Исполнители — команды по регламентированным каналам</span><span class="st">минуты · РД-Б8.005-09 §15.1.3.2.2.1–8; КД-РГ-147(148)-08 табл.1–5</span><span class="chev">›</span></div><div class="card-body">
+        <strong>Входы:</strong> команды НС ЦУП через Meridian.Ops, 148-08, Lotus, ГГС/тел., СМС.<br/>
+        <strong>Исполнители:</strong> ДЦ Ю-Ти-Джи, ЦУТО ВС, СПиОУ, ДОНО, ДУТиЗ, КЦ, ОКР, ДО ЦУП, менеджер расписания.<br/>
+        <strong>Выход:</strong> подтверждение исполнения, факт-вылет, обновление ПП.<br/>
+        <strong>Готовность:</strong> высокая (каналы регламентированы).
+      </div></div>
+      <div class="card"><div class="card-head" onclick="this.parentElement.classList.toggle('open')"><span class="ic cycle-b">B4</span><span class="tt">Иерархическая эскалация — нач. ЦУП / нач. ЛД</span><span class="st">по факту · РД-Б8.005-09 §14.1.4</span><span class="chev">›</span></div><div class="card-body">
+        <strong>Триггер:</strong> отклонение выходит за рамки компетенции НС ЦУП (не ERP).<br/>
+        <strong>Входы:</strong> сводка по B1+B2, телефонная связь.<br/>
+        <strong>Выход:</strong> согласование решения вышестоящим руководителем → возврат в B3.<br/>
+        <em>Out of scope основной B-петли:</em> ERP/РГ-128 (АНВ/АП) — отдельный проект, см. <code>GAP-06</code>; «Сбойная ситуация» по §15.1.3.3 — фаза 2 (плейбуки <code>КК62-26</code>), <code>GAP-09</code>.
+      </div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════ TAB 3: SOURCES ═══════════════ -->
+<div class="view" id="v3">
+
+  <div class="section">
+    <h2>Каталог источников данных <span class="badge">30+ источников</span></h2>
+    <div class="callout"><strong>Условные обозначения готовности:</strong>
+      <span class="r-cell r-green">green</span> подключение без донастройки ·
+      <span class="r-cell r-yellow">yellow</span> нужен парсер/нормализация ·
+      <span class="r-cell r-red">red</span> нужен новый контур сбора (OCR / voice / форма).
+      Полный каталог — <a href="../data_sources_catalog_TsUP.md" style="color:var(--blue)">data_sources_catalog_TsUP.md</a>.
+    </div>
+
+    <h3>Системы (system)</h3>
+    <div style="overflow-x:auto"><table class="dt">
+      <thead><tr><th>ID</th><th>Источник</th><th>Содержание</th><th>Доступ</th><th>Готовность</th><th>DP</th></tr></thead>
+      <tbody>
+        <tr><td><code>SYS-MER-NET</code></td><td>Meridian.Net</td><td>Расписание, СПП</td><td>DB / API</td><td><span class="r-cell r-green">green</span></td><td>A1, A2, B1–B3</td></tr>
+        <tr><td><code>SYS-MER-OPS</code></td><td>Meridian.Ops</td><td>Опер. план, расстановка</td><td>DB / API</td><td><span class="r-cell r-green">green</span></td><td>A1, A2, B1–B3</td></tr>
+        <tr><td><code>SYS-MER-NAV</code></td><td>Meridian.Nav</td><td>Штурм. расчёт, топливо</td><td>DB / API</td><td><span class="r-cell r-green">green</span></td><td>B2</td></tr>
+        <tr><td><code>SYS-MER-CREW</code></td><td>Meridian.Crew/Sal</td><td>Экипажи, рабочее время</td><td>DB / API</td><td><span class="r-cell r-green">green</span></td><td>B2, B3</td></tr>
+        <tr><td><code>SYS-MER-WEB</code></td><td>Meridian.Web</td><td>Web-портал ЛС</td><td>scrape / API</td><td><span class="r-cell r-yellow">yellow</span></td><td>A1</td></tr>
+        <tr><td><code>SYS-PROD-REP</code></td><td>ИС «Произв. отчётность»</td><td>UT-DSP.1-06, UT-DSP.1-01.1</td><td>API / file</td><td><span class="r-cell r-green">green</span></td><td>A3, A4</td></tr>
+        <tr><td><code>SYS-CBRS</code></td><td>ЦБРС / ГЦ ЕС ОрВД</td><td>Слоты, режимы</td><td>AFTN-feed</td><td><span class="r-cell r-green">green</span></td><td>B2</td></tr>
+        <tr><td><code>SYS-LOTUS</code></td><td>Lotus Notes</td><td>Корп. почта смены</td><td>IMAP / EWS</td><td><span class="r-cell r-yellow">yellow</span></td><td>A2, A3</td></tr>
+        <tr><td><code>SYS-OPS-MOD</code></td><td>Модуль OPS Ю-Ти-Джи</td><td>Сообщения по ТГО (148-08)</td><td>export / mail</td><td><span class="r-cell r-yellow">yellow</span></td><td>A1, B2</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Потоки сообщений (feed)</h3>
+    <div style="overflow-x:auto"><table class="dt">
+      <thead><tr><th>ID</th><th>Источник</th><th>Содержание</th><th>Готовность</th><th>DP</th></tr></thead>
+      <tbody>
+        <tr><td><code>FEED-AFTN-MVT</code></td><td>AFTN MVT/MVT-OUT</td><td>Факт. вылет/посадка/задержка</td><td><span class="r-cell r-green">green</span></td><td>A1, B1 (триггер)</td></tr>
+        <tr><td><code>FEED-AFTN-RSP</code></td><td>AFTN RSP/OKR</td><td>Подтверждение/отказ слота</td><td><span class="r-cell r-green">green</span></td><td>B2</td></tr>
+        <tr><td><code>FEED-SITA</code></td><td>SITA / SITATEX</td><td>Депеши хэндл-агентов</td><td><span class="r-cell r-green">green</span></td><td>A1</td></tr>
+        <tr><td><code>FEED-METEO</code></td><td>Метео / НОТАМ</td><td>Прогноз и факт. погода</td><td><span class="r-cell r-green">green</span></td><td>B2</td></tr>
+        <tr><td><code>FEED-SMS-2H</code></td><td>СМС «&gt;2 ч»</td><td>Уведомления стейкхолдеров</td><td><span class="r-cell r-yellow">yellow</span></td><td>B2 (исполнение)</td></tr>
+        <tr><td><code>FEED-SMS-VIP</code></td><td>СМС «ВИП»</td><td>VIP / ПК уведомления</td><td><span class="r-cell r-yellow">yellow</span></td><td>B2</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Документы и формы (doc)</h3>
+    <div style="overflow-x:auto"><table class="dt">
+      <thead><tr><th>ID</th><th>Документ</th><th>Владелец</th><th>Готовность</th><th>DP</th></tr></thead>
+      <tbody>
+        <tr><td><code>DOC-UT-DSP-101</code></td><td>UT-DSP.1-01.1 (отчёт по рейсам)</td><td>НС ЦУП</td><td><span class="r-cell r-green">green</span></td><td>A3</td></tr>
+        <tr><td><code>DOC-UT-DSP-106</code></td><td>UT-DSP.1-06 «Регулярность»</td><td>ОПиАА</td><td><span class="r-cell r-green">green</span></td><td>A4</td></tr>
+        <tr><td><code>DOC-ACT-DELAY</code></td><td>Акт на задержку</td><td>ПДС аэропорта</td><td><span class="r-cell r-red">red</span></td><td>A3</td></tr>
+        <tr><td><code>DOC-FLT-PLAN</code></td><td>Полётный план / расчёт</td><td>ОПДО</td><td><span class="r-cell r-green">green</span></td><td>B2</td></tr>
+        <tr><td><code>DOC-NOTOC</code></td><td>NOTOC</td><td>ДОНО</td><td><span class="r-cell r-green">green</span></td><td>B2</td></tr>
+        <tr><td><code>DOC-MEL</code></td><td>MEL/CDL</td><td>ЦУТО ВС / ТД</td><td><span class="r-cell r-yellow">yellow</span></td><td>B2</td></tr>
+        <tr><td><code>DOC-ERP-CARDS</code></td><td>Карты действий (Annex 6/7/13/15/16)</td><td>РГ-128</td><td><span class="r-cell r-red">red</span></td><td>B4</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Голосовые / неструктурированные каналы</h3>
+    <div style="overflow-x:auto"><table class="dt">
+      <thead><tr><th>ID</th><th>Источник</th><th>Содержание</th><th>Готовность</th><th>DP</th></tr></thead>
+      <tbody>
+        <tr><td><code>VOICE-PHONE</code></td><td>Телефон / ГГС / радио</td><td>Уточнения по статусу ВС, экипажа, паксов</td><td><span class="r-cell r-red">red</span></td><td>A1, A2</td></tr>
+        <tr><td><code>VOICE-RADIO</code></td><td>Радио экипаж ↔ ОПДО</td><td>Подтверждение готовности</td><td><span class="r-cell r-red">red</span></td><td>A1</td></tr>
+        <tr><td><code>MSG-WA-148</code></td><td>WhatsApp по 148-08</td><td>Оперативные сообщения с Ю-Ти-Джи</td><td><span class="r-cell r-yellow">yellow</span></td><td>A1, B2</td></tr>
+        <tr><td><code>MAN-LOG-SHIFT</code></td><td>Журнал приёма-передачи смены</td><td>Сменный контекст</td><td><span class="r-cell r-red">red</span></td><td>A2, B1</td></tr>
+        <tr><td><code>MAN-LOG-REQ</code></td><td>Журнал заявок</td><td>Внешние заявки заказчиков</td><td><span class="r-cell r-yellow">yellow</span></td><td>B2</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+</div>
+
+<!-- ═══════════════ TAB 4: MATRIX ═══════════════ -->
+<div class="view" id="v4">
+
+  <div class="section">
+    <h2>Матрица «решение ↔ данные ↔ доступность для ИИ» <span class="badge">v2.1 · 24 связки</span></h2>
+    <div class="legend">
+      <span class="li"><span class="sw" style="background:var(--green)"></span>green — high readiness</span>
+      <span class="li"><span class="sw" style="background:var(--yellow)"></span>yellow — partial</span>
+      <span class="li"><span class="sw" style="background:var(--red)"></span>red — gap</span>
+    </div>
+    <div style="overflow-x:auto"><table class="dt">
+      <thead><tr><th>DP</th><th>Тип данных</th><th>Источник / канал</th><th>Структурирован?</th><th>Готовность</th></tr></thead>
+      <tbody>
+        <tr><td>A1</td><td>Факт. время вылета/посадки</td><td>MVT/AFTN/SITA → Meridian.Ops</td><td>да (формализованные ТГТ)</td><td><span class="r-cell r-green">green</span></td></tr>
+        <tr><td>A1</td><td>Голосовые подтверждения супервайзеров</td><td>Телефон</td><td>нет (устно)</td><td><span class="r-cell r-red">red</span></td></tr>
+        <tr><td>A1</td><td>Сообщения от КВС / Ю-Ти-Джи</td><td>Тел. / ГГС / WhatsApp</td><td>частично (148-08)</td><td><span class="r-cell r-yellow">yellow</span></td></tr>
+        <tr><td>A2</td><td>Уточнения смежных подразделений</td><td>Lotus Notes + телефон</td><td>полу-структурно</td><td><span class="r-cell r-yellow">yellow</span></td></tr>
+        <tr><td>A2</td><td>Классификатор IATA AHM 730</td><td>КД-ДП-Б8.007 §10</td><td>да</td><td><span class="r-cell r-green">green</span></td></tr>
+        <tr><td>A3</td><td>Скоординированная инфо смены</td><td>e-mail + отчёт по рейсам</td><td>смешанная</td><td><span class="r-cell r-yellow">yellow</span></td></tr>
+        <tr><td>A3</td><td>Акт на задержку</td><td>ПДС аэропорта (PDF/бумага)</td><td>разный по а/п</td><td><span class="r-cell r-red">red</span></td></tr>
+        <tr><td>A4</td><td>Регулярность по 21 категории</td><td>UT-DSP.1-06 (ИС «Произв.отчётность»)</td><td>да</td><td><span class="r-cell r-green">green</span></td></tr>
+        <tr><td>B1</td><td>Прогноз/факт отклонения по конкретному рейсу</td><td>Meridian.Ops + AFTN/SITA + метео</td><td>да</td><td><span class="r-cell r-green">green</span></td></tr>
+        <tr><td>B2</td><td>Статусы парка (AOG, MEL, винглеты, температура)</td><td>Meridian.Alliance + ЦУТО ВС</td><td>да</td><td><span class="r-cell r-green">green</span></td></tr>
+        <tr><td>B2</td><td>Статусы экипажей</td><td>Meridian.Crew + СПиОУ</td><td>да</td><td><span class="r-cell r-green">green</span></td></tr>
+        <tr><td>B2</td><td>Топливо и запасные а/д</td><td>ОПДО САОП ЛД, Meridian.Nav</td><td>да</td><td><span class="r-cell r-green">green</span></td></tr>
+        <tr><td>B2</td><td>Погода / НОТАМ</td><td>ОПДО, внешние источники</td><td>да</td><td><span class="r-cell r-green">green</span></td></tr>
+        <tr><td>B2</td><td>Слоты, режимы а/п</td><td>ЦБРС, ГЦ ЕС ОрВД</td><td>да (РСП/ОКР)</td><td><span class="r-cell r-green">green</span></td></tr>
+        <tr><td>B2</td><td>Коммерческие приоритеты, паксы</td><td>ДУТиЗ</td><td>частично</td><td><span class="r-cell r-yellow">yellow</span></td></tr>
+        <tr style="background:rgba(188,140,255,.06)"><td>B2 (изм.32)</td><td><strong>v2.1</strong>: DEGR/CVIP/PDTS — приоритеты пакса (T-6ч)</td><td>АСБ Leonardo (КЦ), webhook</td><td>да</td><td><span class="r-cell r-green">green</span></td></tr>
+        <tr style="background:rgba(188,140,255,.06)"><td>B2 (изм.32)</td><td><strong>v2.1</strong>: t/t* префикс — двиг. ограничения (фильтр подмены ВС)</td><td>Meridian.OPS, КАЭ/КЛО</td><td>да (флаг)</td><td><span class="r-cell r-green">green</span></td></tr>
+        <tr style="background:rgba(188,140,255,.06)"><td>B2 (изм.32)</td><td><strong>v2.1</strong>: статусы ФАП-82-сервисов (T+1ч)</td><td>KYFO, КЦ, push</td><td>да</td><td><span class="r-cell r-green">green</span></td></tr>
+        <tr style="background:rgba(188,140,255,.06)"><td>B2 (изм.32)</td><td><strong>v2.1</strong>: трансферный лист пакс (T-3ч/-2ч)</td><td>DCS Astra, ОКР</td><td>да</td><td><span class="r-cell r-green">green</span></td></tr>
+        <tr style="background:rgba(188,140,255,.06)"><td>B2 (изм.32)</td><td><strong>v2.1</strong>: отчёт «Состояние парка ВС»</td><td>ЦУТО ВС, ежедневно</td><td>частично</td><td><span class="r-cell r-yellow">yellow</span></td></tr>
+        <tr style="background:rgba(188,140,255,.06)"><td>B2 (изм.32)</td><td><strong>v2.1 / GAP-10</strong>: единая картина «пакс × рейс × ВС» (3 системы)</td><td>АСБ Leonardo + DCS Astra + Meridian.OPS — рассинхронизированы</td><td>нет (асинхронно)</td><td><span class="r-cell r-red">red</span></td></tr>
+        <tr><td>B2</td><td>Обоснование выбора решения по рейсу (GAP-03)</td><td>Устно / в голове НС ЦУП</td><td>нет</td><td><span class="r-cell r-red">red</span></td></tr>
+        <tr><td>B3</td><td>Команды исполнителям</td><td>Meridian.Ops + 148-08 + Lotus + ГГС</td><td>да</td><td><span class="r-cell r-green">green</span></td></tr>
+        <tr><td>B4</td><td>Иерархическая эскалация (§14.1.4)</td><td>Тел. нач. ЦУП / нач. ЛД</td><td>нет (устно)</td><td><span class="r-cell r-yellow">yellow</span></td></tr>
+        <tr><td>B-LEGACY-ERP</td><td>ERP / RG-128 (вне scope MVP)</td><td>Бумажный план + телефонный обзвон</td><td>нет</td><td><span class="r-cell r-red">red</span></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+</div>
+
+<!-- ═══════════════ TAB 5: AI READINESS & ROADMAP ═══════════════ -->
+<div class="view" id="v5">
+
+  <div class="section">
+    <h2>Сильные места и узкие места <span class="badge">2 + 5</span></h2>
+    <div class="callout ok"><strong>Сильные места (можно стартовать сразу):</strong>
+      <ul style="margin:6px 0 0 18px;line-height:1.7">
+        <li>Количественные триггеры (B1, B3) и оптимизации опираются на <code>Meridian.Alliance</code> + AFTN/SITA — машиночитаемые потоки.</li>
+        <li>Цикл RCA на A4 уже структурирован 21-категорийной таксономией задержек (<code>РИ-М1.016 §8.1.2</code>) в ИС «Производственная отчётность».</li>
+        <li>SOP-таблицы взаимодействия (<code>РД-Б8.005</code> табл. 1.x–8.x; <code>КД-РГ-147(148)-08</code> табл. 1–3) дают почти готовую онтологию событий и адресатов.</li>
+      </ul>
+    </div>
+    <div class="callout warn"><strong>Узкие места (требуют донастройки контура):</strong>
+      <ol style="margin:6px 0 0 18px;line-height:1.7">
+        <li>DP A1/A2 — формулировка причины задержки на стыке голосовых каналов: нужен voice-to-text или чек-лист в Meridian.Ops.</li>
+        <li>DP A3 — акты на задержку от ПДС аэропортов разнородны: нужен OCR + классификатор.</li>
+        <li>DP B2 — обоснование выбора сценария не сохраняется (только команды-исполнения): нужен журнал решений.</li>
+        <li>WhatsApp / устные каналы (148-08) не сохраняются.</li>
+        <li>Связи между документами выражены только текстовыми ссылками: нужна явная онтология.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Knowledge gaps <span class="badge">v2.1 · 10 пробелов</span></h2>
+    <div class="gap-cards">
+      <div class="gap-card sev1"><div class="gn"><span class="gi">GAP-01</span><span class="sev s1">SEV 1</span><span class="eff">L</span><span>Голосовая координация А1/А2 не фиксируется</span></div><div class="gd">Решение принимается на стыке тел./ГГС/радио — без записи. Owner: ЦУП + ИБ + юристы.</div><div class="gr">Митигация: чек-лист в Meridian.Ops + voice-to-text c анонимизацией.</div></div>
+      <div class="gap-card sev2"><div class="gn"><span class="gi">GAP-02</span><span class="sev s2">SEV 2</span><span class="eff">M</span><span>Акты на задержку от ПДС аэропортов разрозненны</span></div><div class="gd">Бумажные/PDF-акты разных а/п не агрегируются.</div><div class="gr">Митигация: OCR-приёмник + классификатор по 21 категории.</div></div>
+      <div class="gap-card sev1"><div class="gn"><span class="gi">GAP-03</span><span class="sev s1">SEV 1</span><span class="eff">M</span><span>Обоснование решения по рейсу (B2) не сохраняется — <strong>главный блокер MVP</strong></span></div><div class="gd">v2.1: 12 категорий входов (8 базовых + 4 из изм.32 — DEGR/CVIP/PDTS, t/t*, KYFO, DCS) + 4 SLA-таймера (-6ч/-3ч/-2ч/+1ч) — нагрузка усилилась.</div><div class="gr">Митигация: журнал решений в Meridian.Ops с полями варианты[]/критерии[12]/SLA-соотнесение/обоснование.</div></div>
+      <div class="gap-card sev2"><div class="gn"><span class="gi">GAP-04</span><span class="sev s2">SEV 2</span><span class="eff">M</span><span>WhatsApp по 148-08 не имеет архива</span></div><div class="gd">Free-text тело сообщений не сохраняется.</div><div class="gr">Митигация: корпоративный мессенджер с архивацией / переход на Модуль OPS как единый канал.</div></div>
+      <div class="gap-card sev2"><div class="gn"><span class="gi">GAP-05</span><span class="sev s2">SEV 2</span><span class="eff">S</span><span>Журнал приёма-передачи смены — бумажный</span></div><div class="gd">Контекст «что было на прошлой смене» — критичен для повторяющихся проблем.</div><div class="gr">Митигация: электронная форма передачи смены в Meridian.Web.</div></div>
+      <div class="gap-card sev3"><div class="gn"><span class="gi">GAP-06</span><span class="sev s3">SEV 3</span><span class="eff">L</span><span>ERP / RG-128 — внесистемный контур</span></div><div class="gd">Действия в кризисе — бумага + обзвон.</div><div class="gr">Митигация: вне scope MVP, отдельный проект цифровизации ERP.</div></div>
+      <div class="gap-card sev2"><div class="gn"><span class="gi">GAP-07</span><span class="sev s2">SEV 2</span><span class="eff">M</span><span>Нет явных связей между документами</span></div><div class="gd">Текстовые ссылки — не граф.</div><div class="gr">Митигация: ontology_TsUP.yaml + cross-reference граф.</div></div>
+      <div class="gap-card sev2"><div class="gn"><span class="gi">GAP-08</span><span class="sev s2">SEV 2</span><span class="eff">M</span><span>Коммерческие приоритеты ДУТиЗ — частично структурированы</span></div><div class="gd">Часто согласуются устно.</div><div class="gr">Митигация: структурный feed «приоритет рейса» в Meridian.Ops.</div></div>
+      <div class="gap-card sev3"><div class="gn"><span class="gi">GAP-09</span><span class="sev s3">SEV 3</span><span class="eff">M</span><span>Триггер «сбойной ситуации» — пороговый <em>(v2.1: фаза 2)</em></span></div><div class="gd">v2.1: «сбойная ситуация» вне B-петли. Этот gap актуален для фазы 2 — встроенных плейбуков КК62-26 / КД-РД-Б1.041-04.</div><div class="gr">Митигация: прогнозный детектор каскадных задержек как handler типовых сценариев плейбука.</div></div>
+      <div class="gap-card sev2" style="border-color:var(--purple)"><div class="gn"><span class="gi">GAP-10</span><span class="sev s2">SEV 2</span><span class="eff">M</span><span><strong>v2.1 (новый)</strong> · Несинхронность АСБ Leonardo ↔ DCS Astra ↔ Meridian.OPS</span></div><div class="gd">При изменении времени рейса в B2 решение распространяется по 3 системам асинхронно — у НС ЦУП нет единой картины «пакс × рейс × ВС». Якорь: КД-РД-Б1.041-04 §10–§14 (изм.32). Соответствует gap-06 в анализе и презентации.</div><div class="gr">Митигация: CDC из 3 систем + событийная шина + сводная карточка рейса в Meridian.Web.</div></div>
+    </div>
+    <div style="margin-top:10px;font-size:11px;color:var(--text2)">Полный реестр — <a href="../knowledge_gaps_TsUP.md" style="color:var(--blue)">knowledge_gaps_TsUP.md</a>.</div>
+  </div>
+
+  <div class="section">
+    <h2>Метрики успеха MVP <span class="badge">5 KPI</span></h2>
+    <div class="metric-grid">
+      <div class="metric"><div class="ml">Время до окончат. формулировки причины задержки</div><div class="mv" style="color:var(--blue)">≤15<span style="font-size:14px"> мин</span></div><div class="md">для 80% задержек (AS-IS — часы)</div></div>
+      <div class="metric"><div class="ml">Доля задержек категории «Прочее»</div><div class="mv" style="color:var(--green)">−50<span style="font-size:14px">%</span></div><div class="md">база — UT-DSP.1-06 TBD</div></div>
+      <div class="metric"><div class="ml">Время от B1 до согласованного B2</div><div class="mv" style="color:var(--purple)">≤20<span style="font-size:14px"> мин</span></div><div class="md">от триггера сбоя до решения</div></div>
+      <div class="metric"><div class="ml">Сбойные ситуации с обоснованием выбора</div><div class="mv" style="color:var(--cyan)">≥90<span style="font-size:14px">%</span></div><div class="md">AS-IS — ~0%</div></div>
+      <div class="metric"><div class="ml">Повтор. коренные причины с корректирующим действием</div><div class="mv" style="color:var(--orange)">+30<span style="font-size:14px">% YoY</span></div><div class="md">эффект на регулярность</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Дорожная карта <span class="badge">5 фаз</span></h2>
+    <div class="roadmap">
+      <div class="rm-col p0"><h4>Фаза 0</h4><div class="rm-period">Завершено</div><ul><li>AS-IS зафиксирован</li><li>9 OCR'ed PDF документов</li><li>Анализ + 4 артефакта (этот дашборд)</li></ul></div>
+      <div class="rm-col p1"><h4>Фаза 1</h4><div class="rm-period">2–3 недели</div><ul><li>BPMN AS-IS детализация</li><li>Каталог data sources актуализация</li><li>Онтология + cross-ref</li><li>Закрытие GAP-05 (быстрая победа)</li></ul></div>
+      <div class="rm-col p2"><h4>Фаза 2 — PoC #1</h4><div class="rm-period">4–6 недель</div><ul><li>«Co-pilot диспетчера» (read-only)</li><li>Тестовый стенд на исторических данных</li><li>Структурный чек-лист в Meridian.Ops</li></ul></div>
+      <div class="rm-col p3"><h4>Фаза 3 — Pilot</h4><div class="rm-period">4 недели</div><ul><li>Shadow mode в одной смене ЦУП</li><li>Замер метрик KPI</li><li>Обратная связь диспетчеров</li></ul></div>
+      <div class="rm-col p4"><h4>Фаза 4 — PoC #2 (Co-pilot НС ЦУП по B2)</h4><div class="rm-period">6 недель + go/no-go</div><ul><li>Генератор вариантов решения по B2 (с учётом 12 категорий + SLA-таймеров)</li><li>Дизайн-ревью с НС ЦУП</li><li>Закрытие GAP-03 (журнал решений) и GAP-10 (CDC/event-bus 3 систем)</li><li>Формализация в СМК (ДП-М1.003)</li></ul></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Риски и ограничения</h2>
+    <div class="cards">
+      <div class="card"><div class="card-head" onclick="this.parentElement.classList.toggle('open')"><span class="ic">⚖</span><span class="tt">Регуляторика — ИИ только рекомендует</span><span class="st">РД-Б8.005-09 §14.1.3, §15.1.3.3.6</span><span class="chev">›</span></div><div class="card-body">Окончательная ответственность за управление ПП — на НС ЦУП и начальнике ЦУП. ИИ-ассистент не может заменить решение, только подготовить варианты и обоснование. Якорь — ВК РФ, ФАП-128, ФАП-82, РПП-2017.</div></div>
+      <div class="card"><div class="card-head" onclick="this.parentElement.classList.toggle('open')"><span class="ic">📋</span><span class="tt">Сертификация СМК</span><span class="st">ДП-М1.003 / РД-М1.014</span><span class="chev">›</span></div><div class="card-body">Изменения процедур ЦУП проходят через управление корректирующими действиями (ДП-М1.003) и аудит качества (РД-М1.014). Выкатка ИИ в продуктив требует записи в СМК.</div></div>
+      <div class="card"><div class="card-head" onclick="this.parentElement.classList.toggle('open')"><span class="ic">🚨</span><span class="tt">ERP / RG-128 — вне scope MVP</span><span class="st">критичность ошибки</span><span class="chev">›</span></div><div class="card-body">Кризисный контур (АНВ/АП) не входит в MVP — критичность ошибки несопоставима с RCA по задержкам. Отдельный проект.</div></div>
+      <div class="card"><div class="card-head" onclick="this.parentElement.classList.toggle('open')"><span class="ic">🔒</span><span class="tt">Vendor lock — Meridian.Alliance</span><span class="st">КД-ДП-Б8.007 §12.1.5</span><span class="chev">›</span></div><div class="card-body">Meridian.Alliance — внешний вендор. Доступ к данным согласовывать (cloud.utair.ru). Возможны ограничения на запись и интеграции.</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Артефакты и ссылки</h2>
+    <div class="links">
+      <a href="../../input2/ЦУП_md/ANALYSIS_AS-IS_RCA_и_Сбойные.md"><div class="lt">📄 ANALYSIS_AS-IS_RCA_и_Сбойные.md</div><div class="ld">Утверждённый текст AS-IS-анализа (источник истины)</div></a>
+      <a href="../data_sources_catalog_TsUP.md"><div class="lt">📊 data_sources_catalog_TsUP.md</div><div class="ld">Каталог 30+ источников с приоритизацией phase 0/1/2</div></a>
+      <a href="../knowledge_gaps_TsUP.md"><div class="lt">⚠ knowledge_gaps_TsUP.md</div><div class="ld">Реестр 9 пробелов с severity/effort/owner</div></a>
+      <a href="../ontology_TsUP.yaml"><div class="lt">🧬 ontology_TsUP.yaml</div><div class="ld">Онтология ЦУП: роли, DP, справочники, события</div></a>
+      <a href="../bpmn/RCA_AS-IS.bpmn"><div class="lt">🔧 RCA_AS-IS.bpmn</div><div class="ld">BPMN 2.0 — цикл RCA с lanes</div></a>
+      <a href="../bpmn/Disrupt_AS-IS.bpmn"><div class="lt">🔧 Disrupt_AS-IS.bpmn</div><div class="ld">BPMN 2.0 — цикл сбойной ситуации с lanes</div></a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+mermaid.initialize({startOnLoad:true,theme:'dark',themeVariables:{darkMode:true,background:'#161b22',primaryColor:'#1c2333',primaryTextColor:'#e6edf3',primaryBorderColor:'#30363d',lineColor:'#8b949e',secondaryColor:'#0d1117',tertiaryColor:'#161b22',fontFamily:'IBM Plex Sans'},flowchart:{useMaxWidth:true,htmlLabels:true,curve:'basis'}});
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    const i=t.dataset.tab;
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
+    t.classList.add('on');
+    document.getElementById('v'+i).classList.add('on');
+  });
+});
+</script>
+
+</body>
+</html>
