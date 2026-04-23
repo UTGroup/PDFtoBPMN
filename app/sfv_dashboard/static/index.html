@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Продажи на борту ПАО «Авиакомпания «ЮТэйр» · Live-дашборд</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="loading-overlay" id="overlay"><span class="spinner"></span><span id="overlay-text">загрузка...</span></div>
+
+<div class="header">
+  <h1>Продажи на борту ПАО «Авиакомпания «ЮТэйр» · Live-аналитика
+    <span class="live" id="live-badge">CH · …</span>
+  </h1>
+  <div class="sub" id="sub-line">Подключение к ClickHouse…</div>
+</div>
+
+<div class="filters-bar">
+  <div class="fld">
+    <label>Дата с</label>
+    <input type="date" id="f-date-from">
+  </div>
+  <div class="fld">
+    <label>Дата по</label>
+    <input type="date" id="f-date-to">
+  </div>
+  <div class="fld">
+    <label>Рейс</label>
+    <select id="f-flight"><option value="">все</option></select>
+  </div>
+  <div class="fld">
+    <label>Категория</label>
+    <select id="f-cat"><option value="">все</option></select>
+  </div>
+  <div class="fld">
+    <label>SKU</label>
+    <select id="f-sku"><option value="">все</option></select>
+  </div>
+  <div class="spacer"></div>
+  <div class="applied-info" id="applied-info"></div>
+  <button class="btn primary" id="btn-apply">Применить</button>
+  <button class="btn" id="btn-reset">Сброс</button>
+</div>
+
+<div class="tabs">
+  <div class="tab on" data-view="overview">Обзор</div>
+  <div class="tab" data-view="sku"><abbr title="Stock Keeping Unit — артикул, уникальная единица номенклатуры">SKU</abbr> / Номенклатура</div>
+  <div class="tab" data-view="flights">Рейсы</div>
+  <div class="tab" data-view="patterns">Паттерны / Дыры</div>
+  <div class="tab" data-view="glossary">Глоссарий</div>
+</div>
+
+<!-- ============ OVERVIEW ============ -->
+<div class="view on" id="view-overview">
+  <div class="section">
+    <h2>KPI <span class="badge">overview</span></h2>
+    <div class="metric-grid" id="kpi-grid"></div>
+  </div>
+  <div class="section">
+    <h2>Динамика по неделям <span class="hint">столбики — выручка, линия — sell-through % (правая ось)</span></h2>
+    <div class="chart-wrap"><div class="chart" id="chart-weekly" style="height:380px"></div></div>
+  </div>
+  <div class="section">
+    <h2>Сезонность · средняя выручка / накладную (месяц × день недели) <span class="hint">в подписи: ₽ / накл (n накладных)</span></h2>
+    <div class="chart-wrap"><div class="chart" id="chart-heatmap-md" style="height:520px"></div></div>
+  </div>
+  <div class="section">
+    <h2>Категория × месяц (выручка) <span class="hint">матрица распределения дохода</span></h2>
+    <div class="chart-wrap"><div class="chart" id="chart-cat-month" style="height:340px"></div></div>
+  </div>
+</div>
+
+<!-- ============ SKU ============ -->
+<div class="view" id="view-sku">
+  <div class="section">
+    <h2>Парето по выручке
+      <span class="hint">столбики — выручка <abbr title="Stock Keeping Unit — артикул, уникальная единица номенклатуры. Подробнее во вкладке «Глоссарий»">SKU</abbr>; бирюзовая линия — накопленная доля периода (ось справа). Точка пересечения с пунктиром 80% = ядро ассортимента.</span>
+    </h2>
+    <div class="chart-wrap"><div class="chart" id="chart-pareto" style="height:480px"></div></div>
+  </div>
+  <div class="section">
+    <h2>Категории — выручка и эффективность</h2>
+    <div class="row2">
+      <div class="chart-wrap"><div class="ct">Выручка по категориям</div><div class="chart" id="chart-cat-rev" style="height:340px"></div></div>
+      <div class="chart-wrap"><div class="ct">Sell-through и % возврата</div><div class="chart" id="chart-cat-st" style="height:340px"></div></div>
+    </div>
+  </div>
+  <div class="section">
+    <h2>Quadrant: загрузка vs продажи
+      <span class="hint">X — средняя загрузка одной накладной (лог-шкала, шт.). Y — <abbr title="Sell-through = sold/loaded, доля проданного от загруженного">sell-through</abbr>. Размер пузырька ∝ совокупной выручке <abbr title="Stock Keeping Unit — артикул">SKU</abbr>. Зелёная зона — высокий sell-through (≥70%, кандидаты на доп. загрузку), красная — низкий (≤25%, риск списаний).</span>
+    </h2>
+    <div class="chart-wrap"><div class="chart" id="chart-sku-scatter" style="height:580px"></div></div>
+  </div>
+  <div class="section">
+    <h2>Таблица <abbr title="Stock Keeping Unit — артикул, уникальная единица номенклатуры">SKU</abbr> <span class="hint">клик по заголовку — сортировка</span></h2>
+    <div class="tbl-wrap"><table class="dt" id="tbl-sku">
+      <thead><tr>
+        <th data-key="item_sku">SKU</th>
+        <th data-key="item_name" class="txt">Название</th>
+        <th data-key="item_category" class="txt">Категория</th>
+        <th data-key="loadings">Загр-ок</th>
+        <th data-key="avg_loaded">Средн загрузка</th>
+        <th data-key="avg_sold">Средн продажа</th>
+        <th data-key="sell_through">Sell-through</th>
+        <th data-key="med_return_pct">Медиан возврат, %</th>
+        <th data-key="soldout_share">Доля распродаж</th>
+        <th data-key="revenue">Выручка, ₽</th>
+      </tr></thead><tbody></tbody></table></div>
+  </div>
+</div>
+
+<!-- ============ FLIGHTS ============ -->
+<div class="view" id="view-flights">
+  <div class="section">
+    <h2>Топ-25 рейсов: загрузка vs продажа vs средн. выручка
+      <span class="hint">столбики — средние единицы на накладную (загружено vs продано); ромбы — средняя выручка на накладную (правая ось). Сортировка по совокупной выручке.</span>
+    </h2>
+    <div class="chart-wrap"><div class="chart" id="chart-flights-bar" style="height:520px"></div></div>
+  </div>
+  <div class="section">
+    <h2>Тепловая карта · топ-15 рейсов × топ-15 <abbr title="Stock Keeping Unit — артикул">SKU</abbr>
+      <span class="hint">пересечение «Рейс ↔ SKU» с ≥ 10 совместных накладных. В клетке: выручка пары (k₽) и кол-во наблюдений (n). Тёмные клетки — пары не встречаются ≥ 10 раз.</span>
+    </h2>
+    <div class="chart-wrap"><div class="chart" id="chart-flight-sku-heat" style="height:560px"></div></div>
+  </div>
+  <div class="section">
+    <h2>Аномалии sell-through по рейсам <span class="hint">Z-score, ≥ 20 наблюдений</span></h2>
+    <div class="tbl-wrap" style="max-height:420px"><table class="dt" id="tbl-flights">
+      <thead><tr>
+        <th data-key="flight_out">Рейс</th>
+        <th data-key="n">Накладных</th>
+        <th data-key="avg_loaded">Средн загрузка</th>
+        <th data-key="avg_sold">Средн продажа</th>
+        <th data-key="sell_through">Sell-through</th>
+        <th data-key="avg_return">Возврат, %</th>
+        <th data-key="avg_revenue">Средн выручка, ₽</th>
+        <th data-key="total_revenue">Σ выручка, ₽</th>
+        <th data-key="z_st">Z-score</th>
+      </tr></thead><tbody></tbody></table></div>
+  </div>
+</div>
+
+<!-- ============ PATTERNS ============ -->
+<div class="view" id="view-patterns">
+  <div class="section">
+    <h2>Пробелы в потоке данных <span class="hint">непрерывные периоды без накладных</span></h2>
+    <div id="gaps"></div>
+  </div>
+  <div class="section">
+    <h2>Outlier-недели по возврату
+      <span class="hint">недели, в которых % возврата отклонился от средней по выборке более чем на 1.5 σ. Красные — аномально высокий возврат (плохо), зелёные — аномально низкий (хорошо). Подпись «Z=…» — величина отклонения в σ.</span>
+    </h2>
+    <div class="chart-wrap"><div class="chart" id="chart-outlier-weeks" style="height:340px"></div></div>
+  </div>
+  <div class="section">
+    <h2>День недели — средние показатели
+      <span class="hint">средние значения на 1 накладную, агрегированы по дню недели за весь выбранный период (синий — загружено, зелёный — продано, оранжевый — выручка ₽).</span>
+    </h2>
+    <div class="chart-wrap"><div class="chart" id="chart-dow" style="height:380px"></div></div>
+  </div>
+  <div class="section">
+    <h2>Помесячная динамика</h2>
+    <div class="chart-wrap"><div class="chart" id="chart-month" style="height:340px"></div></div>
+  </div>
+  <div class="section">
+    <h2>Жизненный цикл <abbr title="Stock Keeping Unit — артикул">SKU</abbr>
+      <span class="hint">горизонтальная линия = период присутствия SKU в накладных (первая → последняя дата). Цвет — категория. Короткие отрезки = пилоты/сезонные; длинные сквозные = базовый ассортимент.</span>
+    </h2>
+    <div class="chart-wrap"><div class="chart" id="chart-lifecycle" style="height:680px"></div></div>
+  </div>
+</div>
+
+<!-- ============ GLOSSARY ============ -->
+<div class="view" id="view-glossary">
+  <div class="section">
+    <h2>Глоссарий <span class="badge">термины и метрики дашборда</span></h2>
+    <div class="glossary-intro">
+      Дашборд оперирует тремя уровнями данных:
+      <b>накладная</b> (одна загрузка одного рейса) → <b>SKU</b> (артикулы внутри неё) →
+      <b>агрегаты</b> (по дням, неделям, месяцам, рейсам, категориям).
+      Все денежные значения — выручка с пассажиров (B2C), без НДС/комиссий.
+      Все процентные показатели рассчитаны от загруженного количества, если не указано иное.
+    </div>
+
+    <div class="gloss-cat">Объекты данных</div>
+    <div class="glossary-grid">
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">SKU</span>
+          <span class="ga">item_sku</span>
+          <span class="gabbr">Stock Keeping Unit · «единица складского учёта»</span>
+        </div>
+        <div class="gd">Уникальный артикул товарной позиции — конкретный сэндвич, конкретный сок, конкретный кофе. Если изменился объём, состав или поставщик — это <b>другой SKU</b>.</div>
+        <div class="ex">Пример: <code>ТНБ-46</code> — Сэндвич, <code>ТНБН-2</code> — Сок фруктово-ягодный.</div>
+        <div class="gf">Уровень принятия решений: <b>что и сколько грузить на конкретный рейс</b>.</div>
+      </div>
+
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">Категория</span>
+          <span class="ga">item_category</span>
+        </div>
+        <div class="gd">Группировка SKU по типу товара: Сэндвич, Кофе, Сок, Чай, Газировка, Вода негаз, Горячее блюдо, Десерт и т. п.</div>
+        <div class="gf">Уровень планирования: <b>структура ассортимента в целом</b>.</div>
+      </div>
+
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">Накладная</span>
+          <span class="ga">shipment_id</span>
+        </div>
+        <div class="gd">Один документ загрузки питания на один борт: дата, рейс, перечень SKU с количеством, ценой, продажами и возвратом. <b>Базовая единица учёта.</b></div>
+        <div class="gf">Все агрегаты «средн на накладную» считаются как <code>сумма / число накладных</code>.</div>
+      </div>
+
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">Рейс (out)</span>
+          <span class="ga">flight_out</span>
+        </div>
+        <div class="gd">Номер рейса вылета из базы (АО ЮТэйр), под который сформирована накладная. Один и тот же номер рейса повторяется по расписанию каждую неделю.</div>
+        <div class="ex">Пример: <code>№ 715</code> — вылет в одно и то же направление по расписанию.</div>
+      </div>
+    </div>
+
+    <div class="gloss-cat">Метрики количества</div>
+    <div class="glossary-grid">
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">Загружено</span>
+          <span class="ga">loaded_qty</span>
+        </div>
+        <div class="gd">Сколько единиц SKU физически погружено на борт согласно накладной.</div>
+        <div class="gf">Источник плана: служба бортпитания. <b>Слишком много</b> → списания, <b>слишком мало</b> → soldout и упущенная выручка.</div>
+      </div>
+
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">Продано</span>
+          <span class="ga">sold_qty</span>
+        </div>
+        <div class="gd">Сколько единиц SKU куплено пассажирами за время полёта (фискальные транзакции бортпроводников).</div>
+      </div>
+
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">Возвращено</span>
+          <span class="ga">returned_qty</span>
+        </div>
+        <div class="gd">Сколько единиц SKU возвращено на склад после рейса (= загружено − продано, если не было порчи).</div>
+      </div>
+
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">Выручка</span>
+          <span class="ga">revenue</span>
+        </div>
+        <div class="gd">Сумма продаж SKU в рублях: <code>sold_qty × price</code>. Базовая денежная метрика.</div>
+      </div>
+    </div>
+
+    <div class="gloss-cat">Производные показатели</div>
+    <div class="glossary-grid">
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">Sell-through</span>
+          <span class="ga">sell_through</span>
+          <span class="gabbr">«пробиваемость», «вынос»</span>
+        </div>
+        <div class="gd">Доля проданного от загруженного: <code>sold / loaded</code>. Главный KPI эффективности загрузки.</div>
+        <div class="gf">
+          Грубые ориентиры: <b style="color:var(--green)">≥ 70%</b> — недогруз/дефицит, можно увеличивать;
+          <b style="color:var(--yellow)">25–70%</b> — норма;
+          <b style="color:var(--red)">≤ 25%</b> — перетарка, риск списаний.
+        </div>
+      </div>
+
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">% возврата</span>
+          <span class="ga">return_rate</span>
+        </div>
+        <div class="gd">Доля непроданных единиц: <code>returned / loaded</code> = <code>1 − sell_through</code>. Используется в отчётности перед поставщиком и для оценки списаний.</div>
+      </div>
+
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">Доля распродаж</span>
+          <span class="ga">soldout_share</span>
+        </div>
+        <div class="gd">В скольких % накладных SKU продан полностью (sold ≥ loaded). Высокий показатель = реальный <b>дефицит</b>: пассажирам не хватало.</div>
+      </div>
+
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">Средн чек / ед.</span>
+          <span class="ga">avg_check_per_unit</span>
+        </div>
+        <div class="gd">Средняя цена проданной единицы: <code>revenue / sold</code>. Растёт при сдвиге продаж в сторону дорогих SKU (горячие блюда vs вода).</div>
+      </div>
+
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">Z-score</span>
+          <span class="ga">z_st, z</span>
+          <span class="gabbr">статистическое отклонение в σ</span>
+        </div>
+        <div class="gd">Насколько метрика рейса/недели отличается от средней по выборке: <code>(x − μ) / σ</code>.</div>
+        <div class="gf"><b>|Z| ≥ 1.5</b> — статистически значимый выброс. Знак: <b style="color:var(--green)">+</b> = выше среднего, <b style="color:var(--red)">−</b> = ниже.</div>
+      </div>
+
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">Покрытие дней</span>
+          <span class="ga">days_present / days_total</span>
+        </div>
+        <div class="gd">Какая доля календарных дней внутри периода имеет хотя бы одну накладную. Меньше 100% = есть «дыры», смотри вкладку <b>Паттерны</b>.</div>
+      </div>
+    </div>
+
+    <div class="gloss-cat">Аналитические инструменты</div>
+    <div class="glossary-grid">
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">Парето (правило 80/20)</span>
+        </div>
+        <div class="gd">Сортировка SKU по убыванию выручки + накопленная доля (бирюзовая кривая). Точка, где кривая пересекает 80% — <b>ядро ассортимента</b>: эти SKU дают 80% денег и заслуживают приоритетного внимания при планировании.</div>
+      </div>
+
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">Quadrant: загрузка vs продажи</span>
+        </div>
+        <div class="gd">Каждый пузырёк — SKU. X = сколько в среднем кладут в накладную. Y = sell-through. Размер ∝ выручке. <b>Верх</b> = надо догружать, <b>низ</b> = надо урезать.</div>
+      </div>
+
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">Heatmap «Рейс × SKU»</span>
+        </div>
+        <div class="gd">Матрица совместной выручки по парам «конкретный рейс ↔ конкретный SKU» с фильтром n ≥ 10 наблюдений (чтобы убрать шум). Видно, какие позиции «не идут» на конкретных направлениях.</div>
+      </div>
+
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">Lifecycle SKU</span>
+        </div>
+        <div class="gd">Линия = период между первой и последней накладной с данным SKU. Короткие отрезки — пилоты/сезонные; длинные сквозные — базовый ассортимент.</div>
+      </div>
+
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">Outlier-недели</span>
+        </div>
+        <div class="gd">Недели с аномальным % возврата (|Z| ≥ 1.5). <b style="color:var(--red)">Красные</b> — возврат выше нормы (плохо: затоварили), <b style="color:var(--green)">зелёные</b> — ниже (хорошо: попали в спрос). Повод залезть в события недели: распродажа, маршрутные изменения, праздники.</div>
+      </div>
+
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">Пробелы (gaps)</span>
+        </div>
+        <div class="gd">Непрерывные периоды дней без единой накладной внутри выбранного интервала. Тревожный сигнал — отсутствие данных в источнике (1С / Drive), не «настоящий простой».</div>
+      </div>
+    </div>
+
+    <div class="gloss-cat">Технический контекст</div>
+    <div class="glossary-grid">
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">ПАО «Авиакомпания «ЮТэйр»</span>
+        </div>
+        <div class="gd">Поставщик первичных данных — еженедельные накладные по реализации бортового питания и сопутствующих товаров пассажирам на рейсах из базового аэропорта.</div>
+      </div>
+
+      <div class="gloss">
+        <div class="gh">
+          <span class="gt">ClickHouse</span>
+          <span class="gabbr">колоночная аналитическая БД</span>
+        </div>
+        <div class="gd">Все исходные Excel-отчёты залиты в одну денормализованную таблицу через ETL и хранятся в инстансе ClickHouse внутреннего контура.</div>
+        <div class="gf">Дашборд читает БД в режиме <b>live</b>: обновление фильтра → новый SQL-запрос → пересчёт виджетов. Кеш не используется.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="foot">
+  Источник данных: ПАО «Авиакомпания «ЮТэйр»
+  · Хранилище: ClickHouse <code>10.95.19.132</code>
+  · Бэкенд: FastAPI live-API
+  <span id="gen-stamp"></span>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

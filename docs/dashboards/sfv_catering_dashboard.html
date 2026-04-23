@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>СФВ — Бортовое питание · Аналитика загрузки и продаж</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#1c2333;--border:#30363d;
+  --text:#e6edf3;--text2:#8b949e;
+  --blue:#58a6ff;--blue-bg:rgba(88,166,255,.10);
+  --green:#3fb950;--green-bg:rgba(63,185,80,.10);
+  --yellow:#d29922;--yellow-bg:rgba(210,153,34,.10);
+  --red:#f85149;--red-bg:rgba(248,81,73,.10);
+  --purple:#bc8cff;--purple-bg:rgba(188,140,255,.10);
+  --orange:#f0883e;--orange-bg:rgba(240,136,62,.10);
+  --cyan:#39d2c0;--cyan-bg:rgba(57,210,192,.10);
+  --r:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px}
+.header{text-align:center;margin-bottom:24px}
+.header h1{font-size:24px;font-weight:700;margin-bottom:6px}
+.header .sub{font-size:13px;color:var(--text2);max-width:900px;margin:0 auto;line-height:1.6}
+.tabs{display:flex;gap:2px;justify-content:center;margin:0 auto 24px;background:var(--surface);border-radius:var(--r);padding:3px;width:fit-content}
+.tab{padding:9px 20px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;border-radius:6px;transition:.2s;user-select:none}
+.tab:hover{color:var(--text)}
+.tab.on{background:var(--surface2);color:var(--blue)}
+.view{display:none;max-width:1300px;margin:0 auto}
+.view.on{display:block}
+.section{margin-bottom:28px}
+.section h2{font-size:15px;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.section h2 .badge{font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 8px;border-radius:4px;background:var(--blue-bg);color:var(--blue)}
+.section h2 .hint{font-size:11px;color:var(--text2);font-weight:400;margin-left:auto}
+.metric-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:18px}
+@media(max-width:1100px){.metric-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.metric-grid{grid-template-columns:repeat(2,1fr)}}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.metric .ml{font-size:10px;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.metric .mv{font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace;line-height:1.2}
+.metric .md{font-size:10px;margin-top:6px;color:var(--text2)}
+.metric.warn{border-color:#5d4500}
+.metric.warn .mv{color:var(--yellow)}
+.metric.bad{border-color:#5d1f1f}
+.metric.bad .mv{color:var(--red)}
+.metric.ok{border-color:#1f5d1f}
+.metric.ok .mv{color:var(--green)}
+.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 14px 6px;margin-bottom:14px}
+.chart-wrap .ct{font-size:13px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.chart-wrap .ct .ch{font-size:11px;color:var(--text2);font-weight:400;margin-left:auto}
+.chart{width:100%}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.row2{grid-template-columns:1fr}}
+.row3{display:grid;grid-template-columns:2fr 1fr;gap:14px}
+@media(max-width:1000px){.row3{grid-template-columns:1fr}}
+table.dt{width:100%;border-collapse:collapse;font-size:12px}
+table.dt th{background:var(--surface2);padding:8px 10px;text-align:left;font-weight:600;font-size:11px;color:var(--text2);border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;position:sticky;top:0}
+table.dt th:hover{color:var(--blue)}
+table.dt th.sorted::after{content:' ▾';color:var(--blue)}
+table.dt th.sorted.asc::after{content:' ▴';color:var(--blue)}
+table.dt td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:top;font-family:'JetBrains Mono',monospace;font-size:11px}
+table.dt td.txt{font-family:'IBM Plex Sans',sans-serif;font-size:12px}
+table.dt tr:hover{background:var(--surface2)}
+.tbl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);max-height:520px;overflow:auto}
+.cell-bad{color:var(--red);font-weight:600}
+.cell-warn{color:var(--yellow);font-weight:600}
+.cell-good{color:var(--green);font-weight:600}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;font-family:'JetBrains Mono',monospace}
+.tag-cat{background:var(--blue-bg);color:var(--blue)}
+.gap-card{background:var(--red-bg);border:1px solid #5d1f1f;border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
+.gap-card .gn{font-weight:700;font-size:13px;color:var(--red);margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+.gap-card .gd{font-size:12px;color:var(--text2)}
+.filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r)}
+.filters label{font-size:11px;color:var(--text2)}
+.filters select,.filters input{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:5px 8px;font-size:12px;font-family:inherit}
+.filters select:focus,.filters input:focus{outline:none;border-color:var(--blue)}
+.foot{text-align:center;color:var(--text2);font-size:11px;margin-top:30px;padding-top:14px;border-top:1px solid var(--border)}
+.foot code{font-family:'JetBrains Mono',monospace;color:var(--blue)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>СФВ — Бортовое питание ЮТэйр · Аналитика загрузки и продаж</h1>
+  <div class="sub" id="sub-line">Дашборд по реестрам отгрузок «Скай Фуд Внуково» в торговый сервис ЮТэйр</div>
+</div>
+
+<div class="tabs">
+  <div class="tab on" data-view="overview">Обзор</div>
+  <div class="tab" data-view="sku">SKU / Номенклатура</div>
+  <div class="tab" data-view="flights">Рейсы</div>
+  <div class="tab" data-view="patterns">Паттерны / Дыры</div>
+</div>
+
+<!-- ============ OVERVIEW ============ -->
+<div class="view on" id="view-overview">
+  <div class="section">
+    <h2>KPI <span class="badge">overview</span></h2>
+    <div class="metric-grid" id="kpi-grid"></div>
+  </div>
+  <div class="section">
+    <h2>Динамика по неделям <span class="hint">оранжевая линия — sell-through (правая ось)</span></h2>
+    <div class="chart-wrap"><div class="chart" id="chart-weekly" style="height:380px"></div></div>
+  </div>
+  <div class="section">
+    <h2>Сезонность · средняя выручка на накладную (месяц × день недели)</h2>
+    <div class="chart-wrap"><div class="chart" id="chart-heatmap-md" style="height:520px"></div></div>
+  </div>
+  <div class="section">
+    <h2>Категории номенклатуры</h2>
+    <div class="row2">
+      <div class="chart-wrap"><div class="ct">Выручка по категориям</div><div class="chart" id="chart-cat-rev" style="height:340px"></div></div>
+      <div class="chart-wrap"><div class="ct">Sell-through и % возврата</div><div class="chart" id="chart-cat-st" style="height:340px"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SKU ============ -->
+<div class="view" id="view-sku">
+  <div class="section">
+    <h2>Дефицит vs Перетарка <span class="hint">размер точки = выручка, цвет = категория</span></h2>
+    <div class="filters">
+      <label>Категория:
+        <select id="sku-cat-filter"><option value="">все</option></select>
+      </label>
+      <label>Минимум загрузок:
+        <input type="number" id="sku-min-load" value="50" min="0" style="width:80px">
+      </label>
+    </div>
+    <div class="chart-wrap"><div class="chart" id="chart-sku-scatter" style="height:520px"></div></div>
+  </div>
+  <div class="section">
+    <h2>Таблица SKU <span class="hint">клик по заголовку — сортировка</span></h2>
+    <div class="tbl-wrap"><table class="dt" id="tbl-sku">
+      <thead><tr>
+        <th data-key="item_sku">SKU</th>
+        <th data-key="item_name" class="txt">Название</th>
+        <th data-key="item_category" class="txt">Категория</th>
+        <th data-key="loadings">Загр-ок</th>
+        <th data-key="avg_loaded">Средн загрузка</th>
+        <th data-key="avg_sold">Средн продажа</th>
+        <th data-key="sell_through">Sell-through</th>
+        <th data-key="med_return_pct">Медиан возврат, %</th>
+        <th data-key="soldout_share">Доля распродаж</th>
+        <th data-key="revenue">Выручка, ₽</th>
+      </tr></thead><tbody></tbody></table></div>
+  </div>
+</div>
+
+<!-- ============ FLIGHTS ============ -->
+<div class="view" id="view-flights">
+  <div class="section">
+    <h2>Рейсы по средней выручке <span class="hint">отсортировано по убыванию</span></h2>
+    <div class="chart-wrap"><div class="chart" id="chart-flights-bar" style="height:520px"></div></div>
+  </div>
+  <div class="section">
+    <h2>Тепловая карта sell-through · топ-15 рейсов × топ-15 SKU</h2>
+    <div class="chart-wrap"><div class="chart" id="chart-flight-sku-heat" style="height:560px"></div></div>
+  </div>
+  <div class="section">
+    <h2>Аномалии sell-through по рейсам <span class="hint">Z-score, ≥ 20 наблюдений</span></h2>
+    <div class="tbl-wrap" style="max-height:420px"><table class="dt" id="tbl-flights">
+      <thead><tr>
+        <th data-key="flight_out">Рейс</th>
+        <th data-key="n">Накладных</th>
+        <th data-key="avg_loaded">Средн загрузка</th>
+        <th data-key="avg_sold">Средн продажа</th>
+        <th data-key="sell_through">Sell-through</th>
+        <th data-key="avg_return">Возврат, %</th>
+        <th data-key="avg_revenue">Средн выручка, ₽</th>
+        <th data-key="z_st">Z-score</th>
+      </tr></thead><tbody></tbody></table></div>
+  </div>
+</div>
+
+<!-- ============ PATTERNS ============ -->
+<div class="view" id="view-patterns">
+  <div class="section">
+    <h2>Пробелы в потоке данных <span class="hint">недели без накладных</span></h2>
+    <div id="gaps"></div>
+  </div>
+  <div class="section">
+    <h2>День недели — средние показатели</h2>
+    <div class="chart-wrap"><div class="chart" id="chart-dow" style="height:340px"></div></div>
+  </div>
+  <div class="section">
+    <h2>Помесячная динамика · средняя выручка / накладная</h2>
+    <div class="chart-wrap"><div class="chart" id="chart-month" style="height:340px"></div></div>
+  </div>
+  <div class="section">
+    <h2>Жизненный цикл SKU <span class="hint">первая и последняя неделя присутствия</span></h2>
+    <div class="chart-wrap"><div class="chart" id="chart-lifecycle" style="height:560px"></div></div>
+  </div>
+</div>
+
+<div class="foot">
+  Данные: <code>data/sfv_trade_reports/Отчеты по торговому сервису СФВ/*.xlsx</code>
+  → ETL <code>scripts/analytics/02_etl_sfv.py</code>
+  → агрегаты <code>scripts/analytics/05_build_dashboard_payload.py</code>
+  → этот HTML <code>scripts/analytics/06_render_dashboard.py</code>.
+  <span id="gen-stamp"></span>
+</div>
+
+<script>
+const DATA = {"generated_at": "2026-04-21T04:00:04Z", "overview": {"kpis": {"files": 66, "shipments": 12455, "items": 400214, "period_start": "2024-12-27", "period_end": "2026-04-09", "days_total": 469, "days_present": 462, "missing_days": 7, "coverage_pct": 98.51, "total_revenue": 190552970.0, "total_loaded": 2324744, "total_sold": 640475, "total_returned": 1679397, "sell_through_pct": 27.55, "return_pct": 72.24, "unique_flights": 57, "unique_sku": 33, "categories": 12}, "weekly": [{"ships": 87, "loaded": 16160, "sold": 5155.0, "revenue": 1285540.0, "returned": 10972.0, "week_start": "2024-12-23", "week_end": "2024-12-29", "sell_through": 0.3189975247524752, "return_pct": 67.8960396039604}, {"ships": 175, "loaded": 32280, "sold": 10877.0, "revenue": 2675370.0, "returned": 21340.0, "week_start": "2024-12-30", "week_end": "2025-01-05", "sell_through": 0.3369578686493185, "return_pct": 66.1090458488228}, {"ships": 195, "loaded": 36618, "sold": 11096.0, "revenue": 2740170.0, "returned": 25460.0, "week_start": "2025-01-06", "week_end": "2025-01-12", "sell_through": 0.30302037249440167, "return_pct": 69.52864711344148}, {"ships": 198, "loaded": 36930, "sold": 11458.0, "revenue": 2879670.0, "returned": 25419.0, "week_start": "2025-01-13", "week_end": "2025-01-19", "sell_through": 0.3102626590847549, "return_pct": 68.8302193338749}, {"ships": 201, "loaded": 37650, "sold": 11286.0, "revenue": 2791560.0, "returned": 26283.0, "week_start": "2025-01-20", "week_end": "2025-01-26", "sell_through": 0.2997609561752988, "return_pct": 69.80876494023904}, {"ships": 211, "loaded": 39034, "sold": 12059.0, "revenue": 3002810.0, "returned": 26875.0, "week_start": "2025-01-27", "week_end": "2025-02-02", "sell_through": 0.3089357995593585, "return_pct": 68.85023313009172}, {"ships": 201, "loaded": 37606, "sold": 11595.0, "revenue": 2871280.0, "returned": 25889.0, "week_start": "2025-02-03", "week_end": "2025-02-09", "sell_through": 0.30832845822475136, "return_pct": 68.84273786097962}, {"ships": 195, "loaded": 36476, "sold": 11979.0, "revenue": 2943860.0, "returned": 24370.0, "week_start": "2025-02-10", "week_end": "2025-02-16", "sell_through": 0.3284077201447527, "return_pct": 66.8110538436232}, {"ships": 201, "loaded": 37418, "sold": 12711.0, "revenue": 3113110.0, "returned": 24645.0, "week_start": "2025-02-17", "week_end": "2025-02-23", "sell_through": 0.33970281682612646, "return_pct": 65.86402266288952}, {"ships": 111, "loaded": 20733, "sold": 7260.0, "revenue": 1748930.0, "returned": 13376.0, "week_start": "2025-02-24", "week_end": "2025-03-02", "sell_through": 0.35016640138908983, "return_pct": 64.51550668017171}, {"ships": 83, "loaded": 15837, "sold": 4720.0, "revenue": 1208660.0, "returned": 11079.0, "week_start": "2025-03-03", "week_end": "2025-03-09", "sell_through": 0.29803624423817643, "return_pct": 69.95643114226179}, {"ships": 199, "loaded": 37302, "sold": 10884.0, "revenue": 2735130.0, "returned": 26363.0, "week_start": "2025-03-10", "week_end": "2025-03-16", "sell_through": 0.29178060157632296, "return_pct": 70.67449466516541}, {"ships": 191, "loaded": 35675, "sold": 10345.0, "revenue": 2558710.0, "returned": 25261.0, "week_start": "2025-03-17", "week_end": "2025-03-23", "sell_through": 0.28997897687456203, "return_pct": 70.80868955851437}, {"ships": 189, "loaded": 35485, "sold": 10146.0, "revenue": 2496170.0, "returned": 25265.0, "week_start": "2025-03-24", "week_end": "2025-03-30", "sell_through": 0.28592362970269125, "return_pct": 71.19909821051148}, {"ships": 200, "loaded": 36810, "sold": 11125.0, "revenue": 2754730.0, "returned": 25635.0, "week_start": "2025-03-31", "week_end": "2025-04-06", "sell_through": 0.30222765552838904, "return_pct": 69.64140179299103}, {"ships": 190, "loaded": 35541, "sold": 8944.0, "revenue": 2769575.0, "returned": 26556.0, "week_start": "2025-04-07", "week_end": "2025-04-13", "sell_through": 0.25165302045524884, "return_pct": 74.71933822908753}, {"ships": 193, "loaded": 36250, "sold": 8882.0, "revenue": 2751625.0, "returned": 27317.0, "week_start": "2025-04-14", "week_end": "2025-04-20", "sell_through": 0.2450206896551724, "return_pct": 75.35724137931035}, {"ships": 196, "loaded": 36803, "sold": 9062.0, "revenue": 2804370.0, "returned": 27681.0, "week_start": "2025-04-21", "week_end": "2025-04-27", "sell_through": 0.2462299269081325, "return_pct": 75.21397712143032}, {"ships": 191, "loaded": 35964, "sold": 9481.0, "revenue": 2991825.0, "returned": 26390.0, "week_start": "2025-04-28", "week_end": "2025-05-04", "sell_through": 0.26362473584695806, "return_pct": 73.3789344900456}, {"ships": 181, "loaded": 34255, "sold": 9534.0, "revenue": 2948025.0, "returned": 24646.0, "week_start": "2025-05-05", "week_end": "2025-05-11", "sell_through": 0.27832433221427527, "return_pct": 71.94862063932273}, {"ships": 196, "loaded": 37127, "sold": 8916.0, "revenue": 2799625.0, "returned": 28155.0, "week_start": "2025-05-12", "week_end": "2025-05-18", "sell_through": 0.24014867885905136, "return_pct": 75.83429848897029}, {"ships": 198, "loaded": 37112, "sold": 9557.0, "revenue": 2969425.0, "returned": 27466.0, "week_start": "2025-05-19", "week_end": "2025-05-25", "sell_through": 0.25751778400517356, "return_pct": 74.00840698426386}, {"ships": 203, "loaded": 37991, "sold": 9670.0, "revenue": 2986075.0, "returned": 28236.0, "week_start": "2025-05-26", "week_end": "2025-06-01", "sell_through": 0.2545339685715038, "return_pct": 74.32286594193361}, {"ships": 216, "loaded": 41348, "sold": 9306.0, "revenue": 2971125.0, "returned": 31901.0, "week_start": "2025-06-02", "week_end": "2025-06-08", "sell_through": 0.22506529940988682, "return_pct": 77.1524620296024}, {"ships": 209, "loaded": 39632, "sold": 9748.0, "revenue": 3075900.0, "returned": 29801.0, "week_start": "2025-06-09", "week_end": "2025-06-15", "sell_through": 0.2459628582963262, "return_pct": 75.1942874444893}, {"ships": 208, "loaded": 39007, "sold": 9535.0, "revenue": 2977775.0, "returned": 29417.0, "week_start": "2025-06-16", "week_end": "2025-06-22", "sell_through": 0.24444330504781192, "return_pct": 75.4146691619453}, {"ships": 216, "loaded": 40467, "sold": 10105.0, "revenue": 3165900.0, "returned": 30286.0, "week_start": "2025-06-23", "week_end": "2025-06-29", "sell_through": 0.2497096399535424, "return_pct": 74.84122865544765}, {"ships": 220, "loaded": 40532, "sold": 9849.0, "revenue": 3069250.0, "returned": 30618.0, "week_start": "2025-06-30", "week_end": "2025-07-06", "sell_through": 0.24299319056547913, "return_pct": 75.54031382611271}, {"ships": 213, "loaded": 39601, "sold": 10078.0, "revenue": 3108125.0, "returned": 29458.0, "week_start": "2025-07-07", "week_end": "2025-07-13", "sell_through": 0.2544885230170955, "return_pct": 74.38701042902956}, {"ships": 194, "loaded": 36324, "sold": 9413.0, "revenue": 2911100.0, "returned": 26847.0, "week_start": "2025-07-14", "week_end": "2025-07-20", "sell_through": 0.25913996255918953, "return_pct": 73.90981169474728}, {"ships": 214, "loaded": 40113, "sold": 10055.0, "revenue": 3122400.0, "returned": 29954.0, "week_start": "2025-07-21", "week_end": "2025-07-27", "sell_through": 0.2506668661032583, "return_pct": 74.67404582055693}, {"ships": 220, "loaded": 40205, "sold": 9985.0, "revenue": 3123150.0, "returned": 30154.0, "week_start": "2025-07-28", "week_end": "2025-08-03", "sell_through": 0.2483521950006218, "return_pct": 75.00062181320732}, {"ships": 213, "loaded": 40203, "sold": 10041.0, "revenue": 3104025.0, "returned": 30081.0, "week_start": "2025-08-04", "week_end": "2025-08-10", "sell_through": 0.24975748078501606, "return_pct": 74.82277441981941}, {"ships": 213, "loaded": 39869, "sold": 10434.0, "revenue": 3269950.0, "returned": 29367.0, "week_start": "2025-08-11", "week_end": "2025-08-17", "sell_through": 0.2617070907221149, "return_pct": 73.65873234844115}, {"ships": 209, "loaded": 39048, "sold": 10266.0, "revenue": 3206400.0, "returned": 28712.0, "week_start": "2025-08-18", "week_end": "2025-08-24", "sell_through": 0.2629071911493546, "return_pct": 73.53001434132351}, {"ships": 207, "loaded": 39179, "sold": 9792.0, "revenue": 3050100.0, "returned": 29304.0, "week_start": "2025-08-25", "week_end": "2025-08-31", "sell_through": 0.24992980933663442, "return_pct": 74.79517088236045}, {"ships": 220, "loaded": 40400, "sold": 10507.0, "revenue": 3297600.0, "returned": 29814.0, "week_start": "2025-09-01", "week_end": "2025-09-07", "sell_through": 0.2600742574257426, "return_pct": 73.79702970297029}, {"ships": 203, "loaded": 38397, "sold": 9992.0, "revenue": 3161300.0, "returned": 28325.0, "week_start": "2025-09-08", "week_end": "2025-09-14", "sell_through": 0.2602286636976847, "return_pct": 73.76878401958487}, {"ships": 202, "loaded": 37651, "sold": 9638.0, "revenue": 3005900.0, "returned": 27936.0, "week_start": "2025-09-15", "week_end": "2025-09-21", "sell_through": 0.25598257682398873, "return_pct": 74.19723247722504}, {"ships": 205, "loaded": 38201, "sold": 9849.0, "revenue": 3022825.0, "returned": 28296.0, "week_start": "2025-09-22", "week_end": "2025-09-28", "sell_through": 0.25782047590377216, "return_pct": 74.07135938849768}, {"ships": 195, "loaded": 36609, "sold": 9515.0, "revenue": 2954125.0, "returned": 27029.0, "week_start": "2025-09-29", "week_end": "2025-10-05", "sell_through": 0.25990876560408643, "return_pct": 73.83157147149608}, {"ships": 184, "loaded": 35388, "sold": 9825.0, "revenue": 3046350.0, "returned": 25499.0, "week_start": "2025-10-06", "week_end": "2025-10-12", "sell_through": 0.27763648694472703, "return_pct": 72.05549903922234}, {"ships": 171, "loaded": 32587, "sold": 9298.0, "revenue": 2902925.0, "returned": 23226.0, "week_start": "2025-10-13", "week_end": "2025-10-19", "sell_through": 0.2853285052321478, "return_pct": 71.27382084880473}, {"ships": 163, "loaded": 30736, "sold": 8937.0, "revenue": 2769725.0, "returned": 21743.0, "week_start": "2025-10-20", "week_end": "2025-10-26", "sell_through": 0.29076652785007806, "return_pct": 70.74115044247787}, {"ships": 183, "loaded": 33054, "sold": 9612.0, "revenue": 2917350.0, "returned": 23365.0, "week_start": "2025-10-27", "week_end": "2025-11-02", "sell_through": 0.29079687783626795, "return_pct": 70.68736007744903}, {"ships": 181, "loaded": 33945, "sold": 9153.0, "revenue": 2838025.0, "returned": 24728.0, "week_start": "2025-11-03", "week_end": "2025-11-09", "sell_through": 0.2696420680512594, "return_pct": 72.84725290911769}, {"ships": 174, "loaded": 33062, "sold": 9589.0, "revenue": 2988000.0, "returned": 23414.0, "week_start": "2025-11-10", "week_end": "2025-11-16", "sell_through": 0.2900308511281834, "return_pct": 70.81846228298349}, {"ships": 168, "loaded": 32201, "sold": 9889.0, "revenue": 3075550.0, "returned": 22247.0, "week_start": "2025-11-17", "week_end": "2025-11-23", "sell_through": 0.3071022639048477, "return_pct": 69.08791652433153}, {"ships": 165, "loaded": 31597, "sold": 9395.0, "revenue": 2907775.0, "returned": 22126.0, "week_start": "2025-11-24", "week_end": "2025-11-30", "sell_through": 0.2973383549071114, "return_pct": 70.0256353451277}, {"ships": 189, "loaded": 34755, "sold": 10184.0, "revenue": 3132450.0, "returned": 24489.0, "week_start": "2025-12-01", "week_end": "2025-12-07", "sell_through": 0.2930225866781758, "return_pct": 70.46180405697022}, {"ships": 174, "loaded": 33466, "sold": 10205.0, "revenue": 3127150.0, "returned": 23206.0, "week_start": "2025-12-08", "week_end": "2025-12-14", "sell_through": 0.304936353313811, "return_pct": 69.34201876531405}, {"ships": 168, "loaded": 32291, "sold": 9885.0, "revenue": 3075875.0, "returned": 22282.0, "week_start": "2025-12-15", "week_end": "2025-12-21", "sell_through": 0.30612244897959184, "return_pct": 69.00374717413521}, {"ships": 180, "loaded": 34745, "sold": 10864.0, "revenue": 3386925.0, "returned": 23805.0, "week_start": "2025-12-22", "week_end": "2025-12-28", "sell_through": 0.3126780831774356, "return_pct": 68.51345517340624}, {"ships": 161, "loaded": 30991, "sold": 10451.0, "revenue": 3262225.0, "returned": 20490.0, "week_start": "2025-12-29", "week_end": "2026-01-04", "sell_through": 0.33722693685263466, "return_pct": 66.11596915233456}, {"ships": 179, "loaded": 34645, "sold": 10792.0, "revenue": 3365150.0, "returned": 23761.0, "week_start": "2026-01-05", "week_end": "2026-01-11", "sell_through": 0.31150238129600233, "return_pct": 68.58421128589984}, {"ships": 163, "loaded": 31591, "sold": 10425.0, "revenue": 3211325.0, "returned": 21096.0, "week_start": "2026-01-12", "week_end": "2026-01-18", "sell_through": 0.329999050362445, "return_pct": 66.77851286758887}, {"ships": 155, "loaded": 29489, "sold": 7511.0, "revenue": 2333600.0, "returned": 21896.0, "week_start": "2026-01-19", "week_end": "2026-01-25", "sell_through": 0.2547051442910916, "return_pct": 74.25141578215606}, {"ships": 165, "loaded": 30243, "sold": 8118.0, "revenue": 2492025.0, "returned": 22078.0, "week_start": "2026-01-26", "week_end": "2026-02-01", "sell_through": 0.26842575141355024, "return_pct": 73.00201699566841}, {"ships": 156, "loaded": 29451, "sold": 8152.0, "revenue": 2575500.0, "returned": 21238.0, "week_start": "2026-02-02", "week_end": "2026-02-08", "sell_through": 0.2767987504668772, "return_pct": 72.11300125632405}, {"ships": 151, "loaded": 27642, "sold": 7862.0, "revenue": 2629050.0, "returned": 19676.0, "week_start": "2026-02-09", "week_end": "2026-02-15", "sell_through": 0.2844222559872658, "return_pct": 71.18153534476521}, {"ships": 149, "loaded": 27431, "sold": 7865.0, "revenue": 2613725.0, "returned": 19480.0, "week_start": "2026-02-16", "week_end": "2026-02-22", "sell_through": 0.2867194050526776, "return_pct": 71.01454558710948}, {"ships": 155, "loaded": 27743, "sold": 7311.0, "revenue": 2398125.0, "returned": 20379.0, "week_start": "2026-02-23", "week_end": "2026-03-01", "sell_through": 0.26352593446995637, "return_pct": 73.45636737194968}, {"ships": 162, "loaded": 29052, "sold": 6267.0, "revenue": 2083950.0, "returned": 22721.0, "week_start": "2026-03-02", "week_end": "2026-03-08", "sell_through": 0.21571664601404378, "return_pct": 78.20804075450916}, {"ships": 155, "loaded": 27555, "sold": 6443.0, "revenue": 2104750.0, "returned": 21069.0, "week_start": "2026-03-09", "week_end": "2026-03-15", "sell_through": 0.23382326256577754, "return_pct": 76.4616222101252}, {"ships": 160, "loaded": 27816, "sold": 6581.0, "revenue": 2116875.0, "returned": 21169.0, "week_start": "2026-03-16", "week_end": "2026-03-22", "sell_through": 0.23659045153868277, "return_pct": 76.10368133448375}, {"ships": 177, "loaded": 31098, "sold": 7771.0, "revenue": 2505050.0, "returned": 23276.0, "week_start": "2026-03-23", "week_end": "2026-03-29", "sell_through": 0.24988745256929706, "return_pct": 74.84725705833173}, {"ships": 196, "loaded": 33774, "sold": 8577.0, "revenue": 2775975.0, "returned": 25103.0, "week_start": "2026-03-30", "week_end": "2026-04-05", "sell_through": 0.25395274471486945, "return_pct": 74.32640492686681}, {"ships": 109, "loaded": 18553, "sold": 4663.0, "revenue": 1494350.0, "returned": 13856.0, "week_start": "2026-04-06", "week_end": "2026-04-12", "sell_through": 0.2513340160620924, "return_pct": 74.68333962162454}], "month_dow_heatmap": {"x": ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"], "y": ["2024-12", "2025-01", "2025-02", "2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04"], "z": [[14380.4, 15570.7, null, null, 13037.6, 15270.0, 17138.9], [14210.5, 14194.4, 13790.3, 14851.9, 15149.1, 14241.8, 14542.0], [15199.6, 14426.6, 15141.2, 14600.4, 15789.9, 14541.3, 15622.2], [12959.1, 13911.8, 12578.7, 13169.9, 13799.8, 15023.7, 13963.1], [14731.6, 13729.1, 14130.7, 14197.2, 15214.5, 15226.5, 14481.7], [14566.9, 15707.8, 15403.6, 15496.9, 15705.9, 15102.7, 14843.5], [14093.7, 13616.9, 13996.1, 15054.5, 15639.8, 15517.4, 13483.1], [13814.5, 13160.8, 14819.9, 15480.9, 15083.5, 14876.8, 14811.9], [14295.0, 15206.1, 15198.1, 15519.0, 14748.5, 16043.2, 14562.0], [14013.7, 16557.7, 14711.9, 15026.2, 15688.0, 16572.7, 14259.4], [17262.0, 15892.1, 15356.5, 16455.8, 17545.5, 16737.1, 16183.3], [16952.2, 17323.1, 16284.5, 16270.0, 18450.8, 16637.2, 19150.0], [18128.8, 16530.6, 19312.0, 18391.8, 18263.1, 18463.6, 18441.8], [18147.1, 17784.9, 16105.8, 21233.3, 15855.9, 18896.2, 18316.8], [17406.9, 16042.4, 16594.8, 18074.4, 16882.3, 17816.6, 15376.2], [13028.5, 13572.9, 13666.9, 13977.4, 13405.7, 13557.4, 13793.0], [14786.7, 13961.5, 13033.5, 13965.4, 16243.2, 14625.9, 14558.0]]}}, "sku": {"rows": [{"item_sku": "ТНБ-62", "item_category": "Сэндвич", "loadings": 9727, "loaded": 48971.0, "sold": 40417.0, "returned": 8233.0, "revenue": 15645800.0, "avg_loaded": 5.034543024570782, "avg_sold": 4.5108258928571425, "avg_price": 387.57581988280043, "med_return_pct": 50.0, "avg_return_pct": 55.63960396039604, "sell_through": 0.8253, "soldout_share": 0.6355505294540968, "item_name": "Сэндвич с курицей - ТНБ-62"}, {"item_sku": "ТНБ-46", "item_category": "Кофе", "loadings": 12400, "loaded": 251846.0, "sold": 78762.0, "returned": 172786.0, "revenue": 14860100.0, "avg_loaded": 20.31016129032258, "avg_sold": 6.954701986754967, "avg_price": 189.3948733870968, "med_return_pct": 75.0, "avg_return_pct": 70.92450898801599, "sell_through": 0.3127, "soldout_share": 0.02959677419354839, "item_name": "Кофе - ТНБ-46"}, {"item_sku": "ТНБ-56", "item_category": "Чай", "loadings": 12394, "loaded": 251840.0, "sold": 69817.0, "returned": 181686.0, "revenue": 13087600.0, "avg_loaded": 20.31950944005164, "avg_sold": 6.73974321845738, "avg_price": 189.39406164273035, "med_return_pct": 80.0, "avg_return_pct": 74.83841595726923, "sell_through": 0.2772, "soldout_share": 0.03162820719703082, "item_name": "Чай чёрный - ТНБ-56"}, {"item_sku": "ТНБ-57", "item_category": "Горячее блюдо", "loadings": 7587, "loaded": 35416.0, "sold": 28291.0, "returned": 6764.0, "revenue": 10959200.0, "avg_loaded": 4.667984710689337, "avg_sold": 4.204964328180737, "avg_price": 388.53150540469284, "med_return_pct": 50.0, "avg_return_pct": 59.40092213114754, "sell_through": 0.7988, "soldout_share": 0.5899565045472519, "item_name": "Нагетсы с макаронами - ТНБ-57"}, {"item_sku": "ТНБ-60", "item_category": "Сэндвич", "loadings": 7573, "loaded": 27418.0, "sold": 21456.0, "returned": 5713.0, "revenue": 8308750.0, "avg_loaded": 3.6204938597649545, "avg_sold": 3.1739644970414203, "avg_price": 388.5910471411594, "med_return_pct": 60.0, "avg_return_pct": 62.26626686656672, "sell_through": 0.7826, "soldout_share": 0.6288128878911924, "item_name": "Сэндвич с говядиной - ТНБ-60"}, {"item_sku": "ТНБ-58", "item_category": "Горячее блюдо", "loadings": 6852, "loaded": 22135.0, "sold": 16642.0, "returned": 5290.0, "revenue": 6461150.0, "avg_loaded": 3.2304436660828957, "avg_sold": 2.903856220554877, "avg_price": 389.3680677174548, "med_return_pct": 66.7, "avg_return_pct": 67.8559359880908, "sell_through": 0.7518, "soldout_share": 0.5917980151780502, "item_name": "Фунчеза с овощами по-тайски - ТНБ-58"}, {"item_sku": "ТНБ-55", "item_category": "Чай", "loadings": 12384, "loaded": 123714.0, "sold": 20552.0, "returned": 103049.0, "revenue": 3855450.0, "avg_loaded": 9.98982558139535, "avg_sold": 2.7264526399575484, "avg_price": 189.3935723514212, "med_return_pct": 90.0, "avg_return_pct": 84.41927898402295, "sell_through": 0.1661, "soldout_share": 0.014131136950904392, "item_name": "Чай зелёный - ТНБ-55"}, {"item_sku": "ТНБН-2", "item_category": "Сок", "loadings": 10931, "loaded": 87382.0, "sold": 13222.0, "returned": 74076.0, "revenue": 3366750.0, "avg_loaded": 7.993962126063489, "avg_sold": 2.345990063875089, "avg_price": 263.95114811087734, "med_return_pct": 87.5, "avg_return_pct": 85.90317283607014, "sell_through": 0.1513, "soldout_share": 0.013447991949501418, "item_name": "Сок фруктово-ягодный в ассортименте 0,2л - ТНБн-2"}, {"item_sku": "ТНБ-61", "item_category": "Сэндвич", "loadings": 4740, "loaded": 10906.0, "sold": 7893.0, "returned": 2899.0, "revenue": 3048100.0, "avg_loaded": 2.3013293943870017, "avg_sold": 2.0781990521327014, "avg_price": 387.9535864978903, "med_return_pct": 100.0, "avg_return_pct": 75.5358123569794, "sell_through": 0.7237, "soldout_share": 0.6139240506329114, "item_name": "Сэндвич с колбасой с/к - ТНБ-61"}, {"item_sku": "ТНБ-72", "item_category": "Горячее блюдо", "loadings": 3710, "loaded": 9293.0, "sold": 6289.0, "returned": 2931.0, "revenue": 2515600.0, "avg_loaded": 2.504851752021563, "avg_sold": 2.211322081575246, "avg_price": 399.9865229110512, "med_return_pct": 100.0, "avg_return_pct": 74.59092002405292, "sell_through": 0.6767, "soldout_share": 0.5415094339622641, "item_name": "Омлет-рулет - ТНБ-72"}, {"item_sku": "ТНБ-77", "item_category": "Сэндвич", "loadings": 1120, "loaded": 4375.0, "sold": 3538.0, "returned": 779.0, "revenue": 1592100.0, "avg_loaded": 3.909740840035746, "avg_sold": 3.643666323377961, "avg_price": 450.0, "med_return_pct": 50.0, "avg_return_pct": 63.59149484536083, "sell_through": 0.8087, "soldout_share": 0.6241071428571429, "item_name": "Ролл с курицей - ТНБ-77"}, {"item_sku": "ТНБ-76", "item_category": "Сэндвич", "loadings": 1276, "loaded": 4659.0, "sold": 3345.0, "returned": 1278.0, "revenue": 1505250.0, "avg_loaded": 3.6541176470588237, "avg_sold": 3.129092609915809, "avg_price": 450.0, "med_return_pct": 66.7, "avg_return_pct": 65.65988909426987, "sell_through": 0.718, "soldout_share": 0.5619122257053292, "item_name": "Сэндвич с курицей на багете - ТНБ-76"}, {"item_sku": "ТНБ-63", "item_category": "Сэндвич", "loadings": 3518, "loaded": 5683.0, "sold": 3484.0, "returned": 2105.0, "revenue": 1338250.0, "avg_loaded": 1.6158657947114017, "avg_sold": 1.4408602150537635, "avg_price": 386.64013644115977, "med_return_pct": 100.0, "avg_return_pct": 86.61122733612274, "sell_through": 0.6131, "soldout_share": 0.5727686185332576, "item_name": "Сэндвич с сыром фета - ТНБ-63"}, {"item_sku": "ТНБ-32", "item_category": "Газировка", "loadings": 4689, "loaded": 8596.0, "sold": 5411.0, "returned": 3126.0, "revenue": 1287150.0, "avg_loaded": 1.8332267007890808, "avg_sold": 1.6372163388804841, "avg_price": 237.2680742162508, "med_return_pct": 100.0, "avg_return_pct": 80.52205750224618, "sell_through": 0.6295, "soldout_share": 0.5154617189166133, "item_name": "Маффины шоколадный,творожный - ТНБ-32"}, {"item_sku": "ТНБН-4", "item_category": "Газировка", "loadings": 1453, "loaded": 12101.0, "sold": 3575.0, "returned": 8504.0, "revenue": 1250850.0, "avg_loaded": 8.32828630419821, "avg_sold": 3.408007626310772, "avg_price": 349.9655884377151, "med_return_pct": 80.0, "avg_return_pct": 73.48955650929899, "sell_through": 0.2954, "soldout_share": 0.0364762560220234, "item_name": "Добрый сок в ас-те 0,3л - ТНБн-4"}, {"item_sku": "ТНБН-3", "item_category": "Прочее", "loadings": 7014, "loaded": 21031.0, "sold": 5922.0, "returned": 15087.0, "revenue": 1184400.0, "avg_loaded": 2.9984317080125464, "avg_sold": 1.7474181174387724, "avg_price": 200.0, "med_return_pct": 100.0, "avg_return_pct": 81.85619915392125, "sell_through": 0.2816, "soldout_share": 0.12303963501568292, "item_name": "Вода Байкал б/г 0,45л - ТНБн-3"}, {"item_sku": "ТНБ-73", "item_category": "Горячее блюдо", "loadings": 957, "loaded": 3488.0, "sold": 2506.0, "returned": 921.0, "revenue": 1127700.0, "avg_loaded": 3.6485355648535567, "avg_sold": 3.2672750977835725, "avg_price": 450.0, "med_return_pct": 75.0, "avg_return_pct": 69.97882352941177, "sell_through": 0.7185, "soldout_share": 0.5297805642633229, "item_name": "Курица терияки с удоном - ТНБ-73"}, {"item_sku": "ТНБ-74", "item_category": "Горячее блюдо", "loadings": 957, "loaded": 3145.0, "sold": 2332.0, "returned": 766.0, "revenue": 1049400.0, "avg_loaded": 3.2863113897596654, "avg_sold": 2.993581514762516, "avg_price": 450.0, "med_return_pct": 75.0, "avg_return_pct": 70.09457364341085, "sell_through": 0.7415, "soldout_share": 0.5768025078369906, "item_name": "Нагетсы с макаронами пенне,черри гриль - ТНБ-74"}, {"item_sku": "ТНБН-6", "item_category": "Газировка", "loadings": 1453, "loaded": 8734.0, "sold": 2972.0, "returned": 5748.0, "revenue": 1039900.0, "avg_loaded": 6.011011699931177, "avg_sold": 2.8143939393939394, "avg_price": 349.9655884377151, "med_return_pct": 83.3, "avg_return_pct": 72.20348221044664, "sell_through": 0.3403, "soldout_share": 0.088093599449415, "item_name": "Вода фрукт Добрый Кола 0,5л - ТНБн-6"}, {"item_sku": "ТНБ-75", "item_category": "Сэндвич", "loadings": 1045, "loaded": 2901.0, "sold": 1956.0, "returned": 917.0, "revenue": 880200.0, "avg_loaded": 2.778735632183908, "avg_sold": 2.3509615384615383, "avg_price": 450.0, "med_return_pct": 80.0, "avg_return_pct": 72.68193832599118, "sell_through": 0.6743, "soldout_share": 0.5502392344497608, "item_name": "Сэндвич с говядиной в/к на багете - ТНБ-75"}, {"item_sku": "ТНБ-59", "item_category": "Прочее", "loadings": 1244, "loaded": 3301.0, "sold": 2486.0, "returned": 791.0, "revenue": 870100.0, "avg_loaded": 2.6535369774919615, "avg_sold": 2.423001949317739, "avg_price": 350.0, "med_return_pct": 75.0, "avg_return_pct": 72.77028824833704, "sell_through": 0.7531, "soldout_share": 0.6213826366559485, "item_name": "Творожное суфле с фруктами - ТНБ-59"}, {"item_sku": "ТНБН-1", "item_category": "Вода негаз", "loadings": 5368, "loaded": 16230.0, "sold": 4744.0, "returned": 11460.0, "revenue": 808950.0, "avg_loaded": 3.023472429210134, "avg_sold": 1.7895133911731422, "avg_price": 175.5122950819672, "med_return_pct": 100.0, "avg_return_pct": 81.19770730662096, "sell_through": 0.2923, "soldout_share": 0.1290983606557377, "item_name": "Вода минеральная б/г 0,5л - ТНБн-1"}, {"item_sku": "ТНБН-5", "item_category": "Газировка", "loadings": 1452, "loaded": 4379.0, "sold": 1371.0, "returned": 3005.0, "revenue": 479700.0, "avg_loaded": 3.015840220385675, "avg_sold": 1.7713178294573644, "avg_price": 349.965564738292, "med_return_pct": 100.0, "avg_return_pct": 78.41287519747235, "sell_through": 0.3131, "soldout_share": 0.12741046831955924, "item_name": "Вода фрукт Добрый Апельсин 0,5л - ТНБн-5"}, {"item_sku": "ТНБН-8", "item_category": "Газировка", "loadings": 1451, "loaded": 2929.0, "sold": 773.0, "returned": 2150.0, "revenue": 270450.0, "avg_loaded": 2.018607856650586, "avg_sold": 1.4261992619926198, "avg_price": 349.9655410062026, "med_return_pct": 100.0, "avg_return_pct": 87.17159277504105, "sell_through": 0.2639, "soldout_share": 0.15920055134390076, "item_name": "Напиток Берн 0,33л - ТНБн-8"}, {"item_sku": "ТНБН-7", "item_category": "Газировка", "loadings": 1451, "loaded": 4381.0, "sold": 608.0, "returned": 3769.0, "revenue": 212650.0, "avg_loaded": 3.0192970365265333, "avg_sold": 1.4041570438799076, "avg_price": 349.9655410062026, "med_return_pct": 100.0, "avg_return_pct": 88.7667615658363, "sell_through": 0.1388, "soldout_share": 0.031013094417643005, "item_name": "Вода фрукт Добрый Лимон-лайм 0,5л - ТНБн-7"}, {"item_sku": "ТНБ-78", "item_category": "Десерт", "loadings": 895, "loaded": 1359.0, "sold": 335.0, "returned": 1007.0, "revenue": 50250.0, "avg_loaded": 1.5201342281879195, "avg_sold": 1.25, "avg_price": 150.0, "med_return_pct": 100.0, "avg_return_pct": 94.4647142857143, "sell_through": 0.2465, "soldout_share": 0.20335195530726258, "item_name": "Кукис печенье в ассортименте - ТНБ-78"}, {"item_sku": "ТНБ-67", "item_category": "Сэндвич", "loadings": 2, "loaded": 4.0, "sold": 4.0, "returned": 0.0, "revenue": 1600.0, "avg_loaded": 2.0, "avg_sold": 2.0, "avg_price": 400.0, "med_return_pct": NaN, "avg_return_pct": NaN, "sell_through": 1.0, "soldout_share": 1.0, "item_name": "Сэндвич с говядиной - ТНБ-67"}, {"item_sku": "ТНБ-64", "item_category": "Горячее блюдо", "loadings": 2, "loaded": 4.0, "sold": 4.0, "returned": 0.0, "revenue": 1450.0, "avg_loaded": 2.0, "avg_sold": 2.0, "avg_price": 375.0, "med_return_pct": NaN, "avg_return_pct": NaN, "sell_through": 1.0, "soldout_share": 1.0, "item_name": "Нагетсы с макаронами - ТНБ-64"}, {"item_sku": "ТНБ-66", "item_category": "Прочее", "loadings": 1, "loaded": 2.0, "sold": 2.0, "returned": 0.0, "revenue": 700.0, "avg_loaded": 2.0, "avg_sold": 2.0, "avg_price": 350.0, "med_return_pct": NaN, "avg_return_pct": NaN, "sell_through": 1.0, "soldout_share": 1.0, "item_name": "Творожное суфле с фруктами - ТНБ-66"}, {"item_sku": "ТНБ-68", "item_category": "Сэндвич", "loadings": 1, "loaded": 1.0, "sold": 1.0, "returned": 0.0, "revenue": 400.0, "avg_loaded": 1.0, "avg_sold": 1.0, "avg_price": 400.0, "med_return_pct": NaN, "avg_return_pct": NaN, "sell_through": 1.0, "soldout_share": 1.0, "item_name": "Сэндвич с колбасой с/к - ТНБ-68"}, {"item_sku": "ТНБ-65", "item_category": "Горячее блюдо", "loadings": 1, "loaded": 3.0, "sold": 1.0, "returned": 2.0, "revenue": 350.0, "avg_loaded": 3.0, "avg_sold": 1.0, "avg_price": 350.0, "med_return_pct": 66.7, "avg_return_pct": 66.7, "sell_through": 0.3333, "soldout_share": 0.0, "item_name": "Фунчеза с овощами по-тайски - ТНБ-65"}, {"item_sku": "ТНБ-13", "item_category": "Чай", "loadings": 1, "loaded": 1.0, "sold": 1.0, "returned": 0.0, "revenue": 200.0, "avg_loaded": 1.0, "avg_sold": 1.0, "avg_price": 200.0, "med_return_pct": NaN, "avg_return_pct": NaN, "sell_through": 1.0, "soldout_share": 1.0, "item_name": "Чай чёрный - ТНБ-13"}, {"item_sku": "ТНБ-3", "item_category": "Кофе", "loadings": 1, "loaded": 1.0, "sold": 1.0, "returned": 0.0, "revenue": 200.0, "avg_loaded": 1.0, "avg_sold": 1.0, "avg_price": 200.0, "med_return_pct": NaN, "avg_return_pct": NaN, "sell_through": 1.0, "soldout_share": 1.0, "item_name": "Кофе - ТНБ-3"}], "categories": [{"item_category": "Газировка", "loaded": 480237.0, "sold": 129901.0, "revenue": 37380550.0, "returned": 349367.0, "rows": 105090, "sell_through": 0.2705, "return_pct": 72.75}, {"item_category": "Сэндвич", "loaded": 104918.0, "sold": 82094.0, "revenue": 32320450.0, "returned": 21924.0, "rows": 29002, "sell_through": 0.7825, "return_pct": 20.9}, {"item_category": "Прочее", "loaded": 292438.0, "sold": 56924.0, "revenue": 29048400.0, "returned": 235115.0, "rows": 94361, "sell_through": 0.1947, "return_pct": 80.4}, {"item_category": "Горячее блюдо", "loaded": 73484.0, "sold": 56065.0, "revenue": 22114850.0, "returned": 16674.0, "rows": 20066, "sell_through": 0.763, "return_pct": 22.69}, {"item_category": "Чай", "loaded": 375555.0, "sold": 90370.0, "revenue": 16943250.0, "returned": 284735.0, "rows": 24779, "sell_through": 0.2406, "return_pct": 75.82}, {"item_category": "Снэк", "loaded": 284838.0, "sold": 69096.0, "revenue": 15676300.0, "returned": 215128.0, "rows": 49004, "sell_through": 0.2426, "return_pct": 75.53}, {"item_category": "Кофе", "loaded": 251847.0, "sold": 78763.0, "revenue": 14860300.0, "returned": 172786.0, "rows": 12401, "sell_through": 0.3127, "return_pct": 68.61}, {"item_category": "Пиво", "loaded": 122363.0, "sold": 38425.0, "revenue": 14612450.0, "returned": 83806.0, "rows": 12396, "sell_through": 0.314, "return_pct": 68.49}, {"item_category": "Сок", "loaded": 87382.0, "sold": 13222.0, "revenue": 3366750.0, "returned": 74076.0, "rows": 10931, "sell_through": 0.1513, "return_pct": 84.77}, {"item_category": "Десерт", "loaded": 135400.0, "sold": 14834.0, "revenue": 3275950.0, "returned": 120309.0, "rows": 24442, "sell_through": 0.1096, "return_pct": 88.85}, {"item_category": "Вода негаз", "loaded": 16230.0, "sold": 4744.0, "revenue": 808950.0, "returned": 11460.0, "rows": 5368, "sell_through": 0.2923, "return_pct": 70.61}, {"item_category": "Сливки/доп", "loaded": 100052.0, "sold": 6037.0, "revenue": 144770.0, "returned": 94017.0, "rows": 12374, "sell_through": 0.0603, "return_pct": 93.97}]}, "flights": {"rows": [{"flight_out": 363.0, "n": 435, "avg_loaded": 169.6574712643678, "avg_sold": 7.71078431372549, "avg_return": 95.62396313364056, "avg_revenue": 2072.046568627451, "total_revenue": 845395.0, "sell_through": 0.04544912909676818, "z_st": -1.5123882587541118}, {"flight_out": 437.0, "n": 116, "avg_loaded": 168.39655172413794, "avg_sold": 9.544642857142858, "avg_return": 94.4780701754386, "avg_revenue": 2987.723214285714, "total_revenue": 334625.0, "sell_through": 0.05667956237476049, "z_st": -1.4364422879473198}, {"flight_out": 559.0, "n": 439, "avg_loaded": 173.2255125284738, "avg_sold": 15.845622119815669, "avg_return": 90.79427917620137, "avg_revenue": 4174.8963133640555, "total_revenue": 1811905.0, "sell_through": 0.09147395143201587, "z_st": -1.2011447183726143}, {"flight_out": 395.0, "n": 260, "avg_loaded": 172.16153846153847, "avg_sold": 17.184313725490195, "avg_return": 90.06602316602316, "avg_revenue": 4233.705882352941, "total_revenue": 1079595.0, "sell_through": 0.09981505671389684, "z_st": -1.144737870786823}, {"flight_out": 375.0, "n": 364, "avg_loaded": 171.8901098901099, "avg_sold": 17.56786703601108, "avg_return": 89.70274725274724, "avg_revenue": 5162.368421052632, "total_revenue": 1863615.0, "sell_through": 0.10220405960088276, "z_st": -1.128582203501223}, {"flight_out": 801.0, "n": 611, "avg_loaded": 170.5531914893617, "avg_sold": 18.35081967213115, "avg_return": 89.3046052631579, "avg_revenue": 5045.262295081967, "total_revenue": 3077610.0, "sell_through": 0.10759587382611827, "z_st": -1.0921199802183659}, {"flight_out": 355.0, "n": 326, "avg_loaded": 172.43558282208588, "avg_sold": 19.07570977917981, "avg_return": 89.26492307692307, "avg_revenue": 4863.154574132492, "total_revenue": 1541620.0, "sell_through": 0.11062513587385026, "z_st": -1.0716345509078145}, {"flight_out": 357.0, "n": 310, "avg_loaded": 172.18387096774194, "avg_sold": 19.271844660194176, "avg_return": 88.70453074433657, "avg_revenue": 5820.873786407767, "total_revenue": 1798650.0, "sell_through": 0.11192595770950399, "z_st": -1.0628377240437081}, {"flight_out": 361.0, "n": 78, "avg_loaded": 173.92307692307693, "avg_sold": 20.98701298701299, "avg_return": 89.2012987012987, "avg_revenue": 6273.701298701299, "total_revenue": 483075.0, "sell_through": 0.1206683630389955, "z_st": -1.0037170789626484}, {"flight_out": 381.0, "n": 317, "avg_loaded": 171.60567823343848, "avg_sold": 21.585987261146496, "avg_return": 87.40253164556962, "avg_revenue": 6718.264331210191, "total_revenue": 2109535.0, "sell_through": 0.12578830422955273, "z_st": -0.9690934010897262}, {"flight_out": 807.0, "n": 268, "avg_loaded": 181.63432835820896, "avg_sold": 27.649253731343283, "avg_return": 84.62835820895523, "avg_revenue": 8848.694029850747, "total_revenue": 2371450.0, "sell_through": 0.1522248243559719, "z_st": -0.7903160435243081}, {"flight_out": 351.0, "n": 363, "avg_loaded": 174.6556473829201, "avg_sold": 27.53443526170799, "avg_return": 84.07182320441989, "avg_revenue": 8270.068870523415, "total_revenue": 3002035.0, "sell_through": 0.1576498422712934, "z_st": -0.7536292797971488}, {"flight_out": 595.0, "n": 339, "avg_loaded": 175.5103244837758, "avg_sold": 30.18452380952381, "avg_return": 83.07603550295858, "avg_revenue": 9403.4375, "total_revenue": 3159555.0, "sell_through": 0.17198147116589754, "z_st": -0.6567114278584953}, {"flight_out": 573.0, "n": 47, "avg_loaded": 180.91489361702128, "avg_sold": 32.32608695652174, "avg_return": 83.19787234042553, "avg_revenue": 9645.652173913044, "total_revenue": 443700.0, "sell_through": 0.17868118157785745, "z_st": -0.6114045373079974}, {"flight_out": 179.0, "n": 349, "avg_loaded": 176.40401146131805, "avg_sold": 31.756521739130434, "avg_return": 82.01404011461318, "avg_revenue": 10112.507246376812, "total_revenue": 3488815.0, "sell_through": 0.1800215396240806, "z_st": -0.6023403462363497}, {"flight_out": 453.0, "n": 469, "avg_loaded": 172.39019189765457, "avg_sold": 31.463675213675213, "avg_return": 81.78235294117647, "avg_revenue": 9503.49358974359, "total_revenue": 4447635.0, "sell_through": 0.1825143000731429, "z_st": -0.5854830169057172}, {"flight_out": 785.0, "n": 694, "avg_loaded": 183.46829971181558, "avg_sold": 39.085507246376814, "avg_return": 78.69161849710983, "avg_revenue": 11943.891304347826, "total_revenue": 8241285.0, "sell_through": 0.2130368423742451, "z_st": -0.37907387407316295}, {"flight_out": 247.0, "n": 464, "avg_loaded": 175.96120689655172, "avg_sold": 38.183585313174945, "avg_return": 78.1326754385965, "avg_revenue": 11507.9373650108, "total_revenue": 5328175.0, "sell_through": 0.21700001941691174, "z_st": -0.35227283082451666}, {"flight_out": 333.0, "n": 244, "avg_loaded": 180.21311475409837, "avg_sold": 39.400826446280995, "avg_return": 78.19380165289257, "avg_revenue": 11956.260330578512, "total_revenue": 2893415.0, "sell_through": 0.21863462323507146, "z_st": -0.3412187983769972}, {"flight_out": 789.0, "n": 65, "avg_loaded": 187.73846153846154, "avg_sold": 41.07692307692308, "avg_return": 77.85538461538462, "avg_revenue": 12010.692307692309, "total_revenue": 780695.0, "sell_through": 0.21879865606817997, "z_st": -0.34010952392192995}, {"flight_out": 743.0, "n": 312, "avg_loaded": 185.63141025641025, "avg_sold": 47.493589743589745, "avg_return": 74.29679487179487, "avg_revenue": 13551.50641025641, "total_revenue": 4228070.0, "sell_through": 0.25584888720064924, "z_st": -0.08955678901672395}, {"flight_out": 571.0, "n": 435, "avg_loaded": 181.90574712643678, "avg_sold": 48.76279069767442, "avg_return": 73.2185614849188, "avg_revenue": 15163.244186046511, "total_revenue": 6520195.0, "sell_through": 0.2680662456683185, "z_st": -0.006936722047446844}, {"flight_out": 455.0, "n": 230, "avg_loaded": 183.10434782608695, "avg_sold": 50.2304347826087, "avg_return": 72.68237885462555, "avg_revenue": 15220.41304347826, "total_revenue": 3500695.0, "sell_through": 0.2743268271833595, "z_st": 0.03540055285597041}, {"flight_out": 399.0, "n": 360, "avg_loaded": 174.5638888888889, "avg_sold": 48.57381615598886, "avg_return": 72.59488636363636, "avg_revenue": 12617.5069637883, "total_revenue": 4529685.0, "sell_through": 0.27825810060238987, "z_st": 0.06198584737887006}, {"flight_out": 767.0, "n": 26, "avg_loaded": 194.69230769230768, "avg_sold": 54.23076923076923, "avg_return": 71.73846153846154, "avg_revenue": 15966.346153846154, "total_revenue": 415125.0, "sell_through": 0.2785460292374556, "z_st": 0.06393296902340997}, {"flight_out": 463.0, "n": 457, "avg_loaded": 181.81400437636762, "avg_sold": 51.145054945054945, "avg_return": 71.92781456953642, "avg_revenue": 15128.417582417582, "total_revenue": 6883430.0, "sell_through": 0.28130426542490716, "z_st": 0.08258558195339694}, {"flight_out": 805.0, "n": 220, "avg_loaded": 191.57272727272726, "avg_sold": 54.00909090909091, "avg_return": 71.55318181818183, "avg_revenue": 15166.454545454546, "total_revenue": 3336620.0, "sell_through": 0.2819247378161629, "z_st": 0.08678153565761168}, {"flight_out": 733.0, "n": 29, "avg_loaded": 215.3448275862069, "avg_sold": 61.172413793103445, "avg_return": 71.5448275862069, "avg_revenue": 12428.620689655172, "total_revenue": 360430.0, "sell_through": 0.28406725380304243, "z_st": 0.10127033164302601}, {"flight_out": 809.0, "n": 227, "avg_loaded": 187.02643171806167, "avg_sold": 53.6, "avg_return": 71.6491150442478, "avg_revenue": 16310.822222222223, "total_revenue": 3669935.0, "sell_through": 0.2865905075962784, "z_st": 0.11833387266372343}, {"flight_out": 763.0, "n": 35, "avg_loaded": 185.71428571428572, "avg_sold": 55.65714285714286, "avg_return": 69.81714285714285, "avg_revenue": 16156.42857142857, "total_revenue": 565475.0, "sell_through": 0.2996923076923077, "z_st": 0.20693498919939374}, {"flight_out": 727.0, "n": 58, "avg_loaded": 167.36206896551724, "avg_sold": 54.68421052631579, "avg_return": 67.67931034482758, "avg_revenue": 11436.228070175439, "total_revenue": 651865.0, "sell_through": 0.32674196049513915, "z_st": 0.38985866553906146}, {"flight_out": 295.0, "n": 464, "avg_loaded": 189.51293103448276, "avg_sold": 75.44251626898048, "avg_return": 60.12222222222222, "avg_revenue": 22700.553145336227, "total_revenue": 10464955.0, "sell_through": 0.3980863778380029, "z_st": 0.8723263408839406}, {"flight_out": 269.0, "n": 23, "avg_loaded": 207.08695652173913, "avg_sold": 83.04347826086956, "avg_return": 58.74347826086957, "avg_revenue": 27280.434782608696, "total_revenue": 627450.0, "sell_through": 0.4010077682133109, "z_st": 0.8920822864175088}, {"flight_out": 561.0, "n": 308, "avg_loaded": 185.25324675324674, "avg_sold": 80.14983713355049, "avg_return": 57.184868421052634, "avg_revenue": 19983.15960912052, "total_revenue": 6134830.0, "sell_through": 0.4326501075595631, "z_st": 1.1060640732964107}, {"flight_out": 373.0, "n": 377, "avg_loaded": 195.19893899204243, "avg_sold": 90.87267904509284, "avg_return": 53.125, "avg_revenue": 26303.899204244033, "total_revenue": 9916570.0, "sell_through": 0.4655387960320696, "z_st": 1.3284743145380726}, {"flight_out": 397.0, "n": 84, "avg_loaded": 206.42857142857142, "avg_sold": 97.94047619047619, "avg_return": 52.172289156626505, "avg_revenue": 31477.083333333332, "total_revenue": 2644075.0, "sell_through": 0.47445213379469436, "z_st": 1.3887508927212069}, {"flight_out": 745.0, "n": 455, "avg_loaded": 207.1032967032967, "avg_sold": 99.34065934065934, "avg_return": 51.78866666666667, "avg_revenue": 29541.571428571428, "total_revenue": 13441415.0, "sell_through": 0.4796672043467187, "z_st": 1.424017884305187}, {"flight_out": 715.0, "n": 492, "avg_loaded": 253.0609756097561, "avg_sold": 124.18940936863544, "avg_return": 51.136438923395445, "avg_revenue": 36981.07942973523, "total_revenue": 18157710.0, "sell_through": 0.49074895514568484, "z_st": 1.4989583876529688}, {"flight_out": 783.0, "n": 221, "avg_loaded": 249.44796380090497, "avg_sold": 131.84162895927602, "avg_return": 46.99170506912443, "avg_revenue": 43050.11312217195, "total_revenue": 9514075.0, "sell_through": 0.5285335945436076, "z_st": 1.7544775692933776}, {"flight_out": 249.0, "n": 309, "avg_loaded": 204.15210355987054, "avg_sold": 110.58576051779936, "avg_return": 45.38267973856209, "avg_revenue": 33595.04854368932, "total_revenue": 10380870.0, "sell_through": 0.5416831793034574, "z_st": 1.8434018303234496}, {"flight_out": 267.0, "n": 445, "avg_loaded": 200.79775280898878, "avg_sold": 109.04943820224719, "avg_return": 45.217351598173515, "avg_revenue": 33373.50561797753, "total_revenue": 14851210.0, "sell_through": 0.5430809691679257, "z_st": 1.8528544049136897}, {"flight_out": 575.0, "n": 140, "avg_loaded": 244.63571428571427, "avg_sold": 139.02142857142857, "avg_return": 43.14782608695652, "avg_revenue": 44005.53571428572, "total_revenue": 6160775.0, "sell_through": 0.5682793658208999, "z_st": 2.0232589342148835}], "n_total": 57, "n_observed_min20": 42, "sku_heatmap": {"x": ["ТНБ-62 (Сэндвич с курицей - ТНБ-6)", "ТНБ-46 (Кофе - ТНБ-46)", "ТНБ-56 (Чай чёрный - ТНБ-56)", "ТНБ-57 (Нагетсы с макаронами - ТН)", "ТНБ-60 (Сэндвич с говядиной - ТНБ)", "ТНБ-58 (Фунчеза с овощами по-тайс)", "ТНБ-55 (Чай зелёный - ТНБ-55)", "ТНБН-2 (Сок фруктово-ягодный в ас)", "ТНБ-61 (Сэндвич с колбасой с/к - )", "ТНБ-72 (Омлет-рулет - ТНБ-72)", "ТНБ-77 (Ролл с курицей - ТНБ-77)", "ТНБ-76 (Сэндвич с курицей на баге)", "ТНБ-63 (Сэндвич с сыром фета - ТН)", "ТНБ-32 (Маффины шоколадный,творож)", "ТНБН-4 (Добрый сок в ас-те 0,3л -)"], "y": ["715", "267", "745", "295", "249", "373", "783", "785", "463", "571", "575", "561", "247", "399", "453"], "z": [[0.8511, 0.4813, 0.5121, 0.8567, 0.7902, 0.8462, 0.4652, 0.4099, 0.767, 0.7355, 0.8582, 0.6894, 0.7194, 0.7322, 0.3293], [0.8955, 0.7041, 0.5884, 0.8255, 0.8476, 0.8035, 0.4121, 0.3084, 0.7993, 0.7537, 0.8724, 0.6727, 0.6236, 0.6979, 0.6877], [0.8613, 0.5353, 0.7735, 0.8852, 0.8486, 0.7953, 0.3279, 0.2471, 0.7759, 0.6967, 0.9163, 0.8216, 0.6162, 0.708, 0.4633], [0.8538, 0.4602, 0.3965, 0.8038, 0.7968, 0.7812, 0.2523, 0.1897, 0.7137, 0.7145, 0.8777, 0.83, 0.538, 0.6204, 0.5222], [0.8823, 0.6743, 0.5938, 0.8317, 0.8124, 0.7833, 0.4075, 0.3336, 0.7682, 0.6983, 0.8551, 0.6642, 0.6503, 0.691, 0.5489], [0.8884, 0.7087, 0.5646, 0.7642, 0.8433, 0.75, 0.3497, 0.2698, 0.7613, 0.5977, 0.8634, 0.7687, 0.6815, 0.678, 0.6398], [0.8951, 0.6467, 0.6817, 0.8997, 0.8373, 0.8644, 0.4261, 0.3917, 0.7744, 0.839, null, null, 0.6804, 0.7147, null], [0.793, 0.2968, 0.1094, 0.7081, 0.7013, 0.6219, 0.0888, 0.0897, 0.5784, 0.4172, 0.7647, 0.6957, 0.4634, 0.4891, 0.1524], [0.8151, 0.33, 0.2695, 0.7493, 0.7629, 0.6902, 0.1637, 0.156, 0.6811, 0.4835, 0.8317, 0.8095, 0.5232, 0.4842, 0.3463], [0.8252, 0.3372, 0.2392, 0.7692, 0.7616, 0.7088, 0.1643, 0.1453, 0.7037, 0.6788, 0.8403, 0.7379, 0.525, 0.476, 0.3114], [0.9275, 0.7004, 0.595, 0.8232, 0.8869, 0.8451, 0.5317, 0.314, 0.8634, 0.7538, 0.8408, 0.7051, 0.7005, 0.6646, 0.6071], [0.8203, 0.4967, 0.5596, 0.6675, 0.6143, 0.6749, 0.1805, 0.3697, 0.1667, 0.5136, null, null, 0.6773, 0.5722, null], [0.8115, 0.2466, 0.2, 0.7488, 0.7527, 0.6435, 0.1312, 0.116, 0.6232, 0.6258, 0.7248, 0.6591, 0.1667, 0.4167, 0.2722], [0.7698, 0.3182, 0.3237, 0.6347, 0.4521, 0.6443, 0.1048, 0.1992, 0.25, 0.3333, 0.7059, 0.7554, 0.707, 0.4211, 0.4938], [0.7847, 0.1966, 0.1749, 0.67, 0.689, 0.5, 0.1052, 0.0939, 0.25, 0.5302, 0.681, 0.585, 0.0833, 0.3182, 0.2672]]}}, "patterns": {"dow": [{"dow": 0, "n": 1817, "avg_loaded": 186.31040176114473, "avg_sold": 50.824765063571036, "avg_return": 74.03205555555556, "avg_revenue": 15120.500276395798, "dow_name": "Пн"}, {"dow": 1, "n": 1761, "avg_loaded": 186.21408290743895, "avg_sold": 50.78058587018955, "avg_return": 74.21317296678122, "avg_revenue": 15036.30384836301, "dow_name": "Вт"}, {"dow": 2, "n": 1749, "avg_loaded": 186.23499142367066, "avg_sold": 50.6310623556582, "avg_return": 74.33848817080208, "avg_revenue": 15068.213048498845, "dow_name": "Ср"}, {"dow": 3, "n": 1783, "avg_loaded": 186.96747055524398, "avg_sold": 52.88112676056338, "avg_return": 73.44142614601019, "avg_revenue": 15736.532394366197, "dow_name": "Чт"}, {"dow": 4, "n": 1853, "avg_loaded": 186.52185644900163, "avg_sold": 52.115760869565214, "avg_return": 73.56183496199783, "avg_revenue": 15718.945652173914, "dow_name": "Пт"}, {"dow": 5, "n": 1713, "avg_loaded": 187.2918855808523, "avg_sold": 53.61176470588235, "avg_return": 72.94455562095351, "avg_revenue": 15895.970588235294, "dow_name": "Сб"}, {"dow": 6, "n": 1779, "avg_loaded": 187.04384485666105, "avg_sold": 51.89002267573696, "avg_return": 73.82260623229462, "avg_revenue": 15331.791383219954, "dow_name": "Вс"}], "monthly": [{"month": "2024-12", "n": 130, "avg_loaded": 187.15384615384616, "avg_sold": 60.3671875, "avg_return": 68.91076923076923, "avg_revenue": 15013.671875, "sum_revenue": 1921750.0}, {"month": "2025-01", "n": 866, "avg_loaded": 186.75981524249423, "avg_sold": 58.192129629629626, "avg_return": 70.34083526682134, "avg_revenue": 14441.145833333334, "sum_revenue": 12477150.0}, {"month": "2025-02", "n": 779, "avg_loaded": 185.93196405648268, "avg_sold": 61.17396907216495, "avg_return": 68.61434108527132, "avg_revenue": 15017.268041237114, "sum_revenue": 11653400.0}, {"month": "2025-03", "n": 686, "avg_loaded": 187.8265306122449, "avg_sold": 54.861967694566815, "avg_return": 72.44773722627737, "avg_revenue": 13672.290748898678, "sum_revenue": 9310830.0}, {"month": "2025-04", "n": 830, "avg_loaded": 186.91084337349398, "avg_sold": 49.14355231143552, "avg_return": 74.78345498783455, "avg_revenue": 14484.689781021898, "sum_revenue": 11906415.0}, {"month": "2025-05", "n": 858, "avg_loaded": 188.23193473193473, "avg_sold": 49.07033997655334, "avg_return": 75.08269005847953, "avg_revenue": 15277.63774912075, "sum_revenue": 13031825.0}, {"month": "2025-06", "n": 906, "avg_loaded": 188.79690949227373, "avg_sold": 45.820598006644516, "avg_return": 76.74082313681869, "avg_revenue": 14439.894795127353, "sum_revenue": 13039225.0}, {"month": "2025-07", "n": 937, "avg_loaded": 186.4514407684098, "avg_sold": 46.93662728249194, "avg_return": 76.18764769065521, "avg_revenue": 14534.962406015038, "sum_revenue": 13532050.0}, {"month": "2025-08", "n": 945, "avg_loaded": 186.7058201058201, "avg_sold": 48.27457264957265, "avg_return": 75.78609625668449, "avg_revenue": 15073.504273504273, "sum_revenue": 14108800.0}, {"month": "2025-09", "n": 881, "avg_loaded": 186.38251986379115, "avg_sold": 48.80597014925373, "avg_return": 75.28692660550459, "avg_revenue": 15233.00803673938, "sum_revenue": 13267950.0}, {"month": "2025-10", "n": 784, "avg_loaded": 189.8622448979592, "avg_sold": 53.304627249357324, "avg_return": 73.32838874680307, "avg_revenue": 16487.917737789205, "sum_revenue": 12827600.0}, {"month": "2025-11", "n": 749, "avg_loaded": 187.9479305740988, "avg_sold": 55.62483130904184, "avg_return": 72.1424898511502, "avg_revenue": 17263.02294197031, "sum_revenue": 12791900.0}, {"month": "2025-12", "n": 784, "avg_loaded": 190.51785714285714, "avg_sold": 58.69309462915601, "avg_return": 70.8683870967742, "avg_revenue": 18183.02429667519, "sum_revenue": 14219125.0}, {"month": "2026-01", "n": 713, "avg_loaded": 192.08415147265077, "avg_sold": 58.277227722772274, "avg_return": 73.00573888091822, "avg_revenue": 18033.20367751061, "sum_revenue": 12749475.0}, {"month": "2026-02", "n": 619, "avg_loaded": 183.4119547657512, "avg_sold": 51.50816993464052, "avg_return": 73.49934747145187, "avg_revenue": 16836.356209150326, "sum_revenue": 10303850.0}, {"month": "2026-03", "n": 733, "avg_loaded": 175.731241473397, "avg_sold": 41.63121546961326, "avg_return": 77.23241758241758, "avg_revenue": 13556.595303867403, "sum_revenue": 9814975.0}, {"month": "2026-04", "n": 255, "avg_loaded": 171.23921568627452, "avg_sold": 44.29761904761905, "avg_return": 75.07786561264822, "avg_revenue": 14272.420634920634, "sum_revenue": 3596650.0}], "sku_lifecycle": [{"item_sku": "ТНБ-62", "first_seen": "2024-12-27", "last_seen": "2026-02-06", "loadings": 9727, "revenue": 15645800.0, "item_name": "Сэндвич с курицей - ТНБ-62"}, {"item_sku": "ТНБ-63", "first_seen": "2024-12-27", "last_seen": "2026-02-06", "loadings": 3518, "revenue": 1338250.0, "item_name": "Сэндвич с сыром фета - ТНБ-63"}, {"item_sku": "ТНБН-2", "first_seen": "2024-12-27", "last_seen": "2026-02-07", "loadings": 10931, "revenue": 3366750.0, "item_name": "Сок фруктово-ягодный в ассортименте 0,2л - ТНБн-2"}, {"item_sku": "ТНБ-61", "first_seen": "2024-12-27", "last_seen": "2026-02-06", "loadings": 4740, "revenue": 3048100.0, "item_name": "Сэндвич с колбасой с/к - ТНБ-61"}, {"item_sku": "ТНБ-60", "first_seen": "2024-12-27", "last_seen": "2026-02-06", "loadings": 7573, "revenue": 8308750.0, "item_name": "Сэндвич с говядиной - ТНБ-60"}, {"item_sku": "ТНБ-59", "first_seen": "2024-12-27", "last_seen": "2025-04-23", "loadings": 1244, "revenue": 870100.0, "item_name": "Творожное суфле с фруктами - ТНБ-59"}, {"item_sku": "ТНБ-58", "first_seen": "2024-12-27", "last_seen": "2026-02-06", "loadings": 6852, "revenue": 6461150.0, "item_name": "Фунчеза с овощами по-тайски - ТНБ-58"}, {"item_sku": "ТНБН-1", "first_seen": "2024-12-27", "last_seen": "2026-04-09", "loadings": 5368, "revenue": 808950.0, "item_name": "Вода минеральная б/г 0,5л - ТНБн-1"}, {"item_sku": "ТНБ-56", "first_seen": "2024-12-27", "last_seen": "2026-04-09", "loadings": 12394, "revenue": 13087600.0, "item_name": "Чай чёрный - ТНБ-56"}, {"item_sku": "ТНБ-55", "first_seen": "2024-12-27", "last_seen": "2026-04-09", "loadings": 12384, "revenue": 3855450.0, "item_name": "Чай зелёный - ТНБ-55"}, {"item_sku": "ТНБ-46", "first_seen": "2024-12-27", "last_seen": "2026-04-09", "loadings": 12400, "revenue": 14860100.0, "item_name": "Кофе - ТНБ-46"}, {"item_sku": "ТНБ-32", "first_seen": "2024-12-27", "last_seen": "2026-02-06", "loadings": 4689, "revenue": 1287150.0, "item_name": "Маффины шоколадный,творожный - ТНБ-32"}, {"item_sku": "ТНБ-57", "first_seen": "2024-12-27", "last_seen": "2026-02-06", "loadings": 7587, "revenue": 10959200.0, "item_name": "Нагетсы с макаронами - ТНБ-57"}, {"item_sku": "ТНБ-64", "first_seen": "2025-02-02", "last_seen": "2025-08-15", "loadings": 2, "revenue": 1450.0, "item_name": "Нагетсы с макаронами - ТНБ-64"}, {"item_sku": "ТНБ-65", "first_seen": "2025-02-02", "last_seen": "2025-02-02", "loadings": 1, "revenue": 350.0, "item_name": "Фунчеза с овощами по-тайски - ТНБ-65"}, {"item_sku": "ТНБ-66", "first_seen": "2025-02-02", "last_seen": "2025-02-02", "loadings": 1, "revenue": 700.0, "item_name": "Творожное суфле с фруктами - ТНБ-66"}, {"item_sku": "ТНБ-72", "first_seen": "2025-04-07", "last_seen": "2026-02-06", "loadings": 3710, "revenue": 2515600.0, "item_name": "Омлет-рулет - ТНБ-72"}, {"item_sku": "ТНБН-3", "first_seen": "2025-05-24", "last_seen": "2026-02-07", "loadings": 7014, "revenue": 1184400.0, "item_name": "Вода Байкал б/г 0,45л - ТНБн-3"}, {"item_sku": "ТНБ-67", "first_seen": "2025-11-03", "last_seen": "2025-12-21", "loadings": 2, "revenue": 1600.0, "item_name": "Сэндвич с говядиной - ТНБ-67"}, {"item_sku": "ТНБ-68", "first_seen": "2025-12-21", "last_seen": "2025-12-21", "loadings": 1, "revenue": 400.0, "item_name": "Сэндвич с колбасой с/к - ТНБ-68"}, {"item_sku": "ТНБН-6", "first_seen": "2026-02-06", "last_seen": "2026-04-09", "loadings": 1453, "revenue": 1039900.0, "item_name": "Вода фрукт Добрый Кола 0,5л - ТНБн-6"}, {"item_sku": "ТНБН-5", "first_seen": "2026-02-06", "last_seen": "2026-04-09", "loadings": 1452, "revenue": 479700.0, "item_name": "Вода фрукт Добрый Апельсин 0,5л - ТНБн-5"}, {"item_sku": "ТНБН-4", "first_seen": "2026-02-06", "last_seen": "2026-04-09", "loadings": 1453, "revenue": 1250850.0, "item_name": "Добрый сок в ас-те 0,3л - ТНБн-4"}, {"item_sku": "ТНБН-8", "first_seen": "2026-02-06", "last_seen": "2026-04-09", "loadings": 1451, "revenue": 270450.0, "item_name": "Напиток Берн 0,33л - ТНБн-8"}, {"item_sku": "ТНБН-7", "first_seen": "2026-02-06", "last_seen": "2026-04-09", "loadings": 1451, "revenue": 212650.0, "item_name": "Вода фрукт Добрый Лимон-лайм 0,5л - ТНБн-7"}, {"item_sku": "ТНБ-78", "first_seen": "2026-02-07", "last_seen": "2026-04-09", "loadings": 895, "revenue": 50250.0, "item_name": "Кукис печенье в ассортименте - ТНБ-78"}, {"item_sku": "ТНБ-76", "first_seen": "2026-02-07", "last_seen": "2026-04-09", "loadings": 1276, "revenue": 1505250.0, "item_name": "Сэндвич с курицей на багете - ТНБ-76"}, {"item_sku": "ТНБ-75", "first_seen": "2026-02-07", "last_seen": "2026-04-09", "loadings": 1045, "revenue": 880200.0, "item_name": "Сэндвич с говядиной в/к на багете - ТНБ-75"}, {"item_sku": "ТНБ-74", "first_seen": "2026-02-07", "last_seen": "2026-04-09", "loadings": 957, "revenue": 1049400.0, "item_name": "Нагетсы с макаронами пенне,черри гриль - ТНБ-74"}, {"item_sku": "ТНБ-73", "first_seen": "2026-02-07", "last_seen": "2026-04-09", "loadings": 957, "revenue": 1127700.0, "item_name": "Курица терияки с удоном - ТНБ-73"}, {"item_sku": "ТНБ-77", "first_seen": "2026-02-07", "last_seen": "2026-04-09", "loadings": 1120, "revenue": 1592100.0, "item_name": "Ролл с курицей - ТНБ-77"}, {"item_sku": "ТНБ-3", "first_seen": "2026-04-03", "last_seen": "2026-04-03", "loadings": 1, "revenue": 200.0, "item_name": "Кофе - ТНБ-3"}, {"item_sku": "ТНБ-13", "first_seen": "2026-04-03", "last_seen": "2026-04-03", "loadings": 1, "revenue": 200.0, "item_name": "Чай чёрный - ТНБ-13"}], "missing_groups": [{"start": "2025-02-28", "end": "2025-03-06", "days": 7}]}};
+
+/* ---------- helpers ---------- */
+const fmtInt = v => v == null ? '—' : Math.round(v).toLocaleString('ru-RU');
+const fmtRub = v => v == null ? '—' : Math.round(v).toLocaleString('ru-RU') + ' ₽';
+const fmtPct = (v, d=1) => v == null || isNaN(v) ? '—' : (v * 100).toFixed(d) + '%';
+const fmtPctRaw = (v, d=1) => v == null || isNaN(v) ? '—' : v.toFixed(d) + '%';
+const fmtNum = (v, d=1) => v == null || isNaN(v) ? '—' : Number(v).toLocaleString('ru-RU', {maximumFractionDigits: d});
+
+const PLOTLY_LAYOUT_BASE = {
+  paper_bgcolor: 'rgba(0,0,0,0)',
+  plot_bgcolor: 'rgba(0,0,0,0)',
+  font: {family:'IBM Plex Sans', size: 11, color:'#e6edf3'},
+  margin: {l: 60, r: 30, t: 30, b: 50},
+  xaxis: {gridcolor: '#30363d', zerolinecolor: '#30363d', tickfont: {color:'#8b949e'}},
+  yaxis: {gridcolor: '#30363d', zerolinecolor: '#30363d', tickfont: {color:'#8b949e'}},
+  legend: {orientation: 'h', y: -0.18, font: {color: '#e6edf3'}, bgcolor: 'rgba(0,0,0,0)'},
+  hoverlabel: {bgcolor:'#1c2333', bordercolor:'#58a6ff', font:{color:'#e6edf3', family:'IBM Plex Sans'}},
+};
+const PLOTLY_CONFIG = {displaylogo: false, responsive: true,
+  modeBarButtonsToRemove: ['lasso2d','select2d','autoScale2d','toggleSpikelines']};
+
+const CAT_COLORS = {
+  'Газировка':'#58a6ff','Сэндвич':'#f85149','Прочее':'#8b949e',
+  'Горячее блюдо':'#f0883e','Чай':'#bc8cff','Снэк':'#d29922',
+  'Кофе':'#39d2c0','Пиво':'#ffa657','Сок':'#a371f7','Десерт':'#ff8c8c',
+  'Вода негаз':'#3fb950','Сливки/доп':'#7d8590'
+};
+const catColor = c => CAT_COLORS[c] || '#8b949e';
+
+/* ---------- tabs ---------- */
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
+  document.querySelectorAll('.view').forEach(x => x.classList.remove('on'));
+  t.classList.add('on');
+  document.getElementById('view-' + t.dataset.view).classList.add('on');
+  // re-trigger plotly resize
+  window.dispatchEvent(new Event('resize'));
+}));
+
+/* ---------- header subline ---------- */
+{
+  const k = DATA.overview.kpis;
+  document.getElementById('sub-line').innerHTML =
+    `Период <b>${k.period_start}</b> → <b>${k.period_end}</b> · ` +
+    `${k.shipments.toLocaleString('ru-RU')} накладных, ${k.items.toLocaleString('ru-RU')} позиций · ` +
+    `${k.unique_flights} уникальных рейсов · ${k.unique_sku} SKU · ${k.files} файлов`;
+  document.getElementById('gen-stamp').textContent =
+    ` · Сгенерировано ${DATA.generated_at}`;
+}
+
+/* ---------- KPI grid ---------- */
+{
+  const k = DATA.overview.kpis;
+  const cards = [
+    {l:'Выручка',     v:fmtRub(k.total_revenue), d:`за ${k.days_present} дн.`},
+    {l:'Загружено',   v:fmtInt(k.total_loaded),  d:'единиц на борт'},
+    {l:'Продано',     v:fmtInt(k.total_sold),    d:'покупок пассажиров'},
+    {l:'Sell-through',v:k.sell_through_pct.toFixed(1)+'%', d:'продано / загружено',
+      cls: k.sell_through_pct < 30 ? 'warn' : 'ok'},
+    {l:'% возврата',  v:k.return_pct.toFixed(1)+'%', d:'недопроданное на склад',
+      cls: k.return_pct > 60 ? 'bad' : (k.return_pct > 40 ? 'warn' : 'ok')},
+    {l:'Покрытие дней', v:k.coverage_pct.toFixed(1)+'%',
+      d:`${k.days_present}/${k.days_total}, дыр: ${k.missing_days}`,
+      cls: k.missing_days > 0 ? 'warn' : 'ok'},
+  ];
+  document.getElementById('kpi-grid').innerHTML = cards.map(c =>
+    `<div class="metric ${c.cls||''}"><div class="ml">${c.l}</div>` +
+    `<div class="mv">${c.v}</div><div class="md">${c.d}</div></div>`
+  ).join('');
+}
+
+/* ---------- weekly chart ---------- */
+{
+  const w = DATA.overview.weekly;
+  const x = w.map(r => r.week_start);
+  const trRev = {
+    type: 'bar', name: 'Выручка, ₽', x, y: w.map(r => r.revenue),
+    marker: {color: '#58a6ff'}, yaxis: 'y',
+    hovertemplate: '%{x}<br>Выручка: %{y:,.0f} ₽<extra></extra>'
+  };
+  const trST = {
+    type: 'scatter', mode: 'lines+markers', name: 'Sell-through',
+    x, y: w.map(r => (r.sell_through||0) * 100),
+    line: {color: '#f0883e', width: 2}, marker: {size: 5},
+    yaxis: 'y2', hovertemplate: '%{x}<br>Sell-through: %{y:.1f}%<extra></extra>'
+  };
+  Plotly.newPlot('chart-weekly', [trRev, trST], {
+    ...PLOTLY_LAYOUT_BASE,
+    yaxis: {...PLOTLY_LAYOUT_BASE.yaxis, title: 'Выручка, ₽', tickformat: ',.0s'},
+    yaxis2: {title:'Sell-through, %', overlaying:'y', side:'right',
+             tickfont:{color:'#f0883e'}, gridcolor:'rgba(0,0,0,0)', range: [0, 50]},
+    legend: PLOTLY_LAYOUT_BASE.legend,
+  }, PLOTLY_CONFIG);
+}
+
+/* ---------- month×dow heatmap ---------- */
+{
+  const h = DATA.overview.month_dow_heatmap;
+  // числа в ячейки (тыс. ₽), пропуски как "—"
+  const txt = h.z.map(row => row.map(v => v == null ? '—' : (v/1000).toFixed(1) + 'k'));
+  Plotly.newPlot('chart-heatmap-md', [{
+    type:'heatmap', x: h.x, y: h.y, z: h.z,
+    colorscale: [[0,'#0e3b66'],[0.25,'#1a5fa3'],[0.5,'#2f86d3'],[0.75,'#7cb8f0'],[1,'#d6ecff']],
+    hoverongaps: false,
+    hovertemplate: '%{y} %{x}<br>Средн выручка/накл: %{z:,.0f} ₽<extra></extra>',
+    colorbar: {title: {text:'₽/накл', font:{color:'#e6edf3', size:10}}, tickfont: {color:'#8b949e'}}
+  }], {
+    ...PLOTLY_LAYOUT_BASE,
+    xaxis: {...PLOTLY_LAYOUT_BASE.xaxis, side:'top', tickfont:{color:'#e6edf3', size:12}},
+    yaxis: {...PLOTLY_LAYOUT_BASE.yaxis, autorange:'reversed', tickfont:{color:'#e6edf3', size:11}},
+    margin: {l:80, r:30, t:50, b:30},
+    annotations: h.y.flatMap((m, i) => h.x.map((d, j) => ({
+      x: d, y: m, text: txt[i][j], showarrow: false,
+      font: {size: 10, color: txt[i][j] === '—' ? '#8b949e'
+                       : (h.z[i][j] > (Math.max(...h.z.flat().filter(v=>v!=null)) * 0.6) ? '#0d1117' : '#e6edf3')}
+    }))),
+  }, PLOTLY_CONFIG);
+}
+
+/* ---------- categories ---------- */
+{
+  const c = DATA.sku.categories;
+  const sorted = c.slice().sort((a,b) => b.revenue - a.revenue);
+  Plotly.newPlot('chart-cat-rev', [{
+    type:'bar', orientation:'h',
+    x: sorted.map(r => r.revenue),
+    y: sorted.map(r => r.item_category),
+    marker: {color: sorted.map(r => catColor(r.item_category))},
+    hovertemplate: '%{y}<br>Выручка: %{x:,.0f} ₽<extra></extra>'
+  }], {
+    ...PLOTLY_LAYOUT_BASE,
+    yaxis: {...PLOTLY_LAYOUT_BASE.yaxis, automargin: true},
+    xaxis: {...PLOTLY_LAYOUT_BASE.xaxis, tickformat: ',.0s'},
+    margin:{l:100,r:20,t:10,b:40},
+  }, PLOTLY_CONFIG);
+
+  Plotly.newPlot('chart-cat-st', [
+    {type:'bar', name:'Sell-through, %', orientation:'h',
+     x: sorted.map(r => (r.sell_through||0)*100), y: sorted.map(r => r.item_category),
+     marker:{color:'#3fb950'},
+     hovertemplate:'%{y}<br>Sell-through: %{x:.1f}%<extra></extra>'},
+    {type:'bar', name:'Возврат, %', orientation:'h',
+     x: sorted.map(r => r.return_pct), y: sorted.map(r => r.item_category),
+     marker:{color:'#f85149'},
+     hovertemplate:'%{y}<br>Возврат: %{x:.1f}%<extra></extra>'},
+  ], {
+    ...PLOTLY_LAYOUT_BASE,
+    barmode:'group',
+    yaxis: {...PLOTLY_LAYOUT_BASE.yaxis, automargin: true},
+    xaxis: {...PLOTLY_LAYOUT_BASE.xaxis, ticksuffix:'%'},
+    margin:{l:100,r:20,t:10,b:40},
+  }, PLOTLY_CONFIG);
+}
+
+/* ---------- SKU scatter & table ---------- */
+const SKU_ROWS = DATA.sku.rows;
+const CATS = [...new Set(SKU_ROWS.map(r => r.item_category))].sort();
+{
+  const sel = document.getElementById('sku-cat-filter');
+  CATS.forEach(c => {
+    const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o);
+  });
+  document.getElementById('sku-cat-filter').addEventListener('change', renderSku);
+  document.getElementById('sku-min-load').addEventListener('input', renderSku);
+}
+
+function filterSku(){
+  const cat = document.getElementById('sku-cat-filter').value;
+  const minL = +document.getElementById('sku-min-load').value || 0;
+  return SKU_ROWS.filter(r => (!cat || r.item_category === cat) && r.loadings >= minL);
+}
+
+let SKU_SORT = {key:'revenue', asc:false};
+function renderSku() {
+  const rows = filterSku();
+  // scatter
+  const byCat = {};
+  rows.forEach(r => {
+    (byCat[r.item_category] = byCat[r.item_category] || []).push(r);
+  });
+  const traces = Object.entries(byCat).map(([cat, arr]) => ({
+    type:'scatter', mode:'markers+text', name: cat,
+    x: arr.map(r => r.avg_loaded),
+    y: arr.map(r => (r.sell_through || 0) * 100),
+    text: arr.map(r => r.item_sku),
+    textposition: 'top center',
+    textfont:{size:9, color:'#e6edf3'},
+    marker:{
+      size: arr.map(r => Math.max(8, Math.sqrt(r.revenue / 5000))),
+      color: catColor(cat),
+      line:{color:'#0d1117', width:1},
+      sizemode:'diameter'
+    },
+    customdata: arr.map(r => [r.item_name, r.revenue, r.loadings, r.med_return_pct, r.soldout_share]),
+    hovertemplate:
+      '<b>%{text}</b> · '+cat+'<br>'+
+      '%{customdata[0]}<br>'+
+      'Средн загрузка: %{x:.1f}<br>'+
+      'Sell-through: %{y:.1f}%<br>'+
+      'Медиан возврат: %{customdata[3]:.1f}%<br>'+
+      'Доля распродаж: %{customdata[4]:.1%}<br>'+
+      'Загрузок: %{customdata[2]:,d}<br>'+
+      'Выручка: %{customdata[1]:,.0f} ₽<extra></extra>',
+  }));
+  Plotly.newPlot('chart-sku-scatter', traces, {
+    ...PLOTLY_LAYOUT_BASE,
+    xaxis: {...PLOTLY_LAYOUT_BASE.xaxis, title:'Средняя загрузка на накладную, шт.', type:'log'},
+    yaxis: {...PLOTLY_LAYOUT_BASE.yaxis, title:'Sell-through, %', range:[0, 100], ticksuffix:'%'},
+    showlegend: true,
+    shapes: [
+      {type:'line', x0:0.5, x1:30, y0:80, y1:80, xref:'x', yref:'y',
+       line:{color:'#3fb950', dash:'dot', width:1}},
+      {type:'line', x0:0.5, x1:30, y0:20, y1:20, xref:'x', yref:'y',
+       line:{color:'#f85149', dash:'dot', width:1}},
+    ],
+    annotations: [
+      {x:25, y:88, xref:'x', yref:'y', text:'дефицит → недогруз', showarrow:false,
+       font:{color:'#3fb950', size:10}, xanchor:'right'},
+      {x:25, y:12, xref:'x', yref:'y', text:'перетарка → списания', showarrow:false,
+       font:{color:'#f85149', size:10}, xanchor:'right'},
+    ],
+  }, PLOTLY_CONFIG);
+
+  // table
+  const sorted = rows.slice().sort((a,b) => {
+    const k = SKU_SORT.key, dir = SKU_SORT.asc ? 1 : -1;
+    const av = a[k], bv = b[k];
+    if (av == null) return 1; if (bv == null) return -1;
+    if (typeof av === 'string') return dir * av.localeCompare(bv);
+    return dir * (av - bv);
+  });
+  const tb = document.querySelector('#tbl-sku tbody');
+  tb.innerHTML = sorted.map(r => {
+    const stCls = r.sell_through > 0.7 ? 'cell-good' : (r.sell_through < 0.2 ? 'cell-bad' : '');
+    const rtCls = r.med_return_pct > 80 ? 'cell-bad' : (r.med_return_pct > 50 ? 'cell-warn' : 'cell-good');
+    const soCls = r.soldout_share > 0.5 ? 'cell-bad' : '';
+    return `<tr>
+      <td>${r.item_sku||''}</td>
+      <td class="txt">${r.item_name||''}</td>
+      <td class="txt"><span class="tag tag-cat" style="background:${catColor(r.item_category)}22;color:${catColor(r.item_category)}">${r.item_category||''}</span></td>
+      <td>${fmtInt(r.loadings)}</td>
+      <td>${fmtNum(r.avg_loaded,1)}</td>
+      <td>${fmtNum(r.avg_sold,1)}</td>
+      <td class="${stCls}">${fmtPct(r.sell_through,1)}</td>
+      <td class="${rtCls}">${fmtPctRaw(r.med_return_pct,1)}</td>
+      <td class="${soCls}">${fmtPct(r.soldout_share,1)}</td>
+      <td>${fmtRub(r.revenue)}</td>
+    </tr>`;
+  }).join('');
+  // highlight sorted column
+  document.querySelectorAll('#tbl-sku th').forEach(th => {
+    th.classList.toggle('sorted', th.dataset.key === SKU_SORT.key);
+    th.classList.toggle('asc', th.dataset.key === SKU_SORT.key && SKU_SORT.asc);
+  });
+}
+document.querySelectorAll('#tbl-sku th').forEach(th => th.addEventListener('click', () => {
+  if (SKU_SORT.key === th.dataset.key) SKU_SORT.asc = !SKU_SORT.asc;
+  else { SKU_SORT.key = th.dataset.key; SKU_SORT.asc = false; }
+  renderSku();
+}));
+renderSku();
+
+/* ---------- flights ---------- */
+{
+  const f = DATA.flights.rows.slice().sort((a,b) => b.avg_revenue - a.avg_revenue);
+  const x = f.map(r => String(Math.round(r.flight_out)));
+  Plotly.newPlot('chart-flights-bar', [
+    {type:'bar', name:'Средн загрузка', x, y: f.map(r => r.avg_loaded),
+     marker:{color:'#58a6ff'},
+     hovertemplate:'Рейс %{x}<br>Загрузка: %{y:.1f}<extra></extra>'},
+    {type:'bar', name:'Средн продажа', x, y: f.map(r => r.avg_sold),
+     marker:{color:'#3fb950'},
+     hovertemplate:'Рейс %{x}<br>Продажа: %{y:.1f}<extra></extra>'},
+    {type:'scatter', mode:'lines+markers', name:'Средн выручка, ₽', x,
+     y: f.map(r => r.avg_revenue),
+     yaxis:'y2', line:{color:'#f0883e', width:2}, marker:{size:4},
+     hovertemplate:'Рейс %{x}<br>Выручка: %{y:,.0f} ₽<extra></extra>'},
+  ], {
+    ...PLOTLY_LAYOUT_BASE,
+    barmode:'group',
+    xaxis:{...PLOTLY_LAYOUT_BASE.xaxis, title:'№ рейса (out)'},
+    yaxis:{...PLOTLY_LAYOUT_BASE.yaxis, title:'Среднее на накладную, шт.'},
+    yaxis2:{title:'Выручка, ₽', overlaying:'y', side:'right',
+            tickformat:',.0s', tickfont:{color:'#f0883e'}, gridcolor:'rgba(0,0,0,0)'},
+  }, PLOTLY_CONFIG);
+
+  const h = DATA.flights.sku_heatmap;
+  const zPct = h.z.map(row => row.map(v => v == null ? null : v * 100));
+  const txt2 = zPct.map(row => row.map(v => v == null ? '—' : v.toFixed(0) + '%'));
+  Plotly.newPlot('chart-flight-sku-heat', [{
+    type:'heatmap', x: h.x, y: h.y, z: zPct,
+    colorscale: [[0,'#5d1f1f'],[0.25,'#a13a2a'],[0.5,'#d29922'],[0.75,'#3fb950'],[1,'#39d2c0']],
+    zmin: 0, zmax: 100, hoverongaps: false,
+    hovertemplate: 'Рейс %{y} · %{x}<br>Sell-through: %{z:.1f}%<extra></extra>',
+    colorbar: {title:{text:'%', font:{color:'#e6edf3'}}, tickfont:{color:'#8b949e'}}
+  }], {
+    ...PLOTLY_LAYOUT_BASE,
+    xaxis: {...PLOTLY_LAYOUT_BASE.xaxis, tickangle: -40, automargin:true, tickfont:{color:'#e6edf3', size:10}},
+    yaxis: {...PLOTLY_LAYOUT_BASE.yaxis, automargin:true, tickfont:{color:'#e6edf3', size:11}},
+    margin: {l:60, r:30, t:30, b:160},
+    annotations: h.y.flatMap((f, i) => h.x.map((s, j) => ({
+      x: s, y: f, text: txt2[i][j], showarrow: false,
+      font: {size: 9, color: txt2[i][j] === '—' ? '#8b949e'
+                       : (zPct[i][j] >= 50 ? '#0d1117' : '#e6edf3')}
+    }))),
+  }, PLOTLY_CONFIG);
+
+  let FLT_SORT = {key:'z_st', asc:true};
+  function renderFlights(){
+    const rows = DATA.flights.rows.slice().sort((a,b) => {
+      const k=FLT_SORT.key, dir=FLT_SORT.asc?1:-1;
+      const av=a[k],bv=b[k];
+      if (av==null) return 1; if (bv==null) return -1;
+      return dir*(av-bv);
+    });
+    document.querySelector('#tbl-flights tbody').innerHTML = rows.map(r => {
+      const stCls = r.sell_through > 0.4 ? 'cell-good' : (r.sell_through < 0.15 ? 'cell-bad' : '');
+      const zCls = r.z_st < -1 ? 'cell-bad' : (r.z_st > 1 ? 'cell-good' : '');
+      return `<tr>
+        <td>${Math.round(r.flight_out)}</td>
+        <td>${fmtInt(r.n)}</td>
+        <td>${fmtNum(r.avg_loaded,1)}</td>
+        <td>${fmtNum(r.avg_sold,1)}</td>
+        <td class="${stCls}">${fmtPct(r.sell_through,1)}</td>
+        <td>${fmtPctRaw(r.avg_return,1)}</td>
+        <td>${fmtRub(r.avg_revenue)}</td>
+        <td class="${zCls}">${fmtNum(r.z_st,2)}</td>
+      </tr>`;
+    }).join('');
+    document.querySelectorAll('#tbl-flights th').forEach(th => {
+      th.classList.toggle('sorted', th.dataset.key === FLT_SORT.key);
+      th.classList.toggle('asc', th.dataset.key === FLT_SORT.key && FLT_SORT.asc);
+    });
+  }
+  document.querySelectorAll('#tbl-flights th').forEach(th => th.addEventListener('click', () => {
+    if (FLT_SORT.key === th.dataset.key) FLT_SORT.asc = !FLT_SORT.asc;
+    else { FLT_SORT.key = th.dataset.key; FLT_SORT.asc = false; }
+    renderFlights();
+  }));
+  renderFlights();
+}
+
+/* ---------- patterns ---------- */
+{
+  // gaps
+  const gaps = DATA.patterns.missing_groups;
+  const wrap = document.getElementById('gaps');
+  if (!gaps.length) {
+    wrap.innerHTML = `<div class="metric ok"><div class="mv">Пробелов нет</div><div class="md">Все 469 дней с накладными</div></div>`;
+  } else {
+    wrap.innerHTML = gaps.map(g =>
+      `<div class="gap-card"><div class="gn">${g.start} → ${g.end} · ${g.days} дн.</div>
+       <div class="gd">Период без единой накладной. Исходный недельный xlsx отсутствует. Рекомендация: проверить на источнике (1С/Drive).</div></div>`
+    ).join('');
+  }
+
+  // dow
+  const dow = DATA.patterns.dow;
+  Plotly.newPlot('chart-dow', [
+    {type:'bar', name:'Средн загрузка', x: dow.map(r=>r.dow_name), y: dow.map(r=>r.avg_loaded),
+     marker:{color:'#58a6ff'}, hovertemplate:'%{x}<br>Загрузка: %{y:.1f}<extra></extra>'},
+    {type:'bar', name:'Средн продажа', x: dow.map(r=>r.dow_name), y: dow.map(r=>r.avg_sold),
+     marker:{color:'#3fb950'}, hovertemplate:'%{x}<br>Продажа: %{y:.1f}<extra></extra>'},
+    {type:'scatter', mode:'lines+markers', name:'Средн выручка, ₽', yaxis:'y2',
+     x: dow.map(r=>r.dow_name), y: dow.map(r=>r.avg_revenue),
+     line:{color:'#f0883e', width:2}, marker:{size:6},
+     hovertemplate:'%{x}<br>Выручка: %{y:,.0f} ₽<extra></extra>'},
+  ], {
+    ...PLOTLY_LAYOUT_BASE,
+    barmode:'group',
+    yaxis:{...PLOTLY_LAYOUT_BASE.yaxis, title:'Шт.'},
+    yaxis2:{title:'Выручка, ₽', overlaying:'y', side:'right',
+            tickformat:',.0s', tickfont:{color:'#f0883e'}, gridcolor:'rgba(0,0,0,0)'},
+  }, PLOTLY_CONFIG);
+
+  // month
+  const mon = DATA.patterns.monthly;
+  Plotly.newPlot('chart-month', [
+    {type:'bar', name:'Накладных', x: mon.map(r=>r.month), y: mon.map(r=>r.n),
+     marker:{color:'#264f78'}, hovertemplate:'%{x}<br>Накладных: %{y}<extra></extra>'},
+    {type:'scatter', mode:'lines+markers', name:'Средн выручка/накл, ₽',
+     x: mon.map(r=>r.month), y: mon.map(r=>r.avg_revenue),
+     yaxis:'y2', line:{color:'#f0883e', width:2}, marker:{size:6},
+     hovertemplate:'%{x}<br>Выручка: %{y:,.0f} ₽<extra></extra>'},
+    {type:'scatter', mode:'lines+markers', name:'Средн % возврата',
+     x: mon.map(r=>r.month), y: mon.map(r=>r.avg_return),
+     yaxis:'y3', line:{color:'#f85149', width:2, dash:'dot'}, marker:{size:5},
+     hovertemplate:'%{x}<br>Возврат: %{y:.1f}%<extra></extra>'},
+  ], {
+    ...PLOTLY_LAYOUT_BASE,
+    yaxis:{...PLOTLY_LAYOUT_BASE.yaxis, title:'Накладных'},
+    yaxis2:{title:'Выручка, ₽', overlaying:'y', side:'right',
+            tickformat:',.0s', tickfont:{color:'#f0883e'}, gridcolor:'rgba(0,0,0,0)'},
+    yaxis3:{overlaying:'y', side:'right', position:0.92, showgrid:false,
+            range:[0,100], tickfont:{color:'#f85149'}, ticksuffix:'%'},
+  }, PLOTLY_CONFIG);
+
+  // lifecycle (gantt-like)
+  const lc = DATA.patterns.sku_lifecycle.slice().sort((a,b) => a.first_seen.localeCompare(b.first_seen));
+  const bars = lc.map(r => {
+    const s = new Date(r.first_seen).getTime();
+    const e = new Date(r.last_seen).getTime() + 86400000;
+    return {
+      type:'bar', orientation:'h',
+      x:[(e - s)/86400000], y:[r.item_sku + ' · ' + (r.item_name||'').slice(0, 35)],
+      base:[r.first_seen], name:r.item_sku,
+      marker:{color:'#58a6ff'}, showlegend:false,
+      hovertemplate:`<b>${r.item_sku}</b> ${r.item_name||''}<br>${r.first_seen} → ${r.last_seen}<br>Загрузок: ${r.loadings.toLocaleString('ru-RU')}<br>Выручка: ${Math.round(r.revenue).toLocaleString('ru-RU')} ₽<extra></extra>`,
+    };
+  });
+  Plotly.newPlot('chart-lifecycle', bars, {
+    ...PLOTLY_LAYOUT_BASE,
+    barmode:'stack',
+    xaxis:{...PLOTLY_LAYOUT_BASE.xaxis, type:'date'},
+    yaxis:{...PLOTLY_LAYOUT_BASE.yaxis, automargin:true, tickfont:{size:10, color:'#8b949e'}},
+    margin:{l:240, r:30, t:20, b:50},
+    height: 560
+  }, PLOTLY_CONFIG);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+; systemd unit для live-дашборда «Продажи на борту».
+; Положить файл в: /etc/systemd/system/sfv-dashboard.service
+; Активировать:    sudo systemctl daemon-reload && sudo systemctl enable --now sfv-dashboard
+;
+; Предполагается, что:
+;   - код развёрнут в /opt/sfv-dashboard/
+;   - venv лежит в /opt/sfv-dashboard/venv/
+;   - .env лежит в /opt/sfv-dashboard/.env (chmod 600, владелец — www-data)
+
+[Unit]
+Description=SFV Catering Live Dashboard (FastAPI + ClickHouse)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/sfv-dashboard
+
+EnvironmentFile=/opt/sfv-dashboard/.env
+
+ExecStart=/opt/sfv-dashboard/venv/bin/uvicorn \
+    app.sfv_dashboard.server:app \
+    --host 127.0.0.1 \
+    --port 8765 \
+    --workers 2 \
+    --proxy-headers \
+    --forwarded-allow-ips="127.0.0.1" \
+    --log-level info
+
+Restart=always
+RestartSec=5
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/opt/sfv-dashboard/logs
+
+# Логи в journald (доступны через `journalctl -u sfv-dashboard -f`)
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
