@@ -87,6 +87,10 @@ input2
 output2
 output3
 
+# Данные (исходные xlsx, обработанные parquet/csv, json-payload — индивидуальны для машины
+# и часто содержат коммерческие сведения; в git не идут)
+data/
+
 # Docker
 docker/**/models/
 docker/**/.cache/
