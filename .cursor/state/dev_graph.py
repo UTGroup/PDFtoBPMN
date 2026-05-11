@@ -86,9 +86,11 @@ def router(state: DevState) -> str:
 
 def log_decision(state: DevState) -> dict:
     p = state["_payload"]
+    # explicit_id позволяет scribe'у записать решение с уже известным ID (например D-023)
+    auto_id = f"D-{len(state.get('decisions', [])) + 1:03d}"
     entry = {
-        "id": f"D-{len(state.get('decisions', [])) + 1:03d}",
-        "date": datetime.now().isoformat(timespec="minutes"),
+        "id": p.get("explicit_id", auto_id),
+        "date": p.get("date", datetime.now().isoformat(timespec="minutes")),
         "title": p["title"],
         "context": p.get("context", ""),
         "decision": p["decision"],
@@ -101,11 +103,16 @@ def log_decision(state: DevState) -> dict:
 def update_component(state: DevState) -> dict:
     p = state["_payload"]
     components = dict(state.get("components", {}))
-    components[p["name"]] = {
+    entry = {
         "status": p["status"],
         "tests_pass": p.get("tests_pass", False),
         "last_updated": datetime.now().isoformat(timespec="minutes"),
     }
+    # forward any extra fields (e.g. cross_repo, task_status, note)
+    for k, v in p.items():
+        if k not in ("name", "status", "tests_pass"):
+            entry[k] = v
+    components[p["name"]] = entry
     return {"components": components, "_command": "", "_payload": {}}
 
 
@@ -247,13 +254,16 @@ class DevGraph:
 
     def log_decision(self, title: str, decision: str,
                      context: str = "", rejected: list[str] | None = None,
-                     revisit_if: str = ""):
+                     revisit_if: str = "", explicit_id: str = "",
+                     date: str = ""):
         self._invoke("log_decision", {
             "title": title,
             "decision": decision,
             "context": context,
             "rejected": rejected or [],
             "revisit_if": revisit_if,
+            "explicit_id": explicit_id,
+            "date": date,
         })
 
     def update_component(self, name: str, status: str, tests_pass: bool = False):

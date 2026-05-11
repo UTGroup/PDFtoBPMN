@@ -1,0 +1,1684 @@
+{
+  "summary": {
+    "total_rows_dept_xlsx": 72,
+    "total_apn_catalog": 940,
+    "total_uta_reports_catalog": 215,
+    "row_kinds": {
+      "amos_apn": 50,
+      "uta_report": 12,
+      "gap_no_apn": 3,
+      "sap": 2,
+      "lotus": 1,
+      "superset": 2,
+      "other": 1,
+      "business_studio": 1
+    },
+    "unique_amos_apn_used": 25,
+    "unique_uta_reports_used": 12,
+    "guide_coverage": {
+      "guide_htm_found": 25,
+      "guide_pdf_found": 25,
+      "guide_both_missing": 0
+    }
+  },
+  "rows": [
+    {
+      "department": "Отдел закупок расходных материалов",
+      "manager": "Ситникова Е.С.",
+      "apn_raw": "2015",
+      "name_raw": "Order Management",
+      "usage_note": "Создание и редактирование ордеров",
+      "kind": "amos_apn",
+      "apn_int": 2015,
+      "name_en": "Order Management",
+      "name_ru": "Управление заказами",
+      "guide_htm_url": "APN2015.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Управление заказами",
+      "guide_htm_heading": "Управление заказами",
+      "guide_pdf_filename": "Order_Management.pdf"
+    },
+    {
+      "department": "Отдел закупок расходных материалов",
+      "manager": "Ситникова Е.С.",
+      "apn_raw": "325",
+      "name_raw": "Price Book",
+      "usage_note": "Контроль цен, договорных условий",
+      "kind": "amos_apn",
+      "apn_int": 325,
+      "name_en": "Price Book",
+      "name_ru": "Справочник цен",
+      "guide_htm_url": "APN0325.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Price Book",
+      "guide_htm_heading": "Price Book",
+      "guide_pdf_filename": "Price_Book.pdf"
+    },
+    {
+      "department": "Отдел закупок расходных материалов",
+      "manager": "Ситникова Е.С.",
+      "apn_raw": "1328",
+      "name_raw": "Order Tracking",
+      "usage_note": "Контроль статуса заказов",
+      "kind": "amos_apn",
+      "apn_int": 1328,
+      "name_en": "Order Tracking",
+      "name_ru": "Отслеживание заказов",
+      "guide_htm_url": "APN1328.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Order Tracking",
+      "guide_htm_heading": "Order Tracking",
+      "guide_pdf_filename": "Order_Tracking.pdf"
+    },
+    {
+      "department": "Отдел закупок расходных материалов",
+      "manager": "Ситникова Е.С.",
+      "apn_raw": "204",
+      "name_raw": "Part Consumption Forecast",
+      "usage_note": "Закупка под MEL, дефекты, директивы",
+      "kind": "amos_apn",
+      "apn_int": 204,
+      "name_en": "Parts Consumption Forecast",
+      "name_ru": "Прогноз расхода деталей",
+      "guide_htm_url": "APN0204.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Прогноз потребления запасных частей",
+      "guide_htm_heading": "Прогноз потребления запасных частей",
+      "guide_pdf_filename": "Parts_Consumption_Forecast.pdf"
+    },
+    {
+      "department": "Отдел закупок расходных материалов",
+      "manager": "Ситникова Е.С.",
+      "apn_raw": "899",
+      "name_raw": "Advance Reorder Proposal",
+      "usage_note": "Закупка по НЗ",
+      "kind": "amos_apn",
+      "apn_int": 899,
+      "name_en": "Advanced Reorder Proposal",
+      "name_ru": "Расширенные предложения по повторному заказу",
+      "guide_htm_url": "APN0899.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Продвинутое предложение повторного заказа",
+      "guide_htm_heading": "Продвинутое предложение повторного заказа",
+      "guide_pdf_filename": "Advanced_Reorder_Proposal.pdf"
+    },
+    {
+      "department": "Отдел закупок расходных материалов",
+      "manager": "Ситникова Е.С.",
+      "apn_raw": "313",
+      "name_raw": "Station Part Alert",
+      "usage_note": "Информация по определённой детали на конкретной станции или складе.",
+      "kind": "amos_apn",
+      "apn_int": 313,
+      "name_en": "Station Parts Alert",
+      "name_ru": "Уведомление о деталях на станции (базе)",
+      "guide_htm_url": "APN0313.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Station Parts Alert",
+      "guide_htm_heading": "Station Parts Alert",
+      "guide_pdf_filename": "Station_Parts_Alert.pdf"
+    },
+    {
+      "department": "Отдел закупок расходных материалов",
+      "manager": "Ситникова Е.С.",
+      "apn_raw": "59",
+      "name_raw": "Part Administration",
+      "usage_note": "Проверка P/N, статусов, альтернатив",
+      "kind": "amos_apn",
+      "apn_int": 59,
+      "name_en": "Part Administration",
+      "name_ru": "Управление деталями",
+      "guide_htm_url": "APN0059.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Управление деталями",
+      "guide_htm_heading": "Управление деталями",
+      "guide_pdf_filename": "Part_Administration.pdf"
+    },
+    {
+      "department": "Отдел закупок расходных материалов",
+      "manager": "Ситникова Е.С.",
+      "apn_raw": "221",
+      "name_raw": "Stock Information (по складам/базам)",
+      "usage_note": "Просмотр остатков на складе",
+      "kind": "amos_apn",
+      "apn_int": 221,
+      "name_en": "Stock Information",
+      "name_ru": "Информация о запасах",
+      "guide_htm_url": "APN0221.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Информация о запасах",
+      "guide_htm_heading": "Информация о запасах",
+      "guide_pdf_filename": "Stock_Information.pdf"
+    },
+    {
+      "department": "Отдел закупок расходных материалов",
+      "manager": "Ситникова Е.С.",
+      "apn_raw": "53",
+      "name_raw": "Address Administration",
+      "usage_note": "Централизованный справочник адресов",
+      "kind": "amos_apn",
+      "apn_int": 53,
+      "name_en": "Address Administration",
+      "name_ru": "Управление адресами / контактами",
+      "guide_htm_url": "APN0053.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Address Administration",
+      "guide_htm_heading": "Address Administration",
+      "guide_pdf_filename": "Address_Administration.pdf"
+    },
+    {
+      "department": "Отдел закупок расходных материалов",
+      "manager": "Ситникова Е.С.",
+      "apn_raw": "869",
+      "name_raw": "Technical Assistance ",
+      "usage_note": "Техническая помощь/консультация для решения вопроса  (форма U240)",
+      "kind": "amos_apn",
+      "apn_int": 869,
+      "name_en": "Technical Assistance",
+      "name_ru": "Техническая поддержка",
+      "guide_htm_url": "APN0869.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Техническая поддержка",
+      "guide_htm_heading": "Техническая поддержка",
+      "guide_pdf_filename": "Technical_Assistance.pdf"
+    },
+    {
+      "department": "Отдел закупок расходных материалов",
+      "manager": "Ситникова Е.С.",
+      "apn_raw": "62",
+      "name_raw": "Web-Drive",
+      "usage_note": "Веб-диск (Онлайн-хранилище)",
+      "kind": "amos_apn",
+      "apn_int": 62,
+      "name_en": "Web-Drive",
+      "name_ru": "Веб-диск / сетевое хранилище",
+      "guide_htm_url": "APN0062.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Web-Drive",
+      "guide_htm_heading": "Web-Drive",
+      "guide_pdf_filename": "Web_Drive.pdf"
+    },
+    {
+      "department": "Отдел закупок расходных материалов",
+      "manager": "Ситникова Е.С.",
+      "apn_raw": "188",
+      "name_raw": "Parts Tracking",
+      "usage_note": "Движение АТИ. Контроль АТИ.",
+      "kind": "amos_apn",
+      "apn_int": 188,
+      "name_en": "Parts Tracking",
+      "name_ru": "Отслеживание деталей",
+      "guide_htm_url": "APN0188.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Отслеживание деталей",
+      "guide_htm_heading": "Отслеживание деталей",
+      "guide_pdf_filename": "Parts_Tracking.pdf"
+    },
+    {
+      "department": "Отдел закупок расходных материалов",
+      "manager": "Ситникова Е.С.",
+      "apn_raw": "1418",
+      "name_raw": "Workorder",
+      "usage_note": "Информация по work order, используется для обеспечения закупок нужными деталями и материалами под выполнение работ.",
+      "kind": "amos_apn",
+      "apn_int": 1418,
+      "name_en": "Workorder",
+      "name_ru": "Рабочий ордер (наряд на работу)",
+      "guide_htm_url": "APN1418.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Рабочий заказ",
+      "guide_htm_heading": "Рабочий заказ",
+      "guide_pdf_filename": "Workorder.pdf"
+    },
+    {
+      "department": "Отдел закупок расходных материалов",
+      "manager": "Ситникова Е.С.",
+      "apn_raw": "10663",
+      "name_raw": "UTA.REP.1003558",
+      "usage_note": "Отчет \"Анализ востребованности компонентов\"",
+      "kind": "uta_report",
+      "apn_int": 10663,
+      "uta_report_id": "UTA.REP.1003558",
+      "uta_report_desc": null
+    },
+    {
+      "department": "Отдел закупок расходных материалов",
+      "manager": "Ситникова Е.С.",
+      "apn_raw": "10578",
+      "name_raw": "UTA.REP.1003387",
+      "usage_note": "Отчет сбой поставок под MEL",
+      "kind": "uta_report",
+      "apn_int": 10578,
+      "uta_report_id": "UTA.REP.1003387",
+      "uta_report_desc": null
+    },
+    {
+      "department": "Отдел закупок расходных материалов",
+      "manager": "Ситникова Е.С.",
+      "apn_raw": "10543",
+      "name_raw": "UTA.REP.1003284",
+      "usage_note": "Отчет по заказам для Mel D и DD",
+      "kind": "uta_report",
+      "apn_int": 10543,
+      "uta_report_id": "UTA.REP.1003284",
+      "uta_report_desc": null
+    },
+    {
+      "department": "Отдел закупок расходных материалов",
+      "manager": "Ситникова Е.С.",
+      "apn_raw": "сборный отчет",
+      "name_raw": "Отчет по критике для ATR.",
+      "usage_note": "Отчет по критике для ATR. Cобираем из данных отчета \"Анализ востребованности компонентов\" (10663). Из анализа подгружается информация по наличию компонентов и размещенным заказам",
+      "kind": "gap_no_apn",
+      "apn_int": null
+    },
+    {
+      "department": "Отдел закупок расходных материалов",
+      "manager": "Ситникова Е.С.",
+      "apn_raw": "SAP",
+      "name_raw": "Просмотр договоров и квалификации контрагентов",
+      "usage_note": null,
+      "kind": "sap",
+      "apn_int": null
+    },
+    {
+      "department": "Отдел закупок расходных материалов",
+      "manager": "Ситникова Е.С.",
+      "apn_raw": "БД \"Закупки\" из Lotus Notes",
+      "name_raw": "Тендеры/Протоколы",
+      "usage_note": "нет",
+      "kind": "lotus",
+      "apn_int": null
+    },
+    {
+      "department": "Отдел закупок расходных материалов",
+      "manager": "Ситникова Е.С.",
+      "apn_raw": "Superset",
+      "name_raw": "данные для создания дашбордов",
+      "usage_note": "Нет, Евгений Кармазин, они некоторые отчеты делают через эту программу",
+      "kind": "superset",
+      "apn_int": null
+    },
+    {
+      "department": "отдел оперативных закупок",
+      "manager": "Катермин Б.Б.",
+      "apn_raw": "204",
+      "name_raw": "Part Consumption Forecast",
+      "usage_note": "Закупка под оперативные закупки",
+      "kind": "amos_apn",
+      "apn_int": 204,
+      "name_en": "Parts Consumption Forecast",
+      "name_ru": "Прогноз расхода деталей",
+      "guide_htm_url": "APN0204.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Прогноз потребления запасных частей",
+      "guide_htm_heading": "Прогноз потребления запасных частей",
+      "guide_pdf_filename": "Parts_Consumption_Forecast.pdf"
+    },
+    {
+      "department": "отдел оперативных закупок",
+      "manager": "Катермин Б.Б.",
+      "apn_raw": "2015",
+      "name_raw": "Order Management",
+      "usage_note": "Создание и редактирование ордеров",
+      "kind": "amos_apn",
+      "apn_int": 2015,
+      "name_en": "Order Management",
+      "name_ru": "Управление заказами",
+      "guide_htm_url": "APN2015.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Управление заказами",
+      "guide_htm_heading": "Управление заказами",
+      "guide_pdf_filename": "Order_Management.pdf"
+    },
+    {
+      "department": "отдел оперативных закупок",
+      "manager": "Катермин Б.Б.",
+      "apn_raw": "325",
+      "name_raw": "Price Book",
+      "usage_note": "Контроль цен, договорных условий",
+      "kind": "amos_apn",
+      "apn_int": 325,
+      "name_en": "Price Book",
+      "name_ru": "Справочник цен",
+      "guide_htm_url": "APN0325.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Price Book",
+      "guide_htm_heading": "Price Book",
+      "guide_pdf_filename": "Price_Book.pdf"
+    },
+    {
+      "department": "отдел оперативных закупок",
+      "manager": "Катермин Б.Б.",
+      "apn_raw": "1328",
+      "name_raw": "Order Tracking",
+      "usage_note": "Контроль статуса заказов",
+      "kind": "amos_apn",
+      "apn_int": 1328,
+      "name_en": "Order Tracking",
+      "name_ru": "Отслеживание заказов",
+      "guide_htm_url": "APN1328.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Order Tracking",
+      "guide_htm_heading": "Order Tracking",
+      "guide_pdf_filename": "Order_Tracking.pdf"
+    },
+    {
+      "department": "отдел оперативных закупок",
+      "manager": "Катермин Б.Б.",
+      "apn_raw": "221",
+      "name_raw": "Stock Information (по складам/базам)",
+      "usage_note": "Просмотр остатков",
+      "kind": "amos_apn",
+      "apn_int": 221,
+      "name_en": "Stock Information",
+      "name_ru": "Информация о запасах",
+      "guide_htm_url": "APN0221.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Информация о запасах",
+      "guide_htm_heading": "Информация о запасах",
+      "guide_pdf_filename": "Stock_Information.pdf"
+    },
+    {
+      "department": "отдел оперативных закупок",
+      "manager": "Катермин Б.Б.",
+      "apn_raw": "869",
+      "name_raw": "Technical Assistance ",
+      "usage_note": "Техническая помощь/консультация для решения вопроса  (форма U240)",
+      "kind": "amos_apn",
+      "apn_int": 869,
+      "name_en": "Technical Assistance",
+      "name_ru": "Техническая поддержка",
+      "guide_htm_url": "APN0869.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Техническая поддержка",
+      "guide_htm_heading": "Техническая поддержка",
+      "guide_pdf_filename": "Technical_Assistance.pdf"
+    },
+    {
+      "department": "отдел оперативных закупок",
+      "manager": "Катермин Б.Б.",
+      "apn_raw": "59",
+      "name_raw": "Part Administration",
+      "usage_note": "Проверка P/N, статусов, альтернатив",
+      "kind": "amos_apn",
+      "apn_int": 59,
+      "name_en": "Part Administration",
+      "name_ru": "Управление деталями",
+      "guide_htm_url": "APN0059.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Управление деталями",
+      "guide_htm_heading": "Управление деталями",
+      "guide_pdf_filename": "Part_Administration.pdf"
+    },
+    {
+      "department": "отдел оперативных закупок",
+      "manager": "Катермин Б.Б.",
+      "apn_raw": "1418",
+      "name_raw": "Workorder",
+      "usage_note": "Информация по work order, используется для обеспечения закупок нужными деталями и материалами под выполнение работ.",
+      "kind": "amos_apn",
+      "apn_int": 1418,
+      "name_en": "Workorder",
+      "name_ru": "Рабочий ордер (наряд на работу)",
+      "guide_htm_url": "APN1418.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Рабочий заказ",
+      "guide_htm_heading": "Рабочий заказ",
+      "guide_pdf_filename": "Workorder.pdf"
+    },
+    {
+      "department": "отдел оперативных закупок",
+      "manager": "Катермин Б.Б.",
+      "apn_raw": "2110",
+      "name_raw": "Approval Control Board",
+      "usage_note": "Согласование заказов и операций",
+      "kind": "amos_apn",
+      "apn_int": 2110,
+      "name_en": "Approval Control Board",
+      "name_ru": "Совет/панель контроля утверждений",
+      "guide_htm_url": "APN2110.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Совет по контролю одобрения",
+      "guide_htm_heading": "Совет по контролю одобрения",
+      "guide_pdf_filename": "Approval_Control_Board.pdf"
+    },
+    {
+      "department": "отдел оперативных закупок",
+      "manager": "Катермин Б.Б.",
+      "apn_raw": "313",
+      "name_raw": "Station Part Alert",
+      "usage_note": "Информация по определённой детали на конкретной станции или складе.",
+      "kind": "amos_apn",
+      "apn_int": 313,
+      "name_en": "Station Parts Alert",
+      "name_ru": "Уведомление о деталях на станции (базе)",
+      "guide_htm_url": "APN0313.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Station Parts Alert",
+      "guide_htm_heading": "Station Parts Alert",
+      "guide_pdf_filename": "Station_Parts_Alert.pdf"
+    },
+    {
+      "department": "отдел оперативных закупок",
+      "manager": "Катермин Б.Б.",
+      "apn_raw": "188",
+      "name_raw": "Parts Tracking",
+      "usage_note": "Движение АТИ. Контроль запчастей и материалов.",
+      "kind": "amos_apn",
+      "apn_int": 188,
+      "name_en": "Parts Tracking",
+      "name_ru": "Отслеживание деталей",
+      "guide_htm_url": "APN0188.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Отслеживание деталей",
+      "guide_htm_heading": "Отслеживание деталей",
+      "guide_pdf_filename": "Parts_Tracking.pdf"
+    },
+    {
+      "department": "отдел оперативных закупок",
+      "manager": "Катермин Б.Б.",
+      "apn_raw": "53",
+      "name_raw": "Address Administration",
+      "usage_note": "Централизованный справочник адресов",
+      "kind": "amos_apn",
+      "apn_int": 53,
+      "name_en": "Address Administration",
+      "name_ru": "Управление адресами / контактами",
+      "guide_htm_url": "APN0053.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Address Administration",
+      "guide_htm_heading": "Address Administration",
+      "guide_pdf_filename": "Address_Administration.pdf"
+    },
+    {
+      "department": "отдел оперативных закупок",
+      "manager": "Катермин Б.Б.",
+      "apn_raw": "10422",
+      "name_raw": "UTA.REP.1003174\n",
+      "usage_note": "Отчет \"AOG состояние\"",
+      "kind": "uta_report",
+      "apn_int": 10422,
+      "uta_report_id": "UTA.REP.1003174\n",
+      "uta_report_desc": null
+    },
+    {
+      "department": "отдел оперативных закупок",
+      "manager": "Катермин Б.Б.",
+      "apn_raw": "308",
+      "name_raw": "Aircraft Administration",
+      "usage_note": "Используют данные по самолёту, для закупки деталей под конкретный ВС.",
+      "kind": "amos_apn",
+      "apn_int": 308,
+      "name_en": "Aircraft Administration",
+      "name_ru": "Управление данными воздушных судов",
+      "guide_htm_url": "APN0308.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Самолет Administration",
+      "guide_htm_heading": "Самолет Administration",
+      "guide_pdf_filename": "Aircraft_Administration.pdf"
+    },
+    {
+      "department": "отдел оперативных закупок",
+      "manager": "Катермин Б.Б.",
+      "apn_raw": "565",
+      "name_raw": "Publication Management",
+      "usage_note": "Данные о техдокументации (SB, AD и т.д.) и ее обновлениях. (Требования из документации влияют на замену или закупку деталей)",
+      "kind": "amos_apn",
+      "apn_int": 565,
+      "name_en": "Publication Management",
+      "name_ru": "Управление публикациями (документацией)",
+      "guide_htm_url": "APN0565.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Publication Management",
+      "guide_htm_heading": "Publication Management",
+      "guide_pdf_filename": "Publication_Management.pdf"
+    },
+    {
+      "department": "отдел оперативных закупок",
+      "manager": "Катермин Б.Б.",
+      "apn_raw": null,
+      "name_raw": "ежедневное состояние заказов для AOG (10422), коротких мелов и др срочных задач ",
+      "usage_note": null,
+      "kind": "other",
+      "apn_int": null
+    },
+    {
+      "department": "отдел оперативных закупок",
+      "manager": "Катермин Б.Б.",
+      "apn_raw": "10474",
+      "name_raw": "UTA.REP.1002734",
+      "usage_note": "Отчет по поставкам по БТО\nежедневный (по будням) ",
+      "kind": "uta_report",
+      "apn_int": 10474,
+      "uta_report_id": "UTA.REP.1002734",
+      "uta_report_desc": null
+    },
+    {
+      "department": "отдел оперативных закупок",
+      "manager": "Катермин Б.Б.",
+      "apn_raw": "SAP",
+      "name_raw": "в части договоров и иногда согласование услуг (нач.отдела)",
+      "usage_note": null,
+      "kind": "sap",
+      "apn_int": null
+    },
+    {
+      "department": "отдел оперативных закупок",
+      "manager": "Катермин Б.Б.",
+      "apn_raw": "Superset",
+      "name_raw": "нет",
+      "usage_note": null,
+      "kind": "superset",
+      "apn_int": null
+    },
+    {
+      "department": "отделу ремонтов и закупок компонентов",
+      "manager": "Шуптар Л.С.",
+      "apn_raw": "1328",
+      "name_raw": "Order Tracking",
+      "usage_note": "Для определения сроков возврата из ремонта ",
+      "kind": "amos_apn",
+      "apn_int": 1328,
+      "name_en": "Order Tracking",
+      "name_ru": "Отслеживание заказов",
+      "guide_htm_url": "APN1328.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Order Tracking",
+      "guide_htm_heading": "Order Tracking",
+      "guide_pdf_filename": "Order_Tracking.pdf"
+    },
+    {
+      "department": "отделу ремонтов и закупок компонентов",
+      "manager": "Шуптар Л.С.",
+      "apn_raw": "221",
+      "name_raw": "Stock Information ",
+      "usage_note": "Для определения наличия исправных и неисправных компонентов",
+      "kind": "amos_apn",
+      "apn_int": 221,
+      "name_en": "Stock Information",
+      "name_ru": "Информация о запасах",
+      "guide_htm_url": "APN0221.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Информация о запасах",
+      "guide_htm_heading": "Информация о запасах",
+      "guide_pdf_filename": "Stock_Information.pdf"
+    },
+    {
+      "department": "отделу ремонтов и закупок компонентов",
+      "manager": "Шуптар Л.С.",
+      "apn_raw": "869",
+      "name_raw": "Technical Assistance",
+      "usage_note": "Для создания TQ ",
+      "kind": "amos_apn",
+      "apn_int": 869,
+      "name_en": "Technical Assistance",
+      "name_ru": "Техническая поддержка",
+      "guide_htm_url": "APN0869.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Техническая поддержка",
+      "guide_htm_heading": "Техническая поддержка",
+      "guide_pdf_filename": "Technical_Assistance.pdf"
+    },
+    {
+      "department": "отделу ремонтов и закупок компонентов",
+      "manager": "Шуптар Л.С.",
+      "apn_raw": "313",
+      "name_raw": "Station Part Alert ",
+      "usage_note": "для просмотра наполненности складов и служит инструментом для анализа, но не предназначена для оформления компонентов в ремонт,",
+      "kind": "amos_apn",
+      "apn_int": 313,
+      "name_en": "Station Parts Alert",
+      "name_ru": "Уведомление о деталях на станции (базе)",
+      "guide_htm_url": "APN0313.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Station Parts Alert",
+      "guide_htm_heading": "Station Parts Alert",
+      "guide_pdf_filename": "Station_Parts_Alert.pdf"
+    },
+    {
+      "department": "отделу ремонтов и закупок компонентов",
+      "manager": "Шуптар Л.С.",
+      "apn_raw": "1431",
+      "name_raw": "Repair Administration ",
+      "usage_note": "на ежедневной основе, для работы с неисправными\nкомпонентами и принятии решения о необходимости отправки компонента в ремонт, пул/обмен, по гарантии исходя из возможностей провайдера ",
+      "kind": "amos_apn",
+      "apn_int": 1431,
+      "name_en": "Repair Administration",
+      "name_ru": "Администрирование ремонтов",
+      "guide_htm_url": "APN1431.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Repair Administration",
+      "guide_htm_heading": "Repair Administration",
+      "guide_pdf_filename": "Repair_Administration.pdf"
+    },
+    {
+      "department": "отделу ремонтов и закупок компонентов",
+      "manager": "Шуптар Л.С.",
+      "apn_raw": "59",
+      "name_raw": "Part Administration вкладка Requirements",
+      "usage_note": "Вид ремонта определяется на этапе формирования заказа исходя из ресурсных требований к компоненту",
+      "kind": "amos_apn",
+      "apn_int": 59,
+      "name_en": "Part Administration",
+      "name_ru": "Управление деталями",
+      "guide_htm_url": "APN0059.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Управление деталями",
+      "guide_htm_heading": "Управление деталями",
+      "guide_pdf_filename": "Part_Administration.pdf"
+    },
+    {
+      "department": "отделу ремонтов и закупок компонентов",
+      "manager": "Шуптар Л.С.",
+      "apn_raw": "2015",
+      "name_raw": "Order Management",
+      "usage_note": "Если ремонт согласован, специалист отдела ремонтов и закупок\nкомпонентов вкладывает квотацию в ИС «AMOS» в заказ на ремонт и вносит стоимость ремонта в заказ на ремонт в поле Repair Price и срок ремонта в поле Target Date\n",
+      "kind": "amos_apn",
+      "apn_int": 2015,
+      "name_en": "Order Management",
+      "name_ru": "Управление заказами",
+      "guide_htm_url": "APN2015.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Управление заказами",
+      "guide_htm_heading": "Управление заказами",
+      "guide_pdf_filename": "Order_Management.pdf"
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "59",
+      "name_raw": "Part Administration",
+      "usage_note": "Проверка P/N, статусов, альтернатив",
+      "kind": "amos_apn",
+      "apn_int": 59,
+      "name_en": "Part Administration",
+      "name_ru": "Управление деталями",
+      "guide_htm_url": "APN0059.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Управление деталями",
+      "guide_htm_heading": "Управление деталями",
+      "guide_pdf_filename": "Part_Administration.pdf"
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "188",
+      "name_raw": "Parts Tracking",
+      "usage_note": "Движение АТИ. Контроль запчастей и материалов.",
+      "kind": "amos_apn",
+      "apn_int": 188,
+      "name_en": "Parts Tracking",
+      "name_ru": "Отслеживание деталей",
+      "guide_htm_url": "APN0188.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Отслеживание деталей",
+      "guide_htm_heading": "Отслеживание деталей",
+      "guide_pdf_filename": "Parts_Tracking.pdf"
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "204",
+      "name_raw": "Part Consumption Forecast",
+      "usage_note": "Прогноз потребления деталей",
+      "kind": "amos_apn",
+      "apn_int": 204,
+      "name_en": "Parts Consumption Forecast",
+      "name_ru": "Прогноз расхода деталей",
+      "guide_htm_url": "APN0204.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Прогноз потребления запасных частей",
+      "guide_htm_heading": "Прогноз потребления запасных частей",
+      "guide_pdf_filename": "Parts_Consumption_Forecast.pdf"
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "313",
+      "name_raw": "Station Part Alert",
+      "usage_note": "Проверка детали на станции и устранение проблем (наличие/статус/пригодность).",
+      "kind": "amos_apn",
+      "apn_int": 313,
+      "name_en": "Station Parts Alert",
+      "name_ru": "Уведомление о деталях на станции (базе)",
+      "guide_htm_url": "APN0313.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Station Parts Alert",
+      "guide_htm_heading": "Station Parts Alert",
+      "guide_pdf_filename": "Station_Parts_Alert.pdf"
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "359",
+      "name_raw": "Shelf Expiry",
+      "usage_note": "Контроль срока годности детали и необходимость действия при его истечении.",
+      "kind": "amos_apn",
+      "apn_int": 359,
+      "name_en": "Shelf Expiry",
+      "name_ru": "Срок хранения (срок годности на складе)",
+      "guide_htm_url": "APN0359.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Срок годности",
+      "guide_htm_heading": "Срок годности",
+      "guide_pdf_filename": "Shelf_Expiry.pdf"
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "375",
+      "name_raw": "Pickslip Viewer",
+      "usage_note": "Проверка листа выдачи (pickslip) по деталям",
+      "kind": "amos_apn",
+      "apn_int": 375,
+      "name_en": "Pickslip Viewer",
+      "name_ru": "Просмотр документов выдачи",
+      "guide_htm_url": "APN0375.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Pickslip Viewer",
+      "guide_htm_heading": "Pickslip Viewer",
+      "guide_pdf_filename": "Pickslip_Viewer.pdf"
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "459",
+      "name_raw": "Reorder Proposal Configuration",
+      "usage_note": "Проверка/настройка параметров автозаказа (reorder) АТИ для корректного пополнения склада.",
+      "kind": "amos_apn",
+      "apn_int": 459,
+      "name_en": "Reorder Proposal Configuration",
+      "name_ru": "Настройка предложений по повторному заказу",
+      "guide_htm_url": "APN0459.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Конфигурация предложения повторного заказа",
+      "guide_htm_heading": "Конфигурация предложения повторного заказа",
+      "guide_pdf_filename": "Reorder_Proposal_Configuration.pdf"
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "532",
+      "name_raw": "Part Special Field Report",
+      "usage_note": "Проверка/оформление специального отчёат по деталям (особые условия или замечания).",
+      "kind": "amos_apn",
+      "apn_int": 532,
+      "name_en": "Part Special Field Report",
+      "name_ru": "Отчёт по дополнительным полям деталей",
+      "guide_htm_url": "APN0532.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Part Special Field Report",
+      "guide_htm_heading": "Part Special Field Report",
+      "guide_pdf_filename": "Part_Special_Field_Report.pdf"
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "869",
+      "name_raw": "Technical Assistance",
+      "usage_note": "Техническая помощь/консультация для решения вопроса  (форма U240)",
+      "kind": "amos_apn",
+      "apn_int": 869,
+      "name_en": "Technical Assistance",
+      "name_ru": "Техническая поддержка",
+      "guide_htm_url": "APN0869.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Техническая поддержка",
+      "guide_htm_heading": "Техническая поддержка",
+      "guide_pdf_filename": "Technical_Assistance.pdf"
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "899",
+      "name_raw": "Advance Reorder Proposal",
+      "usage_note": "Анализ открытых потребностей (по Special)",
+      "kind": "amos_apn",
+      "apn_int": 899,
+      "name_en": "Advanced Reorder Proposal",
+      "name_ru": "Расширенные предложения по повторному заказу",
+      "guide_htm_url": "APN0899.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Продвинутое предложение повторного заказа",
+      "guide_htm_heading": "Продвинутое предложение повторного заказа",
+      "guide_pdf_filename": "Advanced_Reorder_Proposal.pdf"
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "1208",
+      "name_raw": "Shipment Tracking",
+      "usage_note": "Отслеживание отправки детали и её текущего статуса доставки.",
+      "kind": "amos_apn",
+      "apn_int": 1208,
+      "name_en": "Shipment Tracking",
+      "name_ru": "Отслеживание отправок",
+      "guide_htm_url": "APN1208.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Отслеживание отгрузки",
+      "guide_htm_heading": "Отслеживание отгрузки",
+      "guide_pdf_filename": "Shipment_Tracking.pdf"
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "1328",
+      "name_raw": "Order Tracking",
+      "usage_note": "Контроль статуса заказов",
+      "kind": "amos_apn",
+      "apn_int": 1328,
+      "name_en": "Order Tracking",
+      "name_ru": "Отслеживание заказов",
+      "guide_htm_url": "APN1328.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Order Tracking",
+      "guide_htm_heading": "Order Tracking",
+      "guide_pdf_filename": "Order_Tracking.pdf"
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "1662",
+      "name_raw": "History Viewer",
+      "usage_note": "Просмотр истории действий и изменений по детали или записи в системе",
+      "kind": "amos_apn",
+      "apn_int": 1662,
+      "name_en": "History Viewer",
+      "name_ru": "Просмотр истории",
+      "guide_htm_url": "APN1662.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "History Viewer",
+      "guide_htm_heading": "History Viewer",
+      "guide_pdf_filename": "History_Viewer.pdf"
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "2015",
+      "name_raw": "Order Management",
+      "usage_note": "Управление и контроль заказов на АТИ",
+      "kind": "amos_apn",
+      "apn_int": 2015,
+      "name_en": "Order Management",
+      "name_ru": "Управление заказами",
+      "guide_htm_url": "APN2015.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Управление заказами",
+      "guide_htm_heading": "Управление заказами",
+      "guide_pdf_filename": "Order_Management.pdf"
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "2392",
+      "name_raw": "Shipment",
+      "usage_note": "Информация и контроль по отправке (shipment) АТИ.",
+      "kind": "amos_apn",
+      "apn_int": 2392,
+      "name_en": "Shipment",
+      "name_ru": "Отгрузка / отправка",
+      "guide_htm_url": "APN2392.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Shipment",
+      "guide_htm_heading": "Shipment",
+      "guide_pdf_filename": "Shipment.pdf"
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "10735",
+      "name_raw": "UTA.REP.1003853",
+      "usage_note": "Отчет по заказу АТИ со сроками годности",
+      "kind": "uta_report",
+      "apn_int": 10735,
+      "uta_report_id": "UTA.REP.1003853",
+      "uta_report_desc": null
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "10679",
+      "name_raw": "UTA.REP.1003593",
+      "usage_note": "Отчет \"Распределение контейнеров BTA-M4\"",
+      "kind": "uta_report",
+      "apn_int": 10679,
+      "uta_report_id": "UTA.REP.1003593",
+      "uta_report_desc": null
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "10775",
+      "name_raw": "UTA.REP.1003975",
+      "usage_note": "Отчет для расчета уровней НЗ ",
+      "kind": "uta_report",
+      "apn_int": 10775,
+      "uta_report_id": "UTA.REP.1003975",
+      "uta_report_desc": null
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "через виджит Mini report ",
+      "name_raw": "UTA.REP.1002892",
+      "usage_note": "Отчет по наполненностью уровней HBS критичной номенклатуры (Колеса, тормоза, кислород, АКБ)",
+      "kind": "gap_no_apn",
+      "apn_int": null
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "Автомат из AMOS",
+      "name_raw": "Отчет \"Забытые Т-заказы\"",
+      "usage_note": "Отчет \"Забытые Т-заказы\"",
+      "kind": "gap_no_apn",
+      "apn_int": null
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "10657",
+      "name_raw": "UTA.REP.1003548",
+      "usage_note": "Отчет \"Распределение компонентов\"",
+      "kind": "uta_report",
+      "apn_int": 10657,
+      "uta_report_id": "UTA.REP.1003548",
+      "uta_report_desc": null
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": " Business Studio",
+      "name_raw": " Business Studio",
+      "usage_note": " Business Studio",
+      "kind": "business_studio",
+      "apn_int": null
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "10465",
+      "name_raw": "UTA.REP.1002722",
+      "usage_note": "Анализ НЗ",
+      "kind": "uta_report",
+      "apn_int": 10465,
+      "uta_report_id": "UTA.REP.1002722",
+      "uta_report_desc": null
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "10463",
+      "name_raw": "UTA.REP.1002854",
+      "usage_note": "Анализ НЗ по станциям",
+      "kind": "uta_report",
+      "apn_int": 10463,
+      "uta_report_id": "UTA.REP.1002854",
+      "uta_report_desc": null
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "1355",
+      "name_raw": "Financial reports раздел consumption",
+      "usage_note": "Финансовые отчёты по складу. (Consumption) Расход материалов или запчастей за определённый период.",
+      "kind": "amos_apn",
+      "apn_int": 1355,
+      "name_en": "Financial Reports",
+      "name_ru": "Финансовые отчёты",
+      "guide_htm_url": "APN1355.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Financial Reports",
+      "guide_htm_heading": "Financial Reports",
+      "guide_pdf_filename": "Financial_Reports.pdf"
+    },
+    {
+      "department": "Отдел управления ресурсами",
+      "manager": "Кармазин Е.Г.",
+      "apn_raw": "10448",
+      "name_raw": "UTA.REP.1002798",
+      "usage_note": "Анализ HBS",
+      "kind": "uta_report",
+      "apn_int": 10448,
+      "uta_report_id": "UTA.REP.1002798",
+      "uta_report_desc": null
+    }
+  ],
+  "used_apns": [
+    {
+      "apn": 53,
+      "name_en": "Address Administration",
+      "name_ru": "Управление адресами / контактами",
+      "guide_htm_url": "APN0053.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Address Administration",
+      "guide_htm_heading": "Address Administration",
+      "guide_pdf_filename": "Address_Administration.pdf",
+      "departments": [
+        {
+          "department": "Отдел закупок расходных материалов",
+          "usage_note": "Централизованный справочник адресов"
+        },
+        {
+          "department": "отдел оперативных закупок",
+          "usage_note": "Централизованный справочник адресов"
+        }
+      ]
+    },
+    {
+      "apn": 59,
+      "name_en": "Part Administration",
+      "name_ru": "Управление деталями",
+      "guide_htm_url": "APN0059.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Управление деталями",
+      "guide_htm_heading": "Управление деталями",
+      "guide_pdf_filename": "Part_Administration.pdf",
+      "departments": [
+        {
+          "department": "Отдел закупок расходных материалов",
+          "usage_note": "Проверка P/N, статусов, альтернатив"
+        },
+        {
+          "department": "отдел оперативных закупок",
+          "usage_note": "Проверка P/N, статусов, альтернатив"
+        },
+        {
+          "department": "отделу ремонтов и закупок компонентов",
+          "usage_note": "Вид ремонта определяется на этапе формирования заказа исходя из ресурсных требований к компоненту"
+        },
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Проверка P/N, статусов, альтернатив"
+        }
+      ]
+    },
+    {
+      "apn": 62,
+      "name_en": "Web-Drive",
+      "name_ru": "Веб-диск / сетевое хранилище",
+      "guide_htm_url": "APN0062.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Web-Drive",
+      "guide_htm_heading": "Web-Drive",
+      "guide_pdf_filename": "Web_Drive.pdf",
+      "departments": [
+        {
+          "department": "Отдел закупок расходных материалов",
+          "usage_note": "Веб-диск (Онлайн-хранилище)"
+        }
+      ]
+    },
+    {
+      "apn": 188,
+      "name_en": "Parts Tracking",
+      "name_ru": "Отслеживание деталей",
+      "guide_htm_url": "APN0188.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Отслеживание деталей",
+      "guide_htm_heading": "Отслеживание деталей",
+      "guide_pdf_filename": "Parts_Tracking.pdf",
+      "departments": [
+        {
+          "department": "Отдел закупок расходных материалов",
+          "usage_note": "Движение АТИ. Контроль АТИ."
+        },
+        {
+          "department": "отдел оперативных закупок",
+          "usage_note": "Движение АТИ. Контроль запчастей и материалов."
+        },
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Движение АТИ. Контроль запчастей и материалов."
+        }
+      ]
+    },
+    {
+      "apn": 204,
+      "name_en": "Parts Consumption Forecast",
+      "name_ru": "Прогноз расхода деталей",
+      "guide_htm_url": "APN0204.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Прогноз потребления запасных частей",
+      "guide_htm_heading": "Прогноз потребления запасных частей",
+      "guide_pdf_filename": "Parts_Consumption_Forecast.pdf",
+      "departments": [
+        {
+          "department": "Отдел закупок расходных материалов",
+          "usage_note": "Закупка под MEL, дефекты, директивы"
+        },
+        {
+          "department": "отдел оперативных закупок",
+          "usage_note": "Закупка под оперативные закупки"
+        },
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Прогноз потребления деталей"
+        }
+      ]
+    },
+    {
+      "apn": 221,
+      "name_en": "Stock Information",
+      "name_ru": "Информация о запасах",
+      "guide_htm_url": "APN0221.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Информация о запасах",
+      "guide_htm_heading": "Информация о запасах",
+      "guide_pdf_filename": "Stock_Information.pdf",
+      "departments": [
+        {
+          "department": "Отдел закупок расходных материалов",
+          "usage_note": "Просмотр остатков на складе"
+        },
+        {
+          "department": "отдел оперативных закупок",
+          "usage_note": "Просмотр остатков"
+        },
+        {
+          "department": "отделу ремонтов и закупок компонентов",
+          "usage_note": "Для определения наличия исправных и неисправных компонентов"
+        }
+      ]
+    },
+    {
+      "apn": 308,
+      "name_en": "Aircraft Administration",
+      "name_ru": "Управление данными воздушных судов",
+      "guide_htm_url": "APN0308.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Самолет Administration",
+      "guide_htm_heading": "Самолет Administration",
+      "guide_pdf_filename": "Aircraft_Administration.pdf",
+      "departments": [
+        {
+          "department": "отдел оперативных закупок",
+          "usage_note": "Используют данные по самолёту, для закупки деталей под конкретный ВС."
+        }
+      ]
+    },
+    {
+      "apn": 313,
+      "name_en": "Station Parts Alert",
+      "name_ru": "Уведомление о деталях на станции (базе)",
+      "guide_htm_url": "APN0313.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Station Parts Alert",
+      "guide_htm_heading": "Station Parts Alert",
+      "guide_pdf_filename": "Station_Parts_Alert.pdf",
+      "departments": [
+        {
+          "department": "Отдел закупок расходных материалов",
+          "usage_note": "Информация по определённой детали на конкретной станции или складе."
+        },
+        {
+          "department": "отдел оперативных закупок",
+          "usage_note": "Информация по определённой детали на конкретной станции или складе."
+        },
+        {
+          "department": "отделу ремонтов и закупок компонентов",
+          "usage_note": "для просмотра наполненности складов и служит инструментом для анализа, но не предназначена для оформления компонентов в ремонт,"
+        },
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Проверка детали на станции и устранение проблем (наличие/статус/пригодность)."
+        }
+      ]
+    },
+    {
+      "apn": 325,
+      "name_en": "Price Book",
+      "name_ru": "Справочник цен",
+      "guide_htm_url": "APN0325.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Price Book",
+      "guide_htm_heading": "Price Book",
+      "guide_pdf_filename": "Price_Book.pdf",
+      "departments": [
+        {
+          "department": "Отдел закупок расходных материалов",
+          "usage_note": "Контроль цен, договорных условий"
+        },
+        {
+          "department": "отдел оперативных закупок",
+          "usage_note": "Контроль цен, договорных условий"
+        }
+      ]
+    },
+    {
+      "apn": 359,
+      "name_en": "Shelf Expiry",
+      "name_ru": "Срок хранения (срок годности на складе)",
+      "guide_htm_url": "APN0359.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Срок годности",
+      "guide_htm_heading": "Срок годности",
+      "guide_pdf_filename": "Shelf_Expiry.pdf",
+      "departments": [
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Контроль срока годности детали и необходимость действия при его истечении."
+        }
+      ]
+    },
+    {
+      "apn": 375,
+      "name_en": "Pickslip Viewer",
+      "name_ru": "Просмотр документов выдачи",
+      "guide_htm_url": "APN0375.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Pickslip Viewer",
+      "guide_htm_heading": "Pickslip Viewer",
+      "guide_pdf_filename": "Pickslip_Viewer.pdf",
+      "departments": [
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Проверка листа выдачи (pickslip) по деталям"
+        }
+      ]
+    },
+    {
+      "apn": 459,
+      "name_en": "Reorder Proposal Configuration",
+      "name_ru": "Настройка предложений по повторному заказу",
+      "guide_htm_url": "APN0459.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Конфигурация предложения повторного заказа",
+      "guide_htm_heading": "Конфигурация предложения повторного заказа",
+      "guide_pdf_filename": "Reorder_Proposal_Configuration.pdf",
+      "departments": [
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Проверка/настройка параметров автозаказа (reorder) АТИ для корректного пополнения склада."
+        }
+      ]
+    },
+    {
+      "apn": 532,
+      "name_en": "Part Special Field Report",
+      "name_ru": "Отчёт по дополнительным полям деталей",
+      "guide_htm_url": "APN0532.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Part Special Field Report",
+      "guide_htm_heading": "Part Special Field Report",
+      "guide_pdf_filename": "Part_Special_Field_Report.pdf",
+      "departments": [
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Проверка/оформление специального отчёат по деталям (особые условия или замечания)."
+        }
+      ]
+    },
+    {
+      "apn": 565,
+      "name_en": "Publication Management",
+      "name_ru": "Управление публикациями (документацией)",
+      "guide_htm_url": "APN0565.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Publication Management",
+      "guide_htm_heading": "Publication Management",
+      "guide_pdf_filename": "Publication_Management.pdf",
+      "departments": [
+        {
+          "department": "отдел оперативных закупок",
+          "usage_note": "Данные о техдокументации (SB, AD и т.д.) и ее обновлениях. (Требования из документации влияют на замену или закупку деталей)"
+        }
+      ]
+    },
+    {
+      "apn": 869,
+      "name_en": "Technical Assistance",
+      "name_ru": "Техническая поддержка",
+      "guide_htm_url": "APN0869.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Техническая поддержка",
+      "guide_htm_heading": "Техническая поддержка",
+      "guide_pdf_filename": "Technical_Assistance.pdf",
+      "departments": [
+        {
+          "department": "Отдел закупок расходных материалов",
+          "usage_note": "Техническая помощь/консультация для решения вопроса  (форма U240)"
+        },
+        {
+          "department": "отдел оперативных закупок",
+          "usage_note": "Техническая помощь/консультация для решения вопроса  (форма U240)"
+        },
+        {
+          "department": "отделу ремонтов и закупок компонентов",
+          "usage_note": "Для создания TQ "
+        },
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Техническая помощь/консультация для решения вопроса  (форма U240)"
+        }
+      ]
+    },
+    {
+      "apn": 899,
+      "name_en": "Advanced Reorder Proposal",
+      "name_ru": "Расширенные предложения по повторному заказу",
+      "guide_htm_url": "APN0899.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Продвинутое предложение повторного заказа",
+      "guide_htm_heading": "Продвинутое предложение повторного заказа",
+      "guide_pdf_filename": "Advanced_Reorder_Proposal.pdf",
+      "departments": [
+        {
+          "department": "Отдел закупок расходных материалов",
+          "usage_note": "Закупка по НЗ"
+        },
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Анализ открытых потребностей (по Special)"
+        }
+      ]
+    },
+    {
+      "apn": 1208,
+      "name_en": "Shipment Tracking",
+      "name_ru": "Отслеживание отправок",
+      "guide_htm_url": "APN1208.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Отслеживание отгрузки",
+      "guide_htm_heading": "Отслеживание отгрузки",
+      "guide_pdf_filename": "Shipment_Tracking.pdf",
+      "departments": [
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Отслеживание отправки детали и её текущего статуса доставки."
+        }
+      ]
+    },
+    {
+      "apn": 1328,
+      "name_en": "Order Tracking",
+      "name_ru": "Отслеживание заказов",
+      "guide_htm_url": "APN1328.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Order Tracking",
+      "guide_htm_heading": "Order Tracking",
+      "guide_pdf_filename": "Order_Tracking.pdf",
+      "departments": [
+        {
+          "department": "Отдел закупок расходных материалов",
+          "usage_note": "Контроль статуса заказов"
+        },
+        {
+          "department": "отдел оперативных закупок",
+          "usage_note": "Контроль статуса заказов"
+        },
+        {
+          "department": "отделу ремонтов и закупок компонентов",
+          "usage_note": "Для определения сроков возврата из ремонта "
+        },
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Контроль статуса заказов"
+        }
+      ]
+    },
+    {
+      "apn": 1355,
+      "name_en": "Financial Reports",
+      "name_ru": "Финансовые отчёты",
+      "guide_htm_url": "APN1355.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Financial Reports",
+      "guide_htm_heading": "Financial Reports",
+      "guide_pdf_filename": "Financial_Reports.pdf",
+      "departments": [
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Финансовые отчёты по складу. (Consumption) Расход материалов или запчастей за определённый период."
+        }
+      ]
+    },
+    {
+      "apn": 1418,
+      "name_en": "Workorder",
+      "name_ru": "Рабочий ордер (наряд на работу)",
+      "guide_htm_url": "APN1418.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Рабочий заказ",
+      "guide_htm_heading": "Рабочий заказ",
+      "guide_pdf_filename": "Workorder.pdf",
+      "departments": [
+        {
+          "department": "Отдел закупок расходных материалов",
+          "usage_note": "Информация по work order, используется для обеспечения закупок нужными деталями и материалами под выполнение работ."
+        },
+        {
+          "department": "отдел оперативных закупок",
+          "usage_note": "Информация по work order, используется для обеспечения закупок нужными деталями и материалами под выполнение работ."
+        }
+      ]
+    },
+    {
+      "apn": 1431,
+      "name_en": "Repair Administration",
+      "name_ru": "Администрирование ремонтов",
+      "guide_htm_url": "APN1431.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Repair Administration",
+      "guide_htm_heading": "Repair Administration",
+      "guide_pdf_filename": "Repair_Administration.pdf",
+      "departments": [
+        {
+          "department": "отделу ремонтов и закупок компонентов",
+          "usage_note": "на ежедневной основе, для работы с неисправными\nкомпонентами и принятии решения о необходимости отправки компонента в ремонт, пул/обмен, по гарантии исходя из возможностей провайдера "
+        }
+      ]
+    },
+    {
+      "apn": 1662,
+      "name_en": "History Viewer",
+      "name_ru": "Просмотр истории",
+      "guide_htm_url": "APN1662.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "History Viewer",
+      "guide_htm_heading": "History Viewer",
+      "guide_pdf_filename": "History_Viewer.pdf",
+      "departments": [
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Просмотр истории действий и изменений по детали или записи в системе"
+        }
+      ]
+    },
+    {
+      "apn": 2015,
+      "name_en": "Order Management",
+      "name_ru": "Управление заказами",
+      "guide_htm_url": "APN2015.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Управление заказами",
+      "guide_htm_heading": "Управление заказами",
+      "guide_pdf_filename": "Order_Management.pdf",
+      "departments": [
+        {
+          "department": "Отдел закупок расходных материалов",
+          "usage_note": "Создание и редактирование ордеров"
+        },
+        {
+          "department": "отдел оперативных закупок",
+          "usage_note": "Создание и редактирование ордеров"
+        },
+        {
+          "department": "отделу ремонтов и закупок компонентов",
+          "usage_note": "Если ремонт согласован, специалист отдела ремонтов и закупок\nкомпонентов вкладывает квотацию в ИС «AMOS» в заказ на ремонт и вносит стоимость ремонта в заказ на ремонт в поле Repair Price и срок ремонта в поле Target Date\n"
+        },
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Управление и контроль заказов на АТИ"
+        }
+      ]
+    },
+    {
+      "apn": 2110,
+      "name_en": "Approval Control Board",
+      "name_ru": "Совет/панель контроля утверждений",
+      "guide_htm_url": "APN2110.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Совет по контролю одобрения",
+      "guide_htm_heading": "Совет по контролю одобрения",
+      "guide_pdf_filename": "Approval_Control_Board.pdf",
+      "departments": [
+        {
+          "department": "отдел оперативных закупок",
+          "usage_note": "Согласование заказов и операций"
+        }
+      ]
+    },
+    {
+      "apn": 2392,
+      "name_en": "Shipment",
+      "name_ru": "Отгрузка / отправка",
+      "guide_htm_url": "APN2392.htm",
+      "guide_htm_match_kind": "apn_padded",
+      "guide_htm_title": "Shipment",
+      "guide_htm_heading": "Shipment",
+      "guide_pdf_filename": "Shipment.pdf",
+      "departments": [
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Информация и контроль по отправке (shipment) АТИ."
+        }
+      ]
+    }
+  ],
+  "used_uta_reports": [
+    {
+      "apn": 10422,
+      "report_id": "UTA.REP.1003174\n",
+      "report_desc": null,
+      "departments": [
+        {
+          "department": "отдел оперативных закупок",
+          "usage_note": "Отчет \"AOG состояние\""
+        }
+      ]
+    },
+    {
+      "apn": 10448,
+      "report_id": "UTA.REP.1002798",
+      "report_desc": null,
+      "departments": [
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Анализ HBS"
+        }
+      ]
+    },
+    {
+      "apn": 10463,
+      "report_id": "UTA.REP.1002854",
+      "report_desc": null,
+      "departments": [
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Анализ НЗ по станциям"
+        }
+      ]
+    },
+    {
+      "apn": 10465,
+      "report_id": "UTA.REP.1002722",
+      "report_desc": null,
+      "departments": [
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Анализ НЗ"
+        }
+      ]
+    },
+    {
+      "apn": 10474,
+      "report_id": "UTA.REP.1002734",
+      "report_desc": null,
+      "departments": [
+        {
+          "department": "отдел оперативных закупок",
+          "usage_note": "Отчет по поставкам по БТО\nежедневный (по будням) "
+        }
+      ]
+    },
+    {
+      "apn": 10543,
+      "report_id": "UTA.REP.1003284",
+      "report_desc": null,
+      "departments": [
+        {
+          "department": "Отдел закупок расходных материалов",
+          "usage_note": "Отчет по заказам для Mel D и DD"
+        }
+      ]
+    },
+    {
+      "apn": 10578,
+      "report_id": "UTA.REP.1003387",
+      "report_desc": null,
+      "departments": [
+        {
+          "department": "Отдел закупок расходных материалов",
+          "usage_note": "Отчет сбой поставок под MEL"
+        }
+      ]
+    },
+    {
+      "apn": 10657,
+      "report_id": "UTA.REP.1003548",
+      "report_desc": null,
+      "departments": [
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Отчет \"Распределение компонентов\""
+        }
+      ]
+    },
+    {
+      "apn": 10663,
+      "report_id": "UTA.REP.1003558",
+      "report_desc": null,
+      "departments": [
+        {
+          "department": "Отдел закупок расходных материалов",
+          "usage_note": "Отчет \"Анализ востребованности компонентов\""
+        }
+      ]
+    },
+    {
+      "apn": 10679,
+      "report_id": "UTA.REP.1003593",
+      "report_desc": null,
+      "departments": [
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Отчет \"Распределение контейнеров BTA-M4\""
+        }
+      ]
+    },
+    {
+      "apn": 10735,
+      "report_id": "UTA.REP.1003853",
+      "report_desc": null,
+      "departments": [
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Отчет по заказу АТИ со сроками годности"
+        }
+      ]
+    },
+    {
+      "apn": 10775,
+      "report_id": "UTA.REP.1003975",
+      "report_desc": null,
+      "departments": [
+        {
+          "department": "Отдел управления ресурсами",
+          "usage_note": "Отчет для расчета уровней НЗ "
+        }
+      ]
+    }
+  ]
+}

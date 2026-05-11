@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Регулярность рейсов · ЦУП Utair</title>
+
+  <script>
+    /* =================================================================
+       MOCK DATA — статичные фейковые данные, реальный xlsx не читается
+       Все числа правдоподобны, но не являются реальной отчётностью.
+       ================================================================= */
+    const MOCK_DAILY = {
+      period: "Январь 2026",
+      kpi: {
+        regularity15: { value: 87.4, plan: 86.0, delta: +1.3, direction: "up"   },
+        regularity5:  { value: 73.2, plan: 75.0, delta: -2.1, direction: "down" },
+        totalFlights: { value: 8421, prevMonth: 8109, delta: +312, direction: "up"  },
+        delays2h:     { value: 143,  prevMonth: 190,  delta: -47,  direction: "down" }
+      },
+      dailyDelays: {
+        dates: [
+          "01.01","02.01","03.01","04.01","05.01","06.01","07.01","08.01","09.01","10.01",
+          "11.01","12.01","13.01","14.01","15.01","16.01","17.01","18.01","19.01","20.01",
+          "21.01","22.01","23.01","24.01","25.01","26.01","27.01","28.01","29.01","30.01","31.01"
+        ],
+        totalFlights: [
+          265,258,271,280,243,251,262,255,268,278,
+          252,261,274,269,255,263,271,258,265,272,
+          248,255,263,271,258,265,270,261,268,272,259
+        ],
+        series: {
+          "М/У":              [2.1,1.8,2.3,1.9,2.5,3.1,2.0,1.7,2.2,2.8, 2.0,1.9,2.1,1.8,2.3,1.7,2.0,1.9,2.2,1.8, 2.1,2.0,1.9,1.7,2.3,2.1,1.8,2.0,2.2,1.9,2.1],
+          "НМЧ":              [1.2,0.8,1.0,0.7,0.9,0.8,1.1,1.0,1.3,5.8, 2.1,1.0,0.9,1.1,0.8,1.2,1.0,0.8,1.1,0.9, 1.0,1.2,0.9,0.8,1.1,1.0,0.9,1.2,1.0,1.1,0.9],
+          "ПОО":              [1.5,1.3,1.4,1.6,1.2,1.4,1.3,1.5,1.4,1.2, 1.6,1.4,1.3,1.5,1.4,1.3,1.5,1.4,1.3,1.5, 1.4,1.3,1.5,1.4,1.3,1.5,1.4,1.3,1.5,1.4,1.3],
+          "ППС":              [0.8,0.7,0.9,0.8,1.0,0.9,0.8,0.7,0.9,0.8, 0.9,0.8,0.7,0.9,0.8,0.7,0.9,0.8,0.9,0.8, 0.9,4.2,3.8,4.5,1.2,0.9,0.8,0.7,0.9,0.8,0.7],
+          "ЗАК":              [0.5,0.6,0.4,0.5,0.6,0.5,0.4,0.6,0.5,0.4, 0.6,0.5,0.4,0.6,0.5,0.4,0.6,0.5,0.4,0.6, 0.5,0.4,0.6,0.5,0.4,0.6,0.5,0.4,0.6,0.5,0.4],
+          "СОП":              [0.3,0.4,0.3,0.4,0.3,0.4,0.3,0.4,0.3,0.4, 0.3,0.4,0.3,0.4,0.3,0.4,0.3,0.4,0.3,0.4, 0.3,0.4,0.3,0.4,0.3,0.4,0.3,0.4,0.3,0.4,0.3],
+          "ЛС/ОВС/ПВС/Прочее":[1.1,1.0,1.2,1.1,1.0,1.2,1.1,1.0,1.2,1.1, 1.2,1.1,1.0,1.2,1.1,1.0,1.2,1.1,1.0,1.2, 1.1,1.0,1.2,1.1,1.0,1.2,1.1,1.0,1.2,1.1,1.0]
+        }
+      },
+      topCauses: [
+        { name: "М/У (метео)",    hours: 312, color: "#3b82f6" },
+        { name: "НМЧ",            hours: 287, color: "#6b7280" },
+        { name: "ПОО",            hours: 198, color: "#f97316" },
+        { name: "ППС М/У",        hours: 156, color: "#8b5cf6" },
+        { name: "ЗАК",            hours:  89, color: "#eab308" },
+        { name: "СОП",            hours:  76, color: "#06b6d4" },
+        { name: "ОВС",            hours:  68, color: "#22c55e" },
+        { name: "ПВС",            hours:  54, color: "#84cc16" },
+        { name: "ППС ПОО",        hours:  43, color: "#a78bfa" },
+        { name: "Прочее",         hours:  38, color: "#94a3b8" }
+      ],
+      airports: [
+        { name:"ВНК", delayed:312, avgDelay:48, total:1842 },
+        { name:"СУР", delayed: 98, avgDelay:62, total: 543 },
+        { name:"ХАС", delayed: 87, avgDelay:35, total: 412 },
+        { name:"КОГ", delayed: 76, avgDelay:71, total: 389 },
+        { name:"ГРН", delayed: 65, avgDelay:29, total: 321 },
+        { name:"БЛР", delayed: 58, avgDelay:55, total: 298 },
+        { name:"УСК", delayed: 54, avgDelay:44, total: 276 },
+        { name:"БОВ", delayed: 47, avgDelay:38, total: 254 },
+        { name:"ЕКБ", delayed: 43, avgDelay:31, total: 543 },
+        { name:"СОЧ", delayed: 39, avgDelay:27, total: 487 },
+        { name:"НОЯ", delayed: 35, avgDelay:52, total: 187 },
+        { name:"БАН", delayed: 31, avgDelay:66, total: 163 },
+        { name:"ВЛА", delayed: 28, avgDelay:40, total: 198 },
+        { name:"ИКТ", delayed: 24, avgDelay:33, total: 312 },
+        { name:"ТЮМ", delayed: 21, avgDelay:28, total: 287 }
+      ],
+      bigEvents: [
+        { date:"10.01", flight:"UT-487", route:"ВНК–СУР", delay:"3ч 42м", code:"НМЧ-01", note:"Снежный шторм, закрытие ВПП ВНК" },
+        { date:"10.01", flight:"UT-388", route:"ВНК–КОГ", delay:"4ч 15м", code:"НМЧ-01", note:"Видимость <350м, цепная задержка" },
+        { date:"10.01", flight:"UT-512", route:"ВНК–ХАС", delay:"2ч 58м", code:"НМЧ-03", note:"Снег, обледенение ВС" },
+        { date:"15.01", flight:"UT-150", route:"ВНК–БОВ", delay:"2ч 19м", code:"ПОО-03", note:"Неисправность ГМА (гидравлика)" },
+        { date:"22.01", flight:"UT-644", route:"ЕКБ–ВНК", delay:"2ч 05м", code:"ЛС-01",  note:"Позднее прибытие экипажа (КВС)" },
+        { date:"24.01", flight:"UT-219", route:"ВНК–ГРН", delay:"3ч 07м", code:"ППС-02", note:"НТЦ: отказ MSMC, AOG 4ч" },
+        { date:"24.01", flight:"UT-701", route:"БЛР–ВНК", delay:"2ч 33м", code:"ППС-01", note:"Задержка ввода запчасти" },
+        { date:"28.01", flight:"UT-332", route:"ВНК–НОЯ", delay:"2ч 48м", code:"ЗАК-04", note:"Ожидание группы VVIP (+45 pax)" }
+      ]
+    };
+
+    const MOCK_STRATEGY = {
+      kpi: {
+        regularityVsPlan: { value: 87.4, plan: 86.0, delta: +1.3 },
+        mom: { value: -0.2, prev: 87.6 },
+        yoy: { value: +2.1, prev: 85.3 },
+        incidents: { count: 3 }
+      },
+      donut: [
+        { name:"М/У (метео)",  value:312, color:"#3b82f6" },
+        { name:"НМЧ",          value:287, color:"#6b7280" },
+        { name:"ПОО",          value:198, color:"#f97316" },
+        { name:"ППС",          value:199, color:"#8b5cf6" },
+        { name:"ЗАК",          value: 89, color:"#eab308" },
+        { name:"СОП",          value: 76, color:"#06b6d4" },
+        { name:"ОВС/ПВС",      value:122, color:"#22c55e" },
+        { name:"Прочее",       value: 38, color:"#94a3b8" }
+      ],
+      heatmap: {
+        airports:   ["ВНК","СУР","ХАС","КОГ","ГРН","БЛР","УСК","БОВ","ЕКБ","СОЧ","НОЯ","БАН","ВЛА","ИКТ","ТЮМ"],
+        categories: ["М/У","НМЧ","ПОО","ППС","ЗАК","СОП","ОВС","ПВС","Прочее"],
+        /* [airportIdx, categoryIdx, count] */
+        data: [
+          [0,0,89],[0,1,67],[0,2,54],[0,3,48],[0,4,22],[0,5,18],[0,6,12],[0,7, 9],[0,8, 7],
+          [1,0,21],[1,1,18],[1,2,15],[1,3,12],[1,4, 8],[1,5, 5],[1,6, 4],[1,7, 3],[1,8, 2],
+          [2,0,18],[2,1,22],[2,2,12],[2,3, 9],[2,4, 5],[2,5, 4],[2,6, 3],[2,7, 3],[2,8, 2],
+          [3,0,12],[3,1, 9],[3,2,15],[3,3,18],[3,4, 4],[3,5, 3],[3,6, 2],[3,7, 2],[3,8, 1],
+          [4,0,15],[4,1, 8],[4,2, 9],[4,3, 7],[4,4, 5],[4,5, 3],[4,6, 3],[4,7, 2],[4,8, 2],
+          [5,0,11],[5,1,14],[5,2, 8],[5,3, 6],[5,4, 4],[5,5, 3],[5,6, 2],[5,7, 2],[5,8, 1],
+          [6,0,10],[6,1,12],[6,2, 7],[6,3, 8],[6,4, 3],[6,5, 2],[6,6, 2],[6,7, 1],[6,8, 1],
+          [7,0, 9],[7,1,10],[7,2, 6],[7,3, 5],[7,4, 3],[7,5, 2],[7,6, 2],[7,7, 1],[7,8, 1],
+          [8,0, 8],[8,1, 7],[8,2, 5],[8,3, 4],[8,4, 3],[8,5, 2],[8,6, 2],[8,7, 1],[8,8, 1],
+          [9,0, 7],[9,1, 6],[9,2, 5],[9,3, 4],[9,4, 2],[9,5, 2],[9,6, 1],[9,7, 1],[9,8, 1],
+          [10,0,6],[10,1,5],[10,2,4],[10,3,4],[10,4,2],[10,5,1],[10,6,1],[10,7,1],[10,8,0],
+          [11,0,5],[11,1,5],[11,2,4],[11,3,3],[11,4,2],[11,5,1],[11,6,1],[11,7,1],[11,8,0],
+          [12,0,5],[12,1,4],[12,2,3],[12,3,3],[12,4,2],[12,5,1],[12,6,1],[12,7,1],[12,8,0],
+          [13,0,4],[13,1,4],[13,2,3],[13,3,2],[13,4,2],[13,5,1],[13,6,1],[13,7,0],[13,8,0],
+          [14,0,4],[14,1,3],[14,2,3],[14,3,2],[14,4,1],[14,5,1],[14,6,1],[14,7,0],[14,8,0]
+        ]
+      },
+      escalations: [
+        { date:"10.01", event:"Массовая отмена 7 рейсов из ВНК из-за НМЧ (снежный шторм)", decision:"Перебронирование, задействован резервный ВС RA-67123", responsible:"НС ЦУП Краснов А.В." },
+        { date:"15.01", event:"AOG RA-89654 (отказ гидравлики) — 3 рейса задержаны >2ч", decision:"Перестановка RA-89721, экипаж перебазирован из ЕКБ", responsible:"НС ЦУП Петров Д.С." },
+        { date:"22.01", event:"Позднее прибытие 3 экипажей (ЛС), снежный занос в СУР", decision:"Резервный экипаж, 2 рейса >2ч, 1 выполнен по плану", responsible:"НС ЦУП Краснов А.В." },
+        { date:"24.01", event:"Отказ MSMC RA-89712 (ППС) — цепная задержка 4 рейса", decision:"NRC открыт, ВС выведен до устранения, рейсы перераспределены", responsible:"НС ЦУП Иванов М.К." },
+        { date:"28.01", event:"VVIP-группа (+45 pax), ожидание посадки ВНК–НОЯ", decision:"Согласовано задержкой 48 мин по запросу заказчика (ЗАК)", responsible:"НС ЦУП Петров Д.С." }
+      ]
+    };
+
+    const MOCK_GAPS = [
+      { num:1, gap:"Обоснования решений НС ЦУП (B2) отсутствуют",  marker:"⚠ GAP",      desc:"Фиксируется только результат (команды), не критерии и альтернативы" },
+      { num:2, gap:"Дрейф классификатора кодов РЗ",                  marker:"≠ контекст", desc:"Ручной справочник перетекает между категориями (М/У → ПОО)" },
+      { num:3, gap:"Две нормировки 15 мин",                          marker:"≠ контекст", desc:"`Данные` vs `Данные (15МИН)` — разные пороги, расхождения не задокументированы" },
+      { num:4, gap:"Ручной ввод справочника",                        marker:"⚠ GAP",      desc:"Справочник кодов РЗ ведётся вручную в Excel, нет версионирования" },
+      { num:5, gap:"Оперативный слой не покрыт",                     marker:"⚠ GAP",      desc:"Дашборд из месячного xlsx не замещает real-time потребности НС ЦУП" }
+    ];
+
+    /* MOCK_FLIGHTS — пул из 120 правдоподобных фейковых рейсов.
+       Генерируется детерминированно через LCG (seed=42), не читает xlsx. */
+    const MOCK_FLIGHTS = (() => {
+      const airports = ["ВНК","СУР","ХАС","КОГ","ГРН","БЛР","УСК","БОВ","ЕКБ","СОЧ","НОЯ","БАН","ВЛА","ИКТ","ТЮМ"];
+      const acTypes   = ["B737-800","B737-800","B737-700","ATR72-600","B737-800"];
+      const       buckets   = [
+        { cat:"М/У",     codes:["М/У-01","М/У-02","М/У-03"], n:65,
+          notes:["Ветер 18 м/с, сдвиг ветра на ВПП","Гроза на маршруте, облёт","Туман, видимость 400м","Обледенение ВС","Усиление ветра, приостановка вылета"] },
+        { cat:"НМЧ",     codes:["НМЧ-01","НМЧ-02","НМЧ-03"], n:60,
+          notes:["Снегопад, уборка ВПП","Метель, видимость <200м","Снежный буран, ВПП закрыта","Гололёд, ПГМ-обработка","Снег, очистка трапа и ВС"] },
+        { cat:"ПОО",     codes:["ПОО-01","ПОО-02","ПОО-03"], n:42,
+          notes:["Неисправность FMC","Отказ двигателя №2","Неисправность гидравлики A-sys","Замена шины MLG","Неисправность APU"] },
+        { cat:"ППС М/У", codes:["ППС-01","ППС-02"],           n:33,
+          notes:["НТЦ: замена двигателя","Доработка MEL №47","AOG: отказ MSMC","Замена стойки шасси","НТЦ: доработка авионики"] },
+        { cat:"ЗАК",     codes:["ЗАК-01","ЗАК-04"],           n:19,
+          notes:["Ожидание VVIP-группы","Задержка груза заказчика","Ожидание опаздывающих pax","Допосадка по требованию заказчика"] },
+        { cat:"СОП",     codes:["СОП-01","СОП-02"],           n:16,
+          notes:["Задержка наземного обслуживания","Поздняя заправка","Уборка салона","Задержка питания (кейтеринг)"] },
+        { cat:"ОВС",     codes:["ОВС-01","ОВС-02"],           n:14,
+          notes:["Цепная задержка с предыдущего рейса","Поздний вылет ВС из аэропорта базирования","Ожидание ВС"] },
+        { cat:"ПВС",     codes:["ПВС-01","ПВС-02"],           n:11,
+          notes:["Экипаж на предыдущем рейсе","Позднее прибытие КВС","Резервный экипаж перебазирован из ЕКБ","Задержка смены экипажа"] },
+        { cat:"ППС ПОО", codes:["ППС-03","ППС-04"],           n:7,
+          notes:["Ожидание запчасти из МС","Доставка в удалённый аэропорт"] },
+        { cat:"Прочее",  codes:["ПРЧ-01"],                    n:5,
+          notes:["Административная задержка","Согласование ОрВД","Таможенная задержка"] }
+      ];
+      /* детерминированный LCG, seed=42 */
+      let s = 42;
+      const rnd  = ()      => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
+      const pick = arr     => arr[Math.floor(rnd() * arr.length)];
+      const ri   = (a, b)  => a + Math.floor(rnd() * (b - a + 1));
+
+      let fnum = 100;
+      const out = [];
+      buckets.forEach(({cat, codes, n, notes}) => {
+        for (let i = 0; i < n; i++) {
+          const day = ri(1, 31);
+          const dep = pick(airports);
+          let arr = pick(airports); while (arr === dep) arr = pick(airports);
+          out.push({
+            date:     (day < 10 ? '0' : '') + day + '.01',
+            flight:   'UT-' + (fnum++),
+            dep, arr,
+            ac:       'RA-' + ri(89600, 89750),
+            ac_type:  pick(acTypes),
+            delayMin: ri(16, 230),
+            code:     pick(codes),
+            category: cat,
+            pax:      ri(72, 186),
+            note:     pick(notes)
+          });
+        }
+      });
+      return out;
+    })();
+  </script>
+
+  <style>
+    :root {
+      --bg:           #f8fafc;
+      --surface:      #ffffff;
+      --surface2:     #f1f5f9;
+      --text:         #0f172a;
+      --text-muted:   #64748b;
+      --border:       #e2e8f0;
+      --primary:      #1e3a8a;
+      --primary-lt:   #3b82f6;
+      --accent:       #f97316;
+      --green:        #22c55e;
+      --red:          #ef4444;
+      --shadow:       0 1px 3px rgba(0,0,0,.10), 0 1px 2px rgba(0,0,0,.06);
+      --shadow-md:    0 4px 6px rgba(0,0,0,.07), 0 2px 4px rgba(0,0,0,.06);
+    }
+    [data-theme="dark"] {
+      --bg:        #0f172a;
+      --surface:   #1e293b;
+      --surface2:  #334155;
+      --text:      #f1f5f9;
+      --text-muted:#94a3b8;
+      --border:    #334155;
+      --shadow:    0 1px 3px rgba(0,0,0,.4);
+      --shadow-md: 0 4px 6px rgba(0,0,0,.3);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      transition: background .25s, color .25s;
+    }
+
+    /* ── Header ─────────────────────────────────────────────── */
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+    .hdr-title { font-size: 1.15rem; font-weight: 700; letter-spacing: -.01em; }
+    .hdr-meta  { font-size: .75rem; opacity: .72; margin-top: 2px; }
+    .hdr-right { display: flex; align-items: center; gap: 10px; }
+    .tag-poc {
+      background: rgba(249,115,22,.85);
+      color: #fff;
+      font-size: .7rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: .04em;
+    }
+    .theme-btn {
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.3);
+      color: #fff;
+      padding: 5px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: .8rem;
+      transition: background .2s;
+    }
+    .theme-btn:hover { background: rgba(255,255,255,.28); }
+
+    /* ── Nav tabs ────────────────────────────────────────────── */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      gap: 0;
+      box-shadow: var(--shadow);
+    }
+    .tab-btn {
+      padding: 13px 18px;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: .88rem;
+      border-bottom: 3px solid transparent;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+    .tab-btn:hover  { color: var(--primary); }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--accent); font-weight: 600; }
+
+    /* ── Main layout ─────────────────────────────────────────── */
+    main {
+      max-width: 1420px;
+      margin: 0 auto;
+      padding: 22px 24px;
+    }
+    section { display: none; }
+    section.active { display: block; }
+
+    /* ── KPI strip ───────────────────────────────────────────── */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 18px 22px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+    }
+    .kpi-label  { font-size: .72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 7px; }
+    .kpi-value  { font-size: 2.1rem; font-weight: 800; color: var(--text); line-height: 1; margin-bottom: 5px; }
+    .kpi-delta  { font-size: .78rem; display: flex; align-items: center; gap: 3px; }
+    .kpi-delta.up   { color: var(--green); }
+    .kpi-delta.down { color: var(--red);   }
+
+    /* ── Strategy KPI (larger) ───────────────────────────────── */
+    .strategy-kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .strategy-kpi {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 22px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .big-val      { font-size: 2.7rem; font-weight: 800; color: var(--primary); line-height: 1; margin: 6px 0 4px; }
+    [data-theme="dark"] .big-val { color: var(--primary-lt); }
+    .sub-val      { font-size: .8rem; color: var(--text-muted); }
+
+    /* ── Filter bar ──────────────────────────────────────────── */
+    .filter-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow);
+      font-size: .82rem;
+    }
+    .filter-bar label { color: var(--text-muted); margin-right: 4px; font-size: .75rem; }
+    .filter-bar select,
+    .filter-bar input[type="text"] {
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: .78rem;
+    }
+    .filter-note { font-size: .7rem; color: var(--accent); font-style: italic; margin-left: auto; }
+
+    /* ── Chart cards & grid ──────────────────────────────────── */
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 860px) { .chart-grid { grid-template-columns: 1fr; } }
+
+    .chart-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+    }
+    .chart-card.full { grid-column: 1 / -1; }
+    .chart-title {
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .echart-box { width: 100%; height: 320px; }
+    .echart-box.tall { height: 400px; }
+
+    /* ── Events table ────────────────────────────────────────── */
+    .tbl-wrap { overflow-x: auto; max-height: 270px; overflow-y: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+    thead th {
+      background: var(--surface2);
+      color: var(--text-muted);
+      font-weight: 600;
+      text-align: left;
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+    }
+    tbody td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+    tbody tr:hover td { background: var(--surface2); }
+    .delay-badge {
+      background: var(--surface2);
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: .72rem;
+      font-weight: 700;
+    }
+
+    /* ── Escalation list ─────────────────────────────────────── */
+    .esc-list { list-style: none; max-height: 320px; overflow-y: auto; }
+    .esc-item { padding: 11px 0; border-bottom: 1px solid var(--border); }
+    .esc-item:last-child { border-bottom: none; }
+    .esc-date { font-size: .72rem; font-weight: 700; color: var(--accent); margin-bottom: 3px; }
+    .esc-ev   { font-size: .84rem; font-weight: 600; margin-bottom: 3px; }
+    .esc-dec  { font-size: .77rem; color: var(--text-muted); }
+    .esc-resp { font-size: .7rem;  color: var(--primary-lt); margin-top: 2px; }
+
+    /* ── GAP card ────────────────────────────────────────────── */
+    .gap-card {
+      background: var(--surface);
+      border: 1px solid #f59e0b;
+      border-left: 4px solid #f59e0b;
+      border-radius: 10px;
+      padding: 18px;
+      margin-top: 22px;
+    }
+    .gap-card-hdr {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .gap-icon  { font-size: 1.15rem; }
+    .gap-title { font-size: .88rem; font-weight: 700; color: #92400e; }
+    [data-theme="dark"] .gap-title { color: #fcd34d; }
+    .gap-counter {
+      font-size: .76rem;
+      color: var(--text-muted);
+      background: var(--surface2);
+      border-radius: 6px;
+      padding: 7px 12px;
+      margin-bottom: 12px;
+    }
+    .gap-marker {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: .68rem;
+      font-weight: 700;
+      background: #fef3c7;
+      color: #92400e;
+      white-space: nowrap;
+    }
+    [data-theme="dark"] .gap-marker { background: #451a03; color: #fcd34d; }
+
+    /* ── Operational GAP section ─────────────────────────────── */
+    .ops-gap-box {
+      background: var(--surface);
+      border: 2px dashed #f59e0b;
+      border-radius: 12px;
+      padding: 36px 28px;
+      text-align: center;
+    }
+    .ops-gap-box .warn-icon { font-size: 2.8rem; margin-bottom: 12px; }
+    .ops-gap-box h2 { font-size: 1.05rem; color: #92400e; margin-bottom: 10px; }
+    [data-theme="dark"] .ops-gap-box h2 { color: #fcd34d; }
+    .ops-gap-box p { font-size: .85rem; color: var(--text-muted); line-height: 1.75; max-width: 700px; margin: 0 auto; }
+    .ops-gap-box ul { list-style: none; margin: 16px auto; max-width: 580px; text-align: left; }
+    .ops-gap-box li { font-size: .83rem; color: var(--text-muted); padding: 4px 0; }
+    .ops-gap-box li::before { content: "• "; color: var(--accent); font-weight: 700; }
+    .ops-status-badge {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 6px 16px;
+      background: #fef3c7;
+      border: 1px solid #f59e0b;
+      border-radius: 20px;
+      font-size: .75rem;
+      color: #92400e;
+      font-weight: 600;
+    }
+    [data-theme="dark"] .ops-status-badge { background: #451a03; color: #fcd34d; }
+
+    /* ── Drilldown Modal ─────────────────────────────────────── */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.52);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity .15s ease;
+    }
+    .modal-backdrop.visible { opacity: 1; }
+    .modal-box {
+      background: var(--surface);
+      border-radius: 14px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.4);
+      width: min(90vw, 1040px);
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: translateY(-10px);
+      transition: transform .15s ease;
+    }
+    .modal-backdrop.visible .modal-box { transform: translateY(0); }
+    .modal-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+      flex-shrink: 0;
+    }
+    .modal-hdr h2 { font-size: .9rem; font-weight: 700; color: var(--text); }
+    .modal-close-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: .8rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    .modal-close-btn:hover { background: var(--border); color: var(--text); }
+    .modal-body { flex: 1; overflow-y: auto; padding: 14px 18px; }
+    .modal-foot {
+      padding: 9px 18px;
+      border-top: 1px solid var(--border);
+      font-size: .73rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+    .csv-badge {
+      display: inline-block;
+      padding: 2px 9px;
+      background: #dbeafe;
+      color: #1e40af;
+      border-radius: 4px;
+      font-size: .68rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: default;
+    }
+    [data-theme="dark"] .csv-badge { background: #1e3a8a; color: #93c5fd; }
+    .chart-card[data-clickable] .chart-title::after {
+      content: " · кликни для Топ-20";
+      font-size: .68rem;
+      font-weight: 400;
+      color: var(--primary-lt);
+      opacity: .75;
+    }
+
+    /* ── Footer ──────────────────────────────────────────────── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 22px 24px;
+      margin-top: 40px;
+    }
+    .footer-inner { max-width: 1420px; margin: 0 auto; }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .footer-block dt {
+      font-size: .7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 4px;
+    }
+    .footer-block dd { font-size: .78rem; color: var(--text); margin-bottom: 6px; line-height: 1.55; }
+    .footer-bottom {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: .7rem;
+      color: var(--text-muted);
+    }
+    .badge-fake {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: .68rem;
+      font-weight: 700;
+      background: #dbeafe;
+      color: #1e40af;
+    }
+    [data-theme="dark"] .badge-fake { background: #1e3a8a; color: #93c5fd; }
+  </style>
+</head>
+
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════ HEADER -->
+<header>
+  <div>
+    <div class="hdr-title">Регулярность рейсов · ЦУП Utair</div>
+    <div class="hdr-meta">Период: Январь 2026 &nbsp;·&nbsp; Сформировано: 04.05.2026 &nbsp;·&nbsp; Источник: Отчет за ЯНВАРЬ 2026.xlsm</div>
+  </div>
+  <div class="hdr-right">
+    <span class="tag-poc">POC</span>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 Тёмная</button>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════ NAV -->
+<nav>
+  <button class="tab-btn" id="tab-operational" onclick="switchTab('operational')">⚡ Оперативная смена</button>
+  <button class="tab-btn active" id="tab-daily"       onclick="switchTab('daily')">📊 Ежедневный отчёт</button>
+  <button class="tab-btn" id="tab-strategy"  onclick="switchTab('strategy')">📈 Стратегический</button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════ MAIN -->
+<main>
+
+  <!-- ────────────────────────────── OPERATIONAL (GAP by Rule 0) -->
+  <section id="operational">
+    <div class="ops-gap-box">
+      <div class="warn-icon">⚠</div>
+      <h2>Этот слой требует данных в реальном времени</h2>
+      <p>
+        Текущий дашборд формируется из <strong>месячного xlsx-отчёта</strong> и не покрывает
+        оперативную потребность смены НС ЦУП (минуты–часы).
+        Источники данных, необходимые для оперативного слоя:
+      </p>
+      <ul>
+        <li>Подключение к <strong>Meridian.Alliance API</strong> (план полётов, движение ВС, расстановка экипажей)</li>
+        <li>Парсинг ремарок <strong>DEGR / CVIP / PDTS</strong> из АСБ Leonardo (приоритеты пассажиров)</li>
+        <li>Статусы ОКР по <strong>DCS Astra</strong> (фактические чек-ины, закрытие рейса)</li>
+        <li>Push-события сервиса <strong>KYFO</strong> (автоматическое оформление по ФАП-82)</li>
+        <li>Префикс <strong>t / t*</strong> в Meridian.OPS (двигательные ограничения)</li>
+      </ul>
+      <p style="margin-top:12px">
+        <em>Основание: ANALYSIS_AS-IS_RCA_и_Сбойные.md §4, §6, §7</em><br>
+        Узкое место №3 (отсутствие сохранения обоснований решений НС ЦУП) также не закрывается этим дашбордом.
+      </p>
+      <span class="ops-status-badge">⊘ Вне scope текущего MVP · требует отдельного RT-контура</span>
+    </div>
+    <div id="gaps-operational"></div>
+  </section>
+
+  <!-- ────────────────────────────── DAILY (main tab) -->
+  <section id="daily" class="active">
+
+    <!-- Filters -->
+    <div class="filter-bar">
+      <div><label>Период:</label><input type="text" value="01.01.2026 – 31.01.2026" style="width:178px"></div>
+      <div>
+        <label>КВС:</label>
+        <select><option>Все</option><option>ВНК-1</option><option>ВНК-2</option><option>ЕКБ-1</option></select>
+      </div>
+      <div>
+        <label>Тип ВС:</label>
+        <select><option>Все</option><option>B737-800</option><option>B737-700</option><option>ATR72-600</option></select>
+      </div>
+      <span class="filter-note">⚠ POC: фильтры статичны, данные не пересчитываются</span>
+    </div>
+
+    <!-- KPI cards -->
+    <div class="kpi-row" id="daily-kpi"></div>
+
+    <!-- Charts -->
+    <div class="chart-grid">
+      <div class="chart-card full" data-clickable>
+        <div class="chart-title">Регулярность по дням — доля задержанных рейсов по категориям причин (%)</div>
+        <div class="echart-box tall" id="chart-daily-bar"></div>
+      </div>
+      <div class="chart-card" data-clickable>
+        <div class="chart-title">Топ-10 причин задержек — суммарные часы за январь 2026</div>
+        <div class="echart-box" id="chart-causes"></div>
+      </div>
+      <div class="chart-card" data-clickable>
+        <div class="chart-title">Аэропорты · размер = кол-во задержанных рейсов · цвет = ср. длительность</div>
+        <div class="echart-box" id="chart-treemap"></div>
+      </div>
+    </div>
+
+    <!-- Events table -->
+    <div class="chart-card" style="margin-bottom:0">
+      <div class="chart-title">Крупные события — задержки более 2 часов (8 случаев)</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Дата</th><th>№ ВС</th><th>Маршрут</th><th>Задержка</th><th>Код РЗ</th><th>Примечание</th>
+            </tr>
+          </thead>
+          <tbody id="events-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="gaps-daily"></div>
+  </section>
+
+  <!-- ────────────────────────────── STRATEGY -->
+  <section id="strategy">
+    <div class="strategy-kpi-row" id="strategy-kpi"></div>
+
+    <div class="chart-grid">
+      <div class="chart-card" data-clickable>
+        <div class="chart-title">Доли категорий причин задержек — суммарные часы за январь 2026</div>
+        <div class="echart-box" id="chart-donut"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Крупные эскалации A3/A4 — январь 2026</div>
+        <ul class="esc-list" id="esc-list"></ul>
+      </div>
+      <div class="chart-card full" data-clickable>
+        <div class="chart-title">Аэропорт × Категория причин — число задержек (ячейка = кол-во рейсов)</div>
+        <div class="echart-box tall" id="chart-heatmap"></div>
+      </div>
+    </div>
+
+    <div id="gaps-strategy"></div>
+  </section>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════ FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <dl class="footer-block">
+        <dt>Источник данных</dt>
+        <dd>
+          Отчет за ЯНВАРЬ 2026.xlsm (рабочий регистр UT-DSP.1-01.1)<br>
+          Листы: Данные · Данные (15МИН) · Сбойные · Сводная
+        </dd>
+      </dl>
+      <dl class="footer-block">
+        <dt>Справочники</dt>
+        <dd>
+          БАЗА ДАННЫХ 2026 (борт. номера, аэропорты, коды РЗ, календарь)<br>
+          Причины РЗ 2026.xlsx (маппинг подкодов → категории)
+        </dd>
+      </dl>
+      <dl class="footer-block">
+        <dt>Версия и план</dt>
+        <dd>
+          POC mockup · 2026-05-04 · <code>.cursor/plans/TASK-008.md</code><br>
+          Pipeline (Фаза 2): Python ETL (cup_dashboard/etl) + Jinja2 + ECharts 5.x<br>
+          <span class="badge-fake">⚠ Данные — фейк, только для согласования UX</span>
+        </dd>
+      </dl>
+    </div>
+    <div class="footer-bottom">
+      Этот файл — статичный self-contained HTML-мокап. Реальные xlsx/parquet не читаются.
+      Полный ETL-pipeline реализуется в Фазе 2 TASK-008 после согласования визуала с заказчиком.
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════ DRILLDOWN MODAL -->
+<div id="modal-backdrop" class="modal-backdrop">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <h2 id="modal-title">Топ-20 рейсов</h2>
+      <button class="modal-close-btn" onclick="closeModal()" title="Закрыть">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="tbl-wrap" style="max-height:none">
+        <table>
+          <thead>
+            <tr>
+              <th>Дата</th><th>№ РС</th><th>Маршрут</th><th>ВС</th><th>Тип ВС</th>
+              <th>Время РЗ</th><th>Код РЗ</th><th>PAX</th><th>Примечание</th>
+            </tr>
+          </thead>
+          <tbody id="modal-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <span id="modal-count">—</span>
+      <a href="#" class="csv-badge" onclick="return false" title="POC-заглушка">⬇ CSV (заглушка)</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ ECHARTS + LOGIC -->
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script>
+  /* ─── Chart instances ──────────────────────────────────────── */
+  let cDailyBar, cCauses, cTreemap, cDonut, cHeatmap;
+
+  /* ─── Theme helpers ────────────────────────────────────────── */
+  function isDark() {
+    return document.documentElement.getAttribute('data-theme') === 'dark';
+  }
+  function themeVars() {
+    return isDark()
+      ? { bg:'#1e293b', text:'#94a3b8', split:'#334155' }
+      : { bg:'#ffffff', text:'#475569', split:'#e2e8f0' };
+  }
+
+  function toggleTheme() {
+    const dark = isDark();
+    document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+    document.getElementById('themeBtn').textContent = dark ? '🌙 Тёмная' : '☀ Светлая';
+    setTimeout(() => { initDailyCharts(); initStrategyCharts(); }, 60);
+  }
+
+  /* ─── Tab switching ────────────────────────────────────────── */
+  function switchTab(name) {
+    ['operational','daily','strategy'].forEach(t => {
+      document.getElementById(t).classList.toggle('active', t === name);
+      document.getElementById('tab-' + t).classList.toggle('active', t === name);
+    });
+    window.location.hash = name;
+    setTimeout(() => {
+      if (name === 'daily')    initDailyCharts();
+      if (name === 'strategy') initStrategyCharts();
+    }, 55);
+  }
+
+  /* ─── Build: Daily KPI cards ───────────────────────────────── */
+  function buildDailyKPI() {
+    const k = MOCK_DAILY.kpi;
+    const rows = [
+      { label:'Регулярность (>15 мин)', val: k.regularity15.value + '%',
+        delta: (k.regularity15.delta > 0 ? '+' : '') + k.regularity15.delta + ' п.п. к плану ' + k.regularity15.plan + '%', dir: k.regularity15.direction },
+      { label:'Регулярность (>5 мин)',  val: k.regularity5.value + '%',
+        delta: (k.regularity5.delta > 0 ? '+' : '') + k.regularity5.delta + ' п.п. к плану ' + k.regularity5.plan + '%', dir: k.regularity5.direction },
+      { label:'Всего рейсов',  val: k.totalFlights.value.toLocaleString('ru-RU'),
+        delta: '+' + k.totalFlights.delta + ' к декабрю', dir: k.totalFlights.direction },
+      { label:'Задержки >2 ч', val: k.delays2h.value,
+        delta: k.delays2h.delta + ' к декабрю', dir: k.delays2h.direction }
+    ];
+    document.getElementById('daily-kpi').innerHTML = rows.map(r => `
+      <div class="kpi-card">
+        <div class="kpi-label">${r.label}</div>
+        <div class="kpi-value">${r.val}</div>
+        <div class="kpi-delta ${r.dir}">${r.dir === 'up' ? '↑' : '↓'} ${r.delta}</div>
+      </div>`).join('');
+  }
+
+  /* ─── Build: Events table ──────────────────────────────────── */
+  function buildEventsTable() {
+    document.getElementById('events-tbody').innerHTML =
+      MOCK_DAILY.bigEvents.map(e => `
+        <tr>
+          <td>${e.date}</td>
+          <td><strong>${e.flight}</strong></td>
+          <td>${e.route}</td>
+          <td style="font-weight:700;color:var(--red)">${e.delay}</td>
+          <td><span class="delay-badge">${e.code}</span></td>
+          <td style="color:var(--text-muted);font-size:.78rem">${e.note}</td>
+        </tr>`).join('');
+  }
+
+  /* ─── Build: Strategy KPI ──────────────────────────────────── */
+  function buildStrategyKPI() {
+    const s = MOCK_STRATEGY.kpi;
+    document.getElementById('strategy-kpi').innerHTML = `
+      <div class="strategy-kpi">
+        <div class="kpi-label">Регулярность vs AHM 730</div>
+        <div class="big-val">${s.regularityVsPlan.value}%</div>
+        <div class="sub-val">План: ${s.regularityVsPlan.plan}% &nbsp;·&nbsp; <span style="color:var(--green)">+${s.regularityVsPlan.delta} п.п.</span></div>
+      </div>
+      <div class="strategy-kpi">
+        <div class="kpi-label">MoM δ (к декабрю)</div>
+        <div class="big-val" style="color:var(--red)">${s.mom.value} п.п.</div>
+        <div class="sub-val">Декабрь 2025: ${s.mom.prev}%</div>
+      </div>
+      <div class="strategy-kpi">
+        <div class="kpi-label">YoY δ (к январю 2025)</div>
+        <div class="big-val" style="color:var(--green)">+${s.yoy.value} п.п.</div>
+        <div class="sub-val">Январь 2025: ${s.yoy.prev}%</div>
+      </div>
+      <div class="strategy-kpi">
+        <div class="kpi-label">Сбойные ситуации</div>
+        <div class="big-val" style="color:var(--accent)">${s.incidents.count}</div>
+        <div class="sub-val">A3/A4 эскалации за период</div>
+      </div>`;
+  }
+
+  /* ─── Build: Escalation list ───────────────────────────────── */
+  function buildEscList() {
+    document.getElementById('esc-list').innerHTML =
+      MOCK_STRATEGY.escalations.map(e => `
+        <li class="esc-item">
+          <div class="esc-date">${e.date}</div>
+          <div class="esc-ev">${e.event}</div>
+          <div class="esc-dec">${e.decision}</div>
+          <div class="esc-resp">Ответственный: ${e.responsible}</div>
+        </li>`).join('');
+  }
+
+  /* ─── Build: GAP cards (Rule 0) ────────────────────────────── */
+  function buildGapCard(containerId) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    el.innerHTML = `
+      <div class="gap-card">
+        <div class="gap-card-hdr">
+          <span class="gap-icon">⚠</span>
+          <span class="gap-title">Пробелы в источнике — Rule 0: картина AS-IS, разрывы не замещаются</span>
+        </div>
+        <div class="gap-counter">
+          Извлечено: <strong>8 421 рейс</strong> &nbsp;·&nbsp;
+          Пропуски источника: <strong>5 типов</strong> &nbsp;·&nbsp;
+          Низкая уверенность: <strong>0 записей</strong>
+        </div>
+        <div class="tbl-wrap" style="max-height:none">
+          <table>
+            <thead><tr><th>#</th><th>Пробел</th><th>Маркер</th><th>Описание</th></tr></thead>
+            <tbody>
+              ${MOCK_GAPS.map(g => `
+                <tr>
+                  <td style="color:var(--text-muted)">${g.num}</td>
+                  <td style="font-weight:600">${g.gap}</td>
+                  <td><span class="gap-marker">${g.marker}</span></td>
+                  <td style="color:var(--text-muted);font-size:.78rem">${g.desc}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+  }
+
+  /* ─── Category matching (topCauses names → MOCK_FLIGHTS.category) ── */
+  function matchCat(flightCat, filterName) {
+    if (filterName === 'ППС')     return flightCat === 'ППС М/У' || flightCat === 'ППС ПОО';
+    if (filterName === 'ОВС/ПВС') return flightCat === 'ОВС'     || flightCat === 'ПВС';
+    const alias = { 'М/У (метео)': 'М/У' };
+    return flightCat === (alias[filterName] || filterName);
+  }
+
+  /* ─── Drilldown modal ───────────────────────────────────────── */
+  function openTop20Modal(filterFn, title) {
+    const filtered = MOCK_FLIGHTS.filter(filterFn).sort((a, b) => b.delayMin - a.delayMin);
+    const top20 = filtered.slice(0, 20);
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-tbody').innerHTML = top20.length
+      ? top20.map(f => {
+          const h = Math.floor(f.delayMin / 60);
+          const m = String(f.delayMin % 60).padStart(2, '0');
+          const fmt = h ? `${h}ч ${m}м` : `${f.delayMin}м`;
+          return `<tr>
+            <td>${f.date}</td>
+            <td><strong>${f.flight}</strong></td>
+            <td>${f.dep} → ${f.arr}</td>
+            <td style="font-size:.77rem">${f.ac}</td>
+            <td>${f.ac_type}</td>
+            <td style="font-weight:700;color:var(--red)">${fmt}</td>
+            <td><span class="delay-badge">${f.code}</span></td>
+            <td>${f.pax}</td>
+            <td style="color:var(--text-muted);font-size:.77rem">${f.note}</td>
+          </tr>`;
+        }).join('')
+      : `<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:28px">
+           Нет данных в этом срезе (mock пул — 120 рейсов)
+         </td></tr>`;
+    document.getElementById('modal-count').textContent =
+      `Показано ${top20.length} из ${filtered.length} рейсов в этом срезе`;
+    const bd = document.getElementById('modal-backdrop');
+    bd.style.display = 'flex';
+    requestAnimationFrame(() => bd.classList.add('visible'));
+  }
+
+  function closeModal() {
+    const bd = document.getElementById('modal-backdrop');
+    bd.classList.remove('visible');
+    setTimeout(() => { bd.style.display = 'none'; }, 165);
+  }
+
+  /* ─── ECharts: Daily stacked bar ───────────────────────────── */
+  function initDailyCharts() {
+    const tv = themeVars();
+    const d  = MOCK_DAILY.dailyDelays;
+    const seriesColors = {
+      "М/У":"#3b82f6","НМЧ":"#6b7280","ПОО":"#f97316",
+      "ППС":"#8b5cf6","ЗАК":"#eab308","СОП":"#06b6d4",
+      "ЛС/ОВС/ПВС/Прочее":"#22c55e"
+    };
+
+    if (cDailyBar) cDailyBar.dispose();
+    cDailyBar = echarts.init(document.getElementById('chart-daily-bar'));
+    cDailyBar.setOption({
+      backgroundColor: tv.bg,
+      tooltip: {
+        trigger: 'axis', axisPointer: { type: 'shadow' },
+        formatter(params) {
+          const i = d.dates.indexOf(params[0].axisValue);
+          let s = `<b>${params[0].axisValue}</b> · Всего рейсов: ${d.totalFlights[i]}<br>`;
+          params.forEach(p => { s += `<span style="color:${p.color}">●</span> ${p.seriesName}: ${p.value.toFixed(1)}%<br>`; });
+          return s;
+        }
+      },
+      legend: { data: Object.keys(d.series), bottom: 52, textStyle: { color: tv.text }, itemWidth: 12, itemHeight: 8, fontSize: 11 },
+      grid: { top: 14, right: 18, bottom: 108, left: 52 },
+      dataZoom: [{ type:'slider', bottom: 8, height: 20, start: 0, end: 100, fillerColor: 'rgba(30,58,138,.15)' }],
+      xAxis: {
+        type:'category', data: d.dates,
+        axisLabel: { color: tv.text, rotate: 45, fontSize: 9.5 },
+        axisLine:  { lineStyle: { color: tv.split } }
+      },
+      yAxis: {
+        type:'value',
+        name:'% задержанных', nameTextStyle: { color: tv.text, fontSize: 10 },
+        axisLabel: { color: tv.text, formatter: '{value}%' },
+        splitLine:  { lineStyle: { color: tv.split } }
+      },
+      series: Object.entries(d.series).map(([name, data]) => ({
+        name, type:'bar', stack:'total', data,
+        itemStyle: { color: seriesColors[name] || '#94a3b8' },
+        emphasis:  { focus:'series' }
+      }))
+    });
+
+    /* ─ Causes horizontal bar ─ */
+    if (cCauses) cCauses.dispose();
+    cCauses = echarts.init(document.getElementById('chart-causes'));
+    const causes = [...MOCK_DAILY.topCauses].sort((a,b) => a.hours - b.hours);
+    cCauses.setOption({
+      backgroundColor: tv.bg,
+      tooltip: { trigger:'axis', axisPointer:{ type:'shadow' }, formatter: '{b}: {c} ч' },
+      grid:    { top:8, right:70, bottom:16, left:110 },
+      xAxis: {
+        type:'value',
+        axisLabel: { color: tv.text, fontSize: 10 },
+        splitLine: { lineStyle: { color: tv.split } }
+      },
+      yAxis: {
+        type:'category', data: causes.map(c => c.name),
+        axisLabel: { color: tv.text, fontSize: 11 }
+      },
+      series: [{
+        type:'bar',
+        data: causes.map(c => ({ value: c.hours, itemStyle: { color: c.color, borderRadius: [0,4,4,0] } })),
+        label: { show:true, position:'right', formatter:'{c} ч', fontSize:10, color: tv.text }
+      }]
+    });
+
+    /* ─ Treemap airports ─ */
+    if (cTreemap) cTreemap.dispose();
+    cTreemap = echarts.init(document.getElementById('chart-treemap'));
+    const minD = Math.min(...MOCK_DAILY.airports.map(a => a.avgDelay));
+    const maxD = Math.max(...MOCK_DAILY.airports.map(a => a.avgDelay));
+    function delayColor(avg) {
+      const r = (avg - minD) / (maxD - minD);
+      return `rgb(${Math.round(34 + r*205)},${Math.round(197 - r*129)},${Math.round(94 - r*94)})`;
+    }
+    cTreemap.setOption({
+      backgroundColor: tv.bg,
+      tooltip: {
+        formatter(info) {
+          const a = MOCK_DAILY.airports.find(x => x.name === info.name);
+          return a ? `<b>${a.name}</b><br>Задержано: ${a.delayed} рейсов<br>Ср. задержка: ${a.avgDelay} мин<br>Всего: ${a.total}` : info.name;
+        }
+      },
+      series: [{
+        type:'treemap', roam: false, breadcrumb: { show:false },
+        data: MOCK_DAILY.airports.map(a => ({
+          name: a.name, value: a.delayed,
+          itemStyle: { color: delayColor(a.avgDelay) }
+        })),
+        label: { color:'#fff', fontSize:12, fontWeight:'bold' }
+      }]
+    });
+
+    /* ─ Click handlers: daily charts ─ */
+    cDailyBar.on('click', params => {
+      if (params.componentType !== 'series') return;
+      const cat  = params.seriesName;   // e.g. "НМЧ"
+      const date = params.name;         // e.g. "10.01"
+      // Fallback: if mock пул не покрывает конкретный день → показываем весь месяц
+      const exact = MOCK_FLIGHTS.filter(f => matchCat(f.category, cat) && f.date === date);
+      if (exact.length > 0) {
+        openTop20Modal(
+          f => matchCat(f.category, cat) && f.date === date,
+          `Топ-20 рейсов · ${cat} · ${date}.2026`
+        );
+      } else {
+        openTop20Modal(
+          f => matchCat(f.category, cat),
+          `Топ-20 рейсов · ${cat} за январь 2026 (за ${date} нет записей в mock)`
+        );
+      }
+    });
+
+    cCauses.on('click', params => {
+      if (params.componentType !== 'series') return;
+      const name = params.name;         // e.g. "М/У (метео)"
+      openTop20Modal(
+        f => matchCat(f.category, name),
+        `Топ-20 рейсов · ${name} за январь 2026`
+      );
+    });
+
+    cTreemap.on('click', params => {
+      const airport = params.name;
+      if (!airport) return;
+      openTop20Modal(
+        f => f.dep === airport || f.arr === airport,
+        `Топ-20 рейсов · аэропорт ${airport}`
+      );
+    });
+  }
+
+  /* ─── ECharts: Strategy charts ──────────────────────────────── */
+  function initStrategyCharts() {
+    const tv = themeVars();
+
+    /* ─ Donut ─ */
+    if (cDonut) cDonut.dispose();
+    cDonut = echarts.init(document.getElementById('chart-donut'));
+    const total = MOCK_STRATEGY.donut.reduce((s,d) => s + d.value, 0);
+    cDonut.setOption({
+      backgroundColor: tv.bg,
+      tooltip: {
+        trigger:'item',
+        formatter: p => `${p.name}<br>${p.value} ч · ${p.percent}%`
+      },
+      legend: {
+        orient:'vertical', right:'4%', top:'center',
+        textStyle: { color: tv.text, fontSize: 11 },
+        formatter: name => {
+          const d = MOCK_STRATEGY.donut.find(x => x.name === name);
+          return `${name}  ${((d.value / total) * 100).toFixed(1)}%`;
+        }
+      },
+      series: [{
+        type:'pie', radius:['38%','66%'], center:['34%','50%'],
+        data: MOCK_STRATEGY.donut.map(d => ({ name: d.name, value: d.value, itemStyle: { color: d.color } })),
+        label: { show:false },
+        emphasis: { itemStyle: { shadowBlur:8, shadowColor:'rgba(0,0,0,.35)' } }
+      }]
+    });
+
+    /* ─ Heatmap ─ */
+    if (cHeatmap) cHeatmap.dispose();
+    cHeatmap = echarts.init(document.getElementById('chart-heatmap'));
+    const hm = MOCK_STRATEGY.heatmap;
+    cHeatmap.setOption({
+      backgroundColor: tv.bg,
+      tooltip: {
+        position:'top',
+        formatter: p => `${hm.airports[p.data[1]]} × ${hm.categories[p.data[0]]}: <b>${p.data[2]}</b>`
+      },
+      grid:  { top:16, right:110, bottom:70, left:52 },
+      xAxis: {
+        type:'category', data: hm.categories,
+        axisLabel: { color: tv.text, rotate:30, fontSize:10 },
+        splitArea: { show:true }
+      },
+      yAxis: {
+        type:'category', data: hm.airports,
+        axisLabel: { color: tv.text, fontSize:10 },
+        splitArea: { show:true }
+      },
+      visualMap: {
+        min:0, max:89, calculable:true, orient:'vertical', right:'1%', top:'center',
+        inRange: { color: isDark() ? ['#1e3a8a','#60a5fa'] : ['#dbeafe','#1e3a8a'] },
+        textStyle: { color: tv.text }
+      },
+      series: [{
+        type:'heatmap',
+        /* stored as [airportIdx, categoryIdx, val] → ECharts needs [xIdx, yIdx] = [catIdx, airportIdx] */
+        data: hm.data.map(d => [d[1], d[0], d[2]]),
+        label: { show:true, fontSize:9, color: isDark() ? '#f1f5f9' : '#0f172a' },
+        emphasis: { itemStyle: { shadowBlur:6 } }
+      }]
+    });
+
+    /* ─ Click handlers: strategy charts ─ */
+    cDonut.on('click', params => {
+      if (params.componentType !== 'series') return;
+      const name = params.name;         // e.g. "М/У (метео)" | "ОВС/ПВС"
+      openTop20Modal(
+        f => matchCat(f.category, name),
+        `Топ-20 рейсов · ${name} за январь 2026`
+      );
+    });
+
+    cHeatmap.on('click', params => {
+      if (!params.value) return;
+      const hm  = MOCK_STRATEGY.heatmap;
+      const cat = hm.categories[params.value[0]];      // x-axis = categories
+      const ap  = hm.airports[params.value[1]];         // y-axis = airports
+      openTop20Modal(
+        f => (f.dep === ap || f.arr === ap) && matchCat(f.category, cat),
+        `Топ-20 рейсов · ${ap} × ${cat}`
+      );
+    });
+  }
+
+  /* ─── Resize all charts ─────────────────────────────────────── */
+  window.addEventListener('resize', () => {
+    [cDailyBar, cCauses, cTreemap, cDonut, cHeatmap].forEach(c => c && c.resize());
+  });
+
+  /* ─── Bootstrap ─────────────────────────────────────────────── */
+  document.addEventListener('DOMContentLoaded', () => {
+    buildDailyKPI();
+    buildEventsTable();
+    buildStrategyKPI();
+    buildEscList();
+    buildGapCard('gaps-daily');
+    buildGapCard('gaps-operational');
+    buildGapCard('gaps-strategy');
+
+    /* Handle initial URL hash */
+    const hash = window.location.hash.replace('#', '');
+    const valid = ['daily','strategy','operational'];
+    switchTab(valid.includes(hash) ? hash : 'daily');
+
+    window.addEventListener('hashchange', () => {
+      const h = window.location.hash.replace('#', '');
+      if (valid.includes(h)) switchTab(h);
+    });
+
+    /* Modal: close on backdrop click */
+    document.getElementById('modal-backdrop').addEventListener('click', e => {
+      if (e.target.id === 'modal-backdrop') closeModal();
+    });
+  });
+
+  /* Modal: close on Esc */
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>

@@ -101,6 +101,21 @@
 - **БНД ingestion pipeline**: скачивание эталонов PDF + действующих Word из dflib → Docling parsing → graph population.
 - **ImageLink исследование**: уточнить с админом доступ к РПП и другим документам с Form: ImageLink.
 - Отложено: POC 2 (LightRAG, нет API) → Фаза 3, POC 5 (BS) → Фаза 4
+- **TASK-008 cup_dashboard**: Фаза 1 (split xlsm) — ✅ done (PASS retry 3/3, артефакты в output/january_split/). Фаза 2 (self-contained HTML) — ⛔ superseded by TASK-009 (D-024).
+- **TASK-009 cup_dashboard live**: ✅ **ЗАКРЫТА** (Phases A+B+C+D+E завершены). Дашборд готов к деплою на `/info/tsup/`. Известные GAP'ы: `rz_causes_2019` отложен (D-026), `rz_causes_*.year = NULL` (нет маппинга из источника), `pps_column1_unknown` (анонимная колонка), `avg_load_factor` 2026 = NULL (не заполнено в источнике).
+- **cup_dashboard (todo repo)**: деплой на `/info/tsup/` — следующий шаг после merge-ready (артефакты: `cup_dashboard/{etl,core,static,deploy}/*`, см. DEPLOY.md).
+
+### Подпроекты (вне core PDFtoBPMN pipeline)
+| Подпроект | Репо | Статус | Описание |
+|-----------|------|--------|----------|
+| `cup_dashboard/` | Obligations | ✅ done (TASK-009 Phase A–E) | ETL-слой и design reference. 533 344 строк в `cup.flights`. SOT: `cup_dashboard/etl/data_inventory.md`. Решения: D-021, D-022, D-024, D-025, D-026, D-027, D-028. |
+| `todo/cup_dashboard` | todo (cross-repo) | ready to deploy | Live-дашборд: FastAPI + ECharts SPA + Docker. Публикация: /info/tsup/. Паттерн: sfv_dashboard. Ref: TASK-009. D-023 (cross-repo policy). `info.html`: добавлена секция "Производство" с карточкой. |
+
+### Связанные репо
+| Репо | Путь | Роль |
+|------|------|------|
+| Obligations (этот) | `/home/budnik_an/Obligations/` | Основной — pipeline, ETL, docs, rules |
+| todo | `/home/budnik_an/todo/` | Cross-repo dependency: публикация дашбордов (sfv_dashboard, cup_dashboard). D-023 регулирует взаимодействие. |
 
 ### Блокеры
 - Нет
@@ -117,3 +132,7 @@
 - Human (29.03.2026) — Донастройка мультиагента: D-019, обновление протоколов и агентов
 - Human (29.03.2026) — Донастройка MCP: domino-keep-bnd (db02, dflib) подключён
 - Human (29.03.2026) — Разведка структуры БНД: 3 типа вложений, составные документы, стратегия extraction (D-020)
+- H7: Orchestrator → Scribe (04.05.2026) — TASK-008 decisions: D-021, D-022; cup_dashboard planned
+- H7: Orchestrator → Scribe (04.05.2026) — TASK-009 decisions: D-023 (cross-repo), D-024 (live instead of self-contained), D-025 (CH schema cup.flights); cup_dashboard in_progress (Phase A)
+- H7: Human → Scribe (04.05.2026) — TASK-009 D-026: scope iteration 1 подтверждён (6 data_layer), Phase A.1 закрыта, Phase A.2 начата
+- H7: Orchestrator → Scribe (04.05.2026) — TASK-009 финализация: D-027 (NOT NULL ORDER BY keys), D-028 (numeric coercion); Phases A+B+C+D+E закрыты; дашборд: 533 344 строк, FastAPI + ECharts, готов к деплою на /info/tsup/
