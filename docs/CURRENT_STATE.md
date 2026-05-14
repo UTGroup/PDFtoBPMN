@@ -7,7 +7,7 @@
 
 ### Компоненты
 - ✅ **cursor_rules**: 7 .mdc файлов (v1 удалены, v2 синхронизированы с DECISIONS)
-- ✅ **cursor_hooks**: 4 хука — синтаксис OK, базовая логика OK, executable
+- ⚠ **cursor_hooks**: hooks.json.disabled (D-036 — несовместимы с Task-sub-agents; скрипты сохранены как dormant)
 - ✅ **cursor_agents**: 5 агентов (orchestrator, coder, validator, scribe, extractor) — обновлены: checkpoint, fast-track, out-of-scope, validator 3 режима (D-019)
 - ✅ **langgraph_state**: dev_graph + batch_graph — pip install OK, 6/6 тестов pass
 - ✅ **docs**: Architecture_v2.1, DECISIONS (D-001..D-019), Handoff Protocol (обновлён: iteration, checkpoint, fast-track, validation_mode) — готовы
@@ -147,6 +147,27 @@
 - ⚠ 83.1 «правительственные ограничения» (VIP) имеет 2 кандидата (CXM / CXR) — финальный выбор за разработчиком Меридиана.
 
 **Решения:** D-032 (override-таблица Excel), D-033 (формат дельта-CSV), D-034 (ATFM-приоритет), D-035 (семантика 82.1/83.1).
+
+**Update 2026-05-14:** matching.json теперь служит SSOT для overlay вкладки «Структура» (см. D-037).
+
+### TASK-013 (2026-05-14) — синхронизация overlay со SSOT
+- `cup_overlay.json` теперь строится из `matching.json` (D-037).
+- Coverage: 34/56 (60.7%) → 37/56 (66.1%).
+- Финальный GAP-list (19 узлов uncovered, честные пробелы по Rule 0):
+  - `G:G4`
+  - Процессы: `P:G1/B`, `P:G2/H`, `P:G3/I`, `P:G3/J`, `P:G3/K`, `P:G3/L`,
+    `P:G4/N`, `P:G4/O`, `P:G5/Q`, `P:G5/S`, `P:G5/U`, `P:G6/V`, `P:G7/X`, `P:G7/Y`.
+  - Stakeholders: `S:M` (airline operator/handler), `S:R` (catering/cabin),
+    `S:Z` (structural catch-all — not attributable).
+  - Sub-airline: `U:D` (нет такого разряда у ЮТэйр).
+- Эти узлы остаются uncovered, потому что в ЦУП-кодификаторе для них нет ни
+  прямого ЦУП-кода, ни через MER expert-маппинг (Rule 0: не выдумываем связки).
+
+**Мелкие правки в цикле TASK-013:**
+- Убран «(2028)» из заголовка Sankey, версий JSON и карточки IATA-732 в `info.html`.
+- Service Worker кэш бамп: `portal-v1 → portal-v2` (инвалидация браузерного кэша после правки info.html).
+- Почищены устаревшие комментарии «(2028)», «FUTURE STANDARD» в коде и CSS.
+- `hooks.json` → `hooks.json.disabled` (D-036).
 
 ### Блокеры
 - Нет

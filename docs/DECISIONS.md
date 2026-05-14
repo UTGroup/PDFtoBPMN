@@ -484,3 +484,54 @@ env-переменная **не пробрасывается** в child-проц
 - `.cursor/hooks/hooks.json` — удалён.
 - `.cursor/hooks/hooks.json.disabled` — добавлен (то же содержимое, не подключается Cursor'ом).
 - `.cursor/hooks/*.py` — без изменений, остаются в репозитории как dormant code.
+
+## D-037: cup_overlay строится из matching.json как SSOT (2026-05-14)
+**Контекст:** В дашборде /info/iata732/ две вкладки работали на разных pipeline:
+- Таксономия — бейджи матчинга из `matching.json` (TASK-012, expert + override).
+- Структура — overlay из `cup_overlay.json` (TASK-011, наивный word-match по
+  русскому описанию ЦУП-кодов).
+
+Из-за этого узлы Sankey, для которых в Таксономии стоял бейдж матчинга, в
+Структуре оставались uncovered (например G7/Z/B/Q — MER 83 «Временный режим
+а/п назнач.»). Catch-all stakeholder Z становился свалкой ложно-классифицированных
+кодов (Допосадка JMP, Запуск от УВЗ, Зап. части и т.д.), которые семантически
+относились к S:K/S:L/S:N.
+
+**Решение:** `output/cup_codifier/build_cup_overlay_json.py` переписан так, что
+overlay строится из `matching.json:by_iata732_node` — единственного SSOT после
+TASK-012. Логика: узел overlay (G/P/S/U) `covered`, если хотя бы один 4-знаковый
+IATA-732 код под этой осью имеет непустой `mer` или `cup` массив в matching.json.
+`cup_to_732_mapping.json` (word-match) остаётся для других нужд (cup_lineage и
+вспомогательные карты), но в overlay не участвует.
+
+Дополнительно введено опциональное поле `mer_experts` в узлах overlay — список
+MER expert-маппингов с `note` (AHM 730 AT/AX/AE/AW/AM/AS или INTERNAL_UTAIR
+для 82.1/83.1). Используется в тултипе Sankey.
+
+**Эффект:**
+- coverage_pct: 60.7% → 66.1% (covered_nodes: 34 → 37 из 56).
+- +15 узлов uncovered→covered: P:G7/Z (ATFM, через AHM 730 ATFM-коды), S:O/P/Q/S/T
+  (ATFM-stakeholders), S:I/K/L/N (через MER в G1-G6).
+- −12 узлов covered→uncovered (честный GAP по Rule 0): S:Z больше не свалка
+  ложно-классифицированных кодов (они правильно ушли в S:K/L/N через
+  matching.json); P:G7/X/Y перестали ловить РЖМ-коды через word-match (РЖМ 82
+  семантически = AHM 730 AX = ATFM en-route → G7/Z, не G7/X).
+
+**Узел Z (not attributable):** уточнено с human, что это структурный catch-all
+IATA-732 для задержек, которые невозможно уверенно атрибутировать ни одному
+виновнику. В overlay показывается с тултипом «Нет ЦУП-аналога — слепая зона при
+миграции на 732»: это корректно (ЦУП явно не маппит в Z, потому что Z по природе
+для неклассифицируемого).
+
+**Альтернативы отклонены:**
+- Точечная заплатка в build_cup_overlay_json.py (спецкейс «MER-group=РЖМ →
+  process=Z», явный 82.1/83.1). Отвергнуто — оставляет рассинхрон, каждое новое
+  уточнение в TASK-012 надо будет вручную проносить во вторую ветку.
+- Ввести третий статус `structural` для Z. Отложено — текущая бинарная схема
+  (covered/uncovered) семантически корректна, тултип объясняет специальность Z.
+
+**Affected:**
+- `output/cup_codifier/build_cup_overlay_json.py` (rewrite ~50%).
+- `output/cup_codifier/cup_overlay.json` (regenerate, 189 KB indented).
+- `todo/webBI/iata732/static/cup_overlay.json` (minified copy, 117 KB).
+- KPI в UI пересчитан автоматически (`coverage_pct` берётся из JSON).
