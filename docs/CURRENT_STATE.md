@@ -117,6 +117,37 @@
 | Obligations (этот) | `/home/budnik_an/Obligations/` | Основной — pipeline, ETL, docs, rules |
 | todo | `/home/budnik_an/todo/` | Cross-repo dependency: публикация дашбордов (sfv_dashboard, cup_dashboard). D-023 регулирует взаимодействие. |
 
+### TASK-012 (2026-05-14): Матчинг 732 ↔ ЦУП ↔ MER + дельта-CSV для Меридиана
+**Цель:** Построить сквозной маппинг MER-кодификатора ЮТэйр на IATA-732 через промежуточный IATA-730, добавить UI-бейджи в дерево таксономии и сформировать CSV с операциями для апгрейда справочника Меридиана.
+
+**Результат:** Реализованы Phases P0–P5 + iter-3 (ATFM-override). Артефакты опубликованы в `/info/iata732/`.
+
+**Ключевые цифры (iter-3):**
+- Маппинг 732: 4493 узла, из них 484 full match / 4009 partial / 0 gap.
+- MER: 90 записей, 9 override (сдвиг Excel r72–r80), 2 internal_utair (82.1 «Ковёр», 83.1 «правительственные»).
+- Дельта-CSV: 493 строки — ADD=3, REMAP=484, DEPRECATE=6.
+  *(iter-3: REMAP +3, DEPRECATE −3 — ATFM-коды AT/AX/AE/AW/AM/AS перепривязаны через IATA730_ATFM_TO_732 вместо code2_index)*
+
+**ATFM-override (D-034):**
+- Коды AT/AX/AE/AW/AM/AS → явный словарь `IATA730_ATFM_TO_732` → IATA-732 G7/Z/* (stakeholders O/P/Q/S).
+- `code2_index` применяется только как fallback для остальных кодов.
+
+**Уточнение внутренних кодов ЮТэйр (D-035):**
+- **82.1 «режим Ковёр»**: угроза дронов + военные риски → IATA-732 `G7/Z/P · military activity` (stakeholder T); alt: `G7/Z/R · additional security event` (stakeholder S).
+- **83.1**: правительственные ограничения (VIP-борт) → IATA-732 `G7/Z/I · special flights/VIP` (stakeholder O).
+
+**Ключевые артефакты:**
+- `webBI/iata732/static/matching.json` — полный маппинг 732/ЦУП/MER (2.5 MB minified).
+- `webBI/iata732/static/meridian_upgrade_v1.csv` — дельта-операции для импорта в Меридиан.
+- `output/cup_codifier/build_matching_json.py` — ATFM-словарь + изменён порядок проверок в `enrich_mer_entries`.
+- Кнопка «⤓ CSV для апгрейда Меридиана» в шапке `/info/iata732/`.
+
+**Открытые риски:**
+- ⚠ 6 IATA-730 кодов (orphan) не имеют пары в черновике IATA-732 → DEPRECATE в CSV.
+- ⚠ 83.1 «правительственные ограничения» (VIP) имеет 2 кандидата (CXM / CXR) — финальный выбор за разработчиком Меридиана.
+
+**Решения:** D-032 (override-таблица Excel), D-033 (формат дельта-CSV), D-034 (ATFM-приоритет), D-035 (семантика 82.1/83.1).
+
 ### Блокеры
 - Нет
 
@@ -132,6 +163,7 @@
 - Human (29.03.2026) — Донастройка мультиагента: D-019, обновление протоколов и агентов
 - Human (29.03.2026) — Донастройка MCP: domino-keep-bnd (db02, dflib) подключён
 - Human (29.03.2026) — Разведка структуры БНД: 3 типа вложений, составные документы, стратегия extraction (D-020)
+- H9: Scribe → Human (14.05.2026) — TASK-012 completed, P0–P5: matching.json + meridian_upgrade_v1.csv + UI-бейджи + кнопка экспорта; D-032, D-033
 - H7: Orchestrator → Scribe (04.05.2026) — TASK-008 decisions: D-021, D-022; cup_dashboard planned
 - H7: Orchestrator → Scribe (04.05.2026) — TASK-009 decisions: D-023 (cross-repo), D-024 (live instead of self-contained), D-025 (CH schema cup.flights); cup_dashboard in_progress (Phase A)
 - H7: Human → Scribe (04.05.2026) — TASK-009 D-026: scope iteration 1 подтверждён (6 data_layer), Phase A.1 закрыта, Phase A.2 начата
