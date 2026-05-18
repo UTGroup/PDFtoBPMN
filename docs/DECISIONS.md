@@ -535,3 +535,66 @@ IATA-732 для задержек, которые невозможно увере
 - `output/cup_codifier/cup_overlay.json` (regenerate, 189 KB indented).
 - `todo/webBI/iata732/static/cup_overlay.json` (minified copy, 117 KB).
 - KPI в UI пересчитан автоматически (`coverage_pct` берётся из JSON).
+
+## D-038: Aircraft-centric AMOS lookup chain (2026-05-15)
+**Контекст:** TASK-014 показала: IATA-732 описывает «кто и на каком этапе»
+создал задержку, но не отвечает на вопрос «какая система ВС отказала». Для
+9 из 80 MER-кодов ЦУП (технические причины — НМЧ/ПВС/СБОЙ/ПРЧ) требуется
+дополнительный слой — AMOS. До TASK-014 не было фиксированного правила,
+как именно адресоваться в AMOS из данных задержки.
+
+**Решение:** обращение к AMOS всегда идёт **от неисправного ВС (хвостовой
+номер) обратно к корневой причине**. Зафиксирована стандартная цепочка
+из 6 шагов (4 обязательных + 2 опциональных):
+
+1. **aircraft** — APN 0308 Aircraft Administration (`ac.aircraft`,
+   `ac.ac_registr`) — вход по хвостовому номеру ВС.
+2. **workorder** — APN 1418 Workorder (`wo.wo_header`, `wo.wo_event_chain`,
+   `jc.jc_header`) — snag/defect/scheduled запись по этому ВС.
+3. **ata_chapter** — spec2k lookup (`spec2k.*` + `wo.wo_header.ata_chapter`) —
+   классификация по системам ВС.
+4. **defect_cause** — APN 0354 Failure Confirmation (`rm.failure_*`,
+   `moc.moc_case`) — подтверждённая причина (BITE/pirep/inspection).
+5. **deferral_or_close** *(опц.)* — APN 0273 MEL Manual Administration
+   (`mel.mel_*`) — отложен по MEL или закрыт.
+6. **reliability_aggregation** *(опц.)* — APN 0399 Systems Reliability
+   (`rm.*`) — агрегация по ATA chapter / MTBF.
+
+Цепочка зафиксирована как `anchor_chain` в `output/amos_layer/mer_amos_sources.json`
+и `amos_aircraft_centric_chain` в `cup_zone2_to_amos.json`. Для каждой записи
+указано, какие шаги фактически используются (`chain_steps_used` /
+`amos_chain_steps`).
+
+**Анти-цели:**
+- НЕ выводить ATA chapter из текста MER самостоятельно — только через
+  шаг 3 (spec2k lookup) поверх существующего workorder.
+- НЕ подключаться физически к боевой AMOS — все `_table_hint` и `_field_hint`
+  остаются hint'ами для ИТ-команды.
+- НЕ строить «причина → ВС» (сверху вниз). Только обратный порядок.
+
+**Применение:**
+- Дашборд `/info/iata732/`, вкладка «AMOS-слой / ATA» (TASK-015) — визуализирует
+  цепочку как 6 нод по горизонтали со стрелками.
+- Tooltip Sankey overlay для узлов с `has_amos_source=True` показывает
+  APN 1418 Workorder + ATA distribution.
+- Скрипты `scripts/build_mer_amos_sources.py` и
+  `scripts/build_cup_zone2_to_amos.py` используют фиксированный `ANCHOR_CHAIN` /
+  `AMOS_CHAIN` как источник правды.
+
+**Альтернативы отклонены:**
+- «Process-centric chain» (отказ → подозреваемая система → ВС). Отвергнуто —
+  не соответствует фактическому workflow AMOS (там snag регистрируется на
+  конкретный ВС, а не на абстрактную систему).
+- Подключение к live AMOS DB для извлечения реальных данных. Отвергнуто
+  пользователем: «физически подтаскивать данные AMOS не надо» (2026-05-15).
+
+**Affected:**
+- `output/amos_layer/{mer_amos_sources,cup_zone2_to_amos,amos_apn_catalog}.json`
+  (TASK-014 артефакты).
+- `output/cup_codifier/matching.json` v1.1 — поле `amos_layer` в `by_mer_code`,
+  `has_amos_source` в `by_iata732_node` (TASK-015).
+- `output/cup_codifier/cup_overlay.json` — `has_amos_source` + `ata_distribution`
+  в covered узлах (TASK-015).
+- `todo/webBI/iata732/index.html` + `static/{app.js,style.css}` — новая
+  вкладка «AMOS-слой / ATA» (TASK-015).
+- `docs/reports/cup_zone2_amos_mapping_v1.md` — отчёт.
