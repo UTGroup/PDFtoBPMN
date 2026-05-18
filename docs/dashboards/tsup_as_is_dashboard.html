@@ -9,7 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.0/dist/purify.min.js"></script>
 <style>
-@font-face{font-family:'Suisse Int\'l';src:url('assets/SuisseIntl-Regular.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Suisse Intl';src:url('assets/SuisseIntl-Regular.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap}
 :root{
   --utair-blue:#003594;--utair-blue-dark:#002570;--utair-light-blue:#7ca3dc;--utair-light-blue2:#b4c8e7;
   --utair-red:#dc2328;--utair-yellow:#ffc332;--utair-green:#008c5f;--utair-orange:#ff6e0a;
@@ -33,7 +33,7 @@
   --purple-bg:rgba(122,76,201,.18);--orange-bg:rgba(255,110,10,.18);--cyan-bg:rgba(10,122,143,.20);
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Suisse Int\'l',-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+body{font-family:'Suisse Intl',-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
 /* Корпоративная шапка */
 .brand-header{background:var(--utair-blue);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 .brand-header .bh-left{display:flex;align-items:center;gap:14px;min-width:0}
@@ -846,9 +846,9 @@ flowchart TD
 })();
 function _mermaidVars(theme){
   if(theme==='dark'){
-    return {theme:'dark',themeVariables:{darkMode:true,background:'#1e293b',primaryColor:'#1c2333',primaryTextColor:'#f1f5f9',primaryBorderColor:'#334155',lineColor:'#94a3b8',secondaryColor:'#0f172a',tertiaryColor:'#1e293b',fontFamily:"Suisse Int'l,Segoe UI,Arial,sans-serif"}};
+    return {theme:'dark',themeVariables:{darkMode:true,background:'#1e293b',primaryColor:'#1c2333',primaryTextColor:'#f1f5f9',primaryBorderColor:'#334155',lineColor:'#94a3b8',secondaryColor:'#0f172a',tertiaryColor:'#1e293b',fontFamily:"'Suisse Intl','Segoe UI',Arial,sans-serif"}};
   }
-  return {theme:'default',themeVariables:{background:'#ffffff',primaryColor:'#eef1f6',primaryTextColor:'#111820',primaryBorderColor:'#d0d3d4',lineColor:'#737576',secondaryColor:'#f4f5f7',tertiaryColor:'#ffffff',fontFamily:"Suisse Int'l,Segoe UI,Arial,sans-serif"}};
+  return {theme:'default',themeVariables:{background:'#ffffff',primaryColor:'#eef1f6',primaryTextColor:'#111820',primaryBorderColor:'#d0d3d4',lineColor:'#737576',secondaryColor:'#f4f5f7',tertiaryColor:'#ffffff',fontFamily:"'Suisse Intl','Segoe UI',Arial,sans-serif"}};
 }
 mermaid.initialize(Object.assign({startOnLoad:true,flowchart:{useMaxWidth:true,htmlLabels:true,curve:'basis'}},_mermaidVars(document.documentElement.dataset.theme||'light')));
 
