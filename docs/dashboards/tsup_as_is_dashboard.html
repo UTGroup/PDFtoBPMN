@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ЦУП — AS-IS v2.1: RCA по задержкам и оперативное управление регулярностью</title>
-<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.0/dist/purify.min.js"></script>
 <style>
@@ -89,8 +88,6 @@ table.dt tr:hover{background:var(--surface)}
 .metric .mv{font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace}
 .metric .ml{font-size:11px;color:var(--text2);margin-bottom:4px}
 .metric .md{font-size:11px;margin-top:6px;color:var(--text2)}
-.mermaid-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;overflow-x:auto;margin-bottom:14px}
-.mermaid{display:flex;justify-content:center}
 .roadmap{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
 @media(max-width:900px){.roadmap{grid-template-columns:1fr}}
 .rm-col{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px}
@@ -335,58 +332,7 @@ table.dt tr:hover{background:var(--surface)}
   <div class="section">
     <h2>AS-IS поток данных: цикл RCA <span class="badge">4 уровня анализа</span></h2>
     <div class="callout"><strong>Контекст:</strong> 3 уровня анализа задержек по <code>КД-ДП-Б8.007-05 §11 табл.1</code>: оперативный (диспетчер/смена), ежедневный (до 11:00 тюм. — нач. ЦУП), глубокий (нач. ЦУП → ген.директор, корректирующие действия по ДП-М1.003).</div>
-    <div class="mermaid-wrap"><div class="mermaid">
-flowchart TD
-  subgraph SRC["ИСТОЧНИКИ СОБЫТИЯ"]
-    AFTN["MVT / AFTN / SITA<br/>(аэропорт, handling-агент)<br/>факт. вылет/посадка/задержка"]
-    KVS["КВС / экипаж<br/>(тел., супервайзер, радио)<br/>состояние ВС, экипажа"]
-    UTG["ДЦ АО Ю-Ти-Джи Внуково<br/>тел. 3452-281100, Модуль OPS<br/>п.1 нарушение ТГО более 15 мин<br/>п.2 движение, п.6 прогноз нарушения<br/>п.13-17 неисправности, опоздания паксов"]
-    OPDO["НС ОПДО САОП ЛД<br/>метео, НОТАМ, режимы"]
-    DONO["ДОНО — диспетчер ООНО<br/>наземное обслуживание, трансфер"]
-    SPiOU["СПиОУ ЛД<br/>экипажи, резерв, мед.отстранение"]
-    CUTO["ЦУТО ВС / ТД<br/>AOG, MEL, NOTOC"]
-    MM["Meridian.Alliance<br/>план, расстановка, брифинг"]
-  end
-
-  A1Q[["DP A1 — Диспетчер ЦУП<br/>Сформулировать предв.<br/>причину + код IATA"]]
-  A2Q[["DP A2 — НС ЦУП<br/>Окончательная формулировка<br/>и код AHM 730"]]
-  A3Q[["DP A3 — Начальник ЦУП<br/>(до 11:00 ежедневно)<br/>Нужно ли расследование?"]]
-  A4Q[["DP A4 — Нач. ЦУП → Ген.директор<br/>Корректирующие действия,<br/>аудит подрядчика"]]
-
-  AFTN --> A1Q
-  KVS --> A1Q
-  UTG --> A1Q
-  MM  --> A1Q
-
-  A1REC["Запись в Meridian.Ops"]
-  A1Q --> A1REC
-  A1REC --> A2Q
-  OPDO --> A2Q
-  DONO --> A2Q
-  SPiOU --> A2Q
-  CUTO --> A2Q
-
-  REP["Согласованная формулировка + IATA<br/>Отчёт UT-DSP.1-01.1<br/>2 раза в сутки — 04:00, 16:00"]
-  A2Q --> REP
-  REP --> A3Q
-  ACT["Акт на задержку<br/>ПДС а/п — в течение суток"] --> A3Q
-  REPR["Отчёт представителя"] --> A3Q
-
-  LN["Lotus Notes<br/>уведомление руководителям"]
-  AGGR["ИС «Производственная отчётность»"]
-  A3Q --> LN
-  LN --> AGGR
-  REG["UT-DSP.1-06<br/>регулярность, 21 категория задержек"]
-  AGGR --> REG
-  REG --> A4Q
-
-  CAD["Корректирующие действия<br/>ДП-М1.003"]
-  LOOP["Изменение процедур,<br/>спец.аудит подрядчика<br/>РД-М1.014"]
-  A4Q --> CAD
-  CAD --> LOOP
-  LOOP -.-> AFTN
-  LOOP -.-> UTG
-    </div></div>
+    <div class="callout"><strong>Обзорная диаграмма снята с публикации.</strong> Эскиз заменён стабильными карточками DP ниже. Каноническая визуализация процесса доступна как BPMN: <a href="../bpmn/RCA_AS-IS.bpmn" style="color:var(--blue)">RCA_AS-IS.bpmn</a>.</div>
   </div>
 
   <div class="section">
@@ -427,61 +373,7 @@ flowchart TD
   <div class="section">
     <h2>AS-IS поток данных: оперативное управление регулярностью <span class="badge">v2.1 · 12 многофакторных входов (8+4)</span></h2>
     <div class="callout warn"><strong>Триггер B-петли:</strong> <strong>каждое прогнозируемое или фактическое отклонение в плане полётов</strong> (без порога). На уровне B2 регламент требует рассмотреть <strong>не менее двух вариантов</strong> разрешения и зафиксировать обоснование. SLA-таймеры из <code>КД-РД-Б1.041-04</code> (изм.32): <strong>−6ч</strong> DEGR/CVIP/PDTS · <strong>−3ч/−2ч</strong> трансферный лист · <strong>+1ч</strong> контроль ФАП-82 (KYFO) · <strong>флаг t/t*</strong> в фильтре подмены ВС.</div>
-    <div class="mermaid-wrap"><div class="mermaid">
-flowchart TD
-  subgraph IN["МНОГОФАКТОРНЫЕ ВХОДЫ КАРТИНЫ (M1–M8)"]
-    M1["МЕТЕО / НОТАМ / РЕЖИМЫ<br/>НС ОПДО САОП ЛД"]
-    M2["ПАРК ВС<br/>ЦУТО ВС: AOG, MEL,<br/>температурные ограничения,<br/>винглеты"]
-    M3["ЭКИПАЖИ<br/>СПиОУ ЛД: резерв,<br/>раб.время, категорированные"]
-    M4["МАРШРУТЫ / ТОПЛИВО<br/>ОПДО САОП ЛД:<br/>расчёт, запасные а/д"]
-    M5["НАЗЕМНОЕ ОБСЛ.<br/>ДОНО, хэндл-агенты,<br/>ДЦ Ю-Ти-Джи (148-08)"]
-    M6["КОММЕРЦ. ЗАГРУЗКА<br/>ДУТиЗ, приоритеты<br/>VIP / ПК / еврокомпоновка"]
-    M7["СЛОТЫ / РАСПИСАНИЕ<br/>ЦБРС, ГЦ ЕС ОрВД"]
-    M8["ВНЕШНИЕ ЗАЯВКИ<br/>ООП ЦУП от заказчиков"]
-  end
-
-  subgraph IN21["v2.1: ВХОДЫ РЕШЕНИЯ (M9–M12, КД-РД-Б1.041-04 изм.32)"]
-    M9["DEGR / CVIP / PDTS<br/>АСБ Leonardo, КЦ<br/>SLA: T-6h"]
-    M10["t / t* префикс<br/>Meridian.OPS / КАЭ-КЛО<br/>фильтр подмены ВС"]
-    M11["KYFO ФАП-82<br/>сервисы паксам<br/>SLA: T+1h"]
-    M12["DCS Astra<br/>факт чек-инов,<br/>трансферный лист (T-3h/-2h)"]
-  end
-
-  TRG{{"Триггер: каждое отклонение<br/>в плане полётов<br/>(прогноз или факт)"}}
-
-  M1 --> TRG
-
-  B1Q[["DP B1 — Диспетчер ЦУП + смежные<br/>Сбор картины по конкретному<br/>отклонению — до 30 мин"]]
-  B2Q[["DP B2 — НС ЦУП<br/>Окончательное решение по отклонению<br/>ждать · заменить ВС · резерв экипажа<br/>перенести · совместить · отменить<br/>стыковки · запасной а/д"]]
-  B3Q[["DP B3 — Исполнители<br/>148-08, ЦУТО ВС, СПиОУ,<br/>ДОНО, ДУТиЗ, КЦ, ОКР, ДО ЦУП"]]
-  B4Q[["DP B4 — Иерархическая эскалация<br/>нач. ЦУП · нач. ЛД<br/>§14.1.4 — не ERP"]]
-
-  TRG --> B1Q
-  B1Q --> B2Q
-  M2 --> B2Q
-  M3 --> B2Q
-  M4 --> B2Q
-  M5 --> B2Q
-  M6 --> B2Q
-  M7 --> B2Q
-  M8 --> B2Q
-  M9 --> B2Q
-  M10 --> B2Q
-  M11 --> B2Q
-  M12 --> B2Q
-
-  CMDS["КОМАНДЫ ИСПОЛНИТЕЛЯМ<br/>• Meridian.Ops — изменения ПП<br/>• ДЦ Ю-Ти-Джи 148-08<br/>• ЦУТО ВС — замена/резерв<br/>• СПиОУ — экипажи<br/>• ДОНО — паксы, ФАП-82<br/>• ДУТиЗ — оповещение<br/>• KYFO — ФАП-82 push<br/>• СМС более 2ч / ВИП"]
-  B2Q --> CMDS
-  CMDS --> B3Q
-
-  B3Q --> CYCLE["Рейс возвращён в управляемое состояние<br/>или новая итерация B"]
-
-  B2Q -.-> B4Q
-  B4Q -.-> B3Q
-
-  classDef v21 fill:#eef1f6,stroke:#7a4cc9,stroke-width:2px,color:#111820
-  class IN21,M9,M10,M11,M12 v21
-    </div></div>
+    <div class="callout"><strong>Обзорная диаграмма снята с публикации.</strong> Поток B1–B4 описан карточками ниже и каноническим BPMN: <a href="../bpmn/Operational_Regularity_AS-IS.bpmn" style="color:var(--blue)">Operational_Regularity_AS-IS.bpmn</a>. Входы M1–M12 и GAP-03/GAP-10 сохранены в таблицах и карточках этой вкладки.</div>
   </div>
 
   <div class="section">
@@ -858,31 +750,13 @@ flowchart TD
 </div>
 
 <script>
-// Тема: применить сохранённое значение ДО инициализации mermaid
+// Тема: применить сохранённое значение до отрисовки страницы
 (function(){
   try{
     const saved=localStorage.getItem('tsup_as_is_theme');
     if(saved==='dark') document.documentElement.dataset.theme='dark';
   }catch(e){}
 })();
-function _mermaidVars(theme){
-  if(theme==='dark'){
-    return {theme:'dark',themeVariables:{darkMode:true,background:'#1e293b',primaryColor:'#1c2333',primaryTextColor:'#f1f5f9',primaryBorderColor:'#334155',lineColor:'#94a3b8',secondaryColor:'#0f172a',tertiaryColor:'#1e293b',fontFamily:'Segoe UI,Arial,sans-serif'}};
-  }
-  return {theme:'default',themeVariables:{background:'#ffffff',primaryColor:'#eef1f6',primaryTextColor:'#111820',primaryBorderColor:'#d0d3d4',lineColor:'#737576',secondaryColor:'#f4f5f7',tertiaryColor:'#ffffff',fontFamily:'Segoe UI,Arial,sans-serif'}};
-}
-mermaid.initialize(Object.assign({startOnLoad:false,flowchart:{useMaxWidth:true,htmlLabels:true,curve:'linear'}},_mermaidVars(document.documentElement.dataset.theme||'light')));
-function _runMermaid(){
-  return mermaid.run({querySelector:'.mermaid'}).catch(err=>{
-    // Mermaid may reject after drawing if its async layout hits a browser-specific path bug.
-    // Do not surface that as a user-visible console error for the dashboard page.
-  });
-}
-if(document.fonts && document.fonts.ready){
-  document.fonts.ready.then(_runMermaid);
-}else{
-  window.addEventListener('load',_runMermaid);
-}
 
 function toggleTheme(){
   const cur=document.documentElement.dataset.theme==='dark'?'dark':'light';
@@ -891,13 +765,6 @@ function toggleTheme(){
   const btn=document.getElementById('themeBtn');
   if(btn) btn.textContent = next==='dark' ? '☀ Светлая' : '🌙 Тёмная';
   try{localStorage.setItem('tsup_as_is_theme',next);}catch(e){}
-  document.querySelectorAll('.mermaid').forEach(el=>{
-    if(!el.dataset._src) el.dataset._src = el.textContent;
-    el.innerHTML = el.dataset._src;
-    el.removeAttribute('data-processed');
-  });
-  mermaid.initialize(Object.assign({startOnLoad:false,flowchart:{useMaxWidth:true,htmlLabels:true,curve:'linear'}},_mermaidVars(next)));
-  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(_runMermaid);
 }
 // Инициализировать подпись кнопки темы при загрузке
 window.addEventListener('DOMContentLoaded',()=>{
