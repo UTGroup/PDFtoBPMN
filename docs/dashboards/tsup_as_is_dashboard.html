@@ -850,7 +850,7 @@ function _mermaidVars(theme){
   }
   return {theme:'default',themeVariables:{background:'#ffffff',primaryColor:'#eef1f6',primaryTextColor:'#111820',primaryBorderColor:'#d0d3d4',lineColor:'#737576',secondaryColor:'#f4f5f7',tertiaryColor:'#ffffff',fontFamily:'Segoe UI,Arial,sans-serif'}};
 }
-mermaid.initialize(Object.assign({startOnLoad:false,flowchart:{useMaxWidth:true,htmlLabels:true,curve:'basis'}},_mermaidVars(document.documentElement.dataset.theme||'light')));
+mermaid.initialize(Object.assign({startOnLoad:false,flowchart:{useMaxWidth:true,htmlLabels:true,curve:'linear'}},_mermaidVars(document.documentElement.dataset.theme||'light')));
 if(document.fonts && document.fonts.ready){
   document.fonts.ready.then(()=>mermaid.run({querySelector:'.mermaid'}));
 }else{
@@ -869,7 +869,7 @@ function toggleTheme(){
     el.innerHTML = el.dataset._src;
     el.removeAttribute('data-processed');
   });
-  mermaid.initialize(Object.assign({startOnLoad:false,flowchart:{useMaxWidth:true,htmlLabels:true,curve:'basis'}},_mermaidVars(next)));
+  mermaid.initialize(Object.assign({startOnLoad:false,flowchart:{useMaxWidth:true,htmlLabels:true,curve:'linear'}},_mermaidVars(next)));
   (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(()=>mermaid.run({querySelector:'.mermaid'}));
 }
 // Инициализировать подпись кнопки темы при загрузке
