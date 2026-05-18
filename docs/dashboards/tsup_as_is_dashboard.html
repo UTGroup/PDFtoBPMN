@@ -846,11 +846,16 @@ flowchart TD
 })();
 function _mermaidVars(theme){
   if(theme==='dark'){
-    return {theme:'dark',themeVariables:{darkMode:true,background:'#1e293b',primaryColor:'#1c2333',primaryTextColor:'#f1f5f9',primaryBorderColor:'#334155',lineColor:'#94a3b8',secondaryColor:'#0f172a',tertiaryColor:'#1e293b',fontFamily:"'Suisse Intl','Segoe UI',Arial,sans-serif"}};
+    return {theme:'dark',themeVariables:{darkMode:true,background:'#1e293b',primaryColor:'#1c2333',primaryTextColor:'#f1f5f9',primaryBorderColor:'#334155',lineColor:'#94a3b8',secondaryColor:'#0f172a',tertiaryColor:'#1e293b',fontFamily:'Segoe UI,Arial,sans-serif'}};
   }
-  return {theme:'default',themeVariables:{background:'#ffffff',primaryColor:'#eef1f6',primaryTextColor:'#111820',primaryBorderColor:'#d0d3d4',lineColor:'#737576',secondaryColor:'#f4f5f7',tertiaryColor:'#ffffff',fontFamily:"'Suisse Intl','Segoe UI',Arial,sans-serif"}};
+  return {theme:'default',themeVariables:{background:'#ffffff',primaryColor:'#eef1f6',primaryTextColor:'#111820',primaryBorderColor:'#d0d3d4',lineColor:'#737576',secondaryColor:'#f4f5f7',tertiaryColor:'#ffffff',fontFamily:'Segoe UI,Arial,sans-serif'}};
 }
-mermaid.initialize(Object.assign({startOnLoad:true,flowchart:{useMaxWidth:true,htmlLabels:true,curve:'basis'}},_mermaidVars(document.documentElement.dataset.theme||'light')));
+mermaid.initialize(Object.assign({startOnLoad:false,flowchart:{useMaxWidth:true,htmlLabels:true,curve:'basis'}},_mermaidVars(document.documentElement.dataset.theme||'light')));
+if(document.fonts && document.fonts.ready){
+  document.fonts.ready.then(()=>mermaid.run({querySelector:'.mermaid'}));
+}else{
+  window.addEventListener('load',()=>mermaid.run({querySelector:'.mermaid'}));
+}
 
 function toggleTheme(){
   const cur=document.documentElement.dataset.theme==='dark'?'dark':'light';
@@ -865,7 +870,7 @@ function toggleTheme(){
     el.removeAttribute('data-processed');
   });
   mermaid.initialize(Object.assign({startOnLoad:false,flowchart:{useMaxWidth:true,htmlLabels:true,curve:'basis'}},_mermaidVars(next)));
-  mermaid.run({querySelector:'.mermaid'});
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(()=>mermaid.run({querySelector:'.mermaid'}));
 }
 // Инициализировать подпись кнопки темы при загрузке
 window.addEventListener('DOMContentLoaded',()=>{
