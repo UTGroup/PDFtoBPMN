@@ -4,15 +4,54 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ЦУП — AS-IS v2.1: RCA по задержкам и оперативное управление регулярностью</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.0/dist/purify.min.js"></script>
 <style>
-:root{--bg:#0d1117;--surface:#161b22;--surface2:#1c2333;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--blue:#58a6ff;--blue-bg:rgba(88,166,255,.08);--green:#3fb950;--green-bg:rgba(63,185,80,.08);--yellow:#d29922;--yellow-bg:rgba(210,153,34,.08);--red:#f85149;--red-bg:rgba(248,81,73,.08);--purple:#bc8cff;--purple-bg:rgba(188,140,255,.08);--orange:#f0883e;--orange-bg:rgba(240,136,62,.08);--cyan:#39d2c0;--cyan-bg:rgba(57,210,192,.08);--r:8px}
+@font-face{font-family:'Suisse Int\'l';src:url('assets/SuisseIntl-Regular.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap}
+:root{
+  --utair-blue:#003594;--utair-blue-dark:#002570;--utair-light-blue:#7ca3dc;--utair-light-blue2:#b4c8e7;
+  --utair-red:#dc2328;--utair-yellow:#ffc332;--utair-green:#008c5f;--utair-orange:#ff6e0a;
+  --utair-black:#111820;--utair-grey:#737576;--utair-light-grey:#d0d3d4;--utair-bg:#f4f5f7;--utair-white:#ffffff;
+  /* семантические токены, унаследованные от первой версии дашборда */
+  --bg:var(--utair-bg);--surface:var(--utair-white);--surface2:#eef1f6;--border:var(--utair-light-grey);
+  --text:var(--utair-black);--text2:var(--utair-grey);
+  --blue:var(--utair-blue);--blue-bg:rgba(0,53,148,.08);
+  --green:var(--utair-green);--green-bg:rgba(0,140,95,.10);
+  --yellow:#a66f00;--yellow-bg:rgba(255,195,50,.22);
+  --red:var(--utair-red);--red-bg:rgba(220,35,40,.10);
+  --purple:#7a4cc9;--purple-bg:rgba(122,76,201,.10);
+  --orange:var(--utair-orange);--orange-bg:rgba(255,110,10,.10);
+  --cyan:#0a7a8f;--cyan-bg:rgba(10,122,143,.10);
+  --r:8px;
+}
+[data-theme="dark"]{
+  --utair-bg:#0f172a;--utair-white:#1e293b;--utair-light-grey:#334155;--utair-black:#f1f5f9;--utair-grey:#94a3b8;
+  --surface2:#1c2333;--blue-bg:rgba(0,53,148,.18);--green-bg:rgba(0,140,95,.18);
+  --yellow:#ffc332;--yellow-bg:rgba(255,195,50,.16);--red-bg:rgba(220,35,40,.18);
+  --purple-bg:rgba(122,76,201,.18);--orange-bg:rgba(255,110,10,.18);--cyan-bg:rgba(10,122,143,.20);
+}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px}
+body{font-family:'Suisse Int\'l',-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+/* Корпоративная шапка */
+.brand-header{background:var(--utair-blue);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.brand-header .bh-left{display:flex;align-items:center;gap:14px;min-width:0}
+.brand-header .bh-logo{height:28px;display:block;flex:0 0 auto}
+.brand-header .bh-title{font-size:1.05rem;font-weight:700;letter-spacing:-.01em;line-height:1.25}
+.brand-header .bh-meta{font-size:.72rem;opacity:.78;margin-top:2px}
+.brand-header .bh-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.brand-header .bh-tag{background:var(--utair-green);color:#fff;font-size:.65rem;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.04em;text-transform:uppercase}
+.brand-header .bh-tag.bh-tag-method{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35)}
+.brand-header .theme-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:5px 14px;border-radius:20px;cursor:pointer;font-size:.78rem;font-family:inherit;transition:background .2s}
+.brand-header .theme-btn:hover{background:rgba(255,255,255,.28)}
+.brand-header a.bh-back{background:none;border:1px solid rgba(255,255,255,.35);color:rgba(255,255,255,.9);padding:5px 14px;border-radius:20px;font-size:.78rem;text-decoration:none;transition:background .2s}
+.brand-header a.bh-back:hover{background:rgba(255,255,255,.15);color:#fff}
+.page-wrap{padding:24px}
 .header{text-align:center;margin-bottom:18px}
-.header h1{font-size:22px;font-weight:700;margin-bottom:4px}
-.header .sub{font-size:13px;color:var(--text2);max-width:900px;margin:0 auto}
+.header h1{font-size:22px;font-weight:700;margin-bottom:4px;color:var(--utair-blue-dark)}
+[data-theme="dark"] .header h1{color:#fff}
+.header .sub{font-size:13px;color:var(--text2);max-width:900px;margin:0 auto;line-height:1.55}
 .header .src{margin-top:8px;font-size:11px;color:var(--text2);font-family:'JetBrains Mono',monospace}
 .header .src a{color:var(--blue);text-decoration:none}
 .tabs{display:flex;gap:2px;justify-content:center;margin-bottom:22px;background:var(--surface);border-radius:var(--r);padding:3px;flex-wrap:wrap;width:fit-content;margin-left:auto;margin-right:auto;max-width:100%}
@@ -93,21 +132,109 @@ table.dt tr:hover{background:var(--surface)}
 .links a:hover{border-color:var(--blue);background:var(--surface2)}
 .links a .lt{font-weight:600;font-size:13px;margin-bottom:4px;color:var(--blue)}
 .links a .ld{color:var(--text2);font-size:11px;line-height:1.5}
+.extlink{display:block;background:var(--surface);border:1px dashed var(--border);border-radius:var(--r);padding:12px 14px;font-size:12px;color:var(--text);cursor:not-allowed;opacity:.85}
+.extlink .lt{font-weight:600;font-size:13px;margin-bottom:4px;color:var(--text)}
+.extlink .ld{color:var(--text2);font-size:11px;line-height:1.5}
+.ext-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;padding:1px 6px;border-radius:3px;background:var(--surface2);color:var(--text2);margin-left:6px;text-transform:uppercase;letter-spacing:.04em;vertical-align:middle}
 .callout{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--blue);border-radius:var(--r);padding:12px 14px;font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:14px}
 .callout strong{color:var(--text)}
 .callout.warn{border-left-color:var(--orange)}
 .callout.ok{border-left-color:var(--green)}
+.callout.danger{border-left-color:var(--red)}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--text2);margin-bottom:10px}
 .legend .li{display:flex;align-items:center;gap:6px}
 .legend .li .sw{width:10px;height:10px;border-radius:2px}
+/* Source buckets — Шаг 1 TASK-016 */
+.bl-counts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:900px){.bl-counts{grid-template-columns:1fr}}
+.bl-col{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
+.bl-col h4{font-size:13px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.bl-col h4 .bn{font-family:'JetBrains Mono',monospace;font-size:11px;padding:2px 8px;border-radius:4px;background:var(--blue-bg);color:var(--blue)}
+.bl-col .ann{font-size:11px;color:var(--text2);margin-bottom:10px;line-height:1.5}
+.bl-col .src-list{display:flex;flex-wrap:wrap;gap:5px}
+.src-badge{font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 7px;border-radius:3px;border:1px solid var(--border)}
+.src-badge.g{background:var(--green-bg);color:var(--green);border-color:rgba(63,185,80,.3)}
+.src-badge.y{background:var(--yellow-bg);color:var(--yellow);border-color:rgba(210,153,34,.3)}
+.src-badge.r{background:var(--red-bg);color:var(--red);border-color:rgba(248,81,73,.3)}
+.src-badge.org{background:var(--surface2);color:var(--text2);border-style:dashed}
+.bl-col .sub{font-size:11px;color:var(--text2);margin:8px 0 4px;font-weight:600}
+/* GAP map — Шаг 1 TASK-016 */
+.gap-map-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px;overflow-x:auto}
+.gap-map{display:grid;grid-template-columns:auto repeat(3,1fr);gap:6px;font-size:11px;min-width:600px}
+.gap-map .gmh{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text2);padding:6px 8px;text-align:center;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.gap-map .gmh.row{text-align:right;align-self:center}
+.gap-map .gmc{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px;min-height:60px;display:flex;flex-direction:column;gap:5px;align-items:flex-start}
+.gap-map .gmc.empty{background:transparent;border:1px dashed var(--border);min-height:60px}
+.gap-pill{display:inline-flex;align-items:center;gap:4px;font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 7px;border-radius:4px;cursor:pointer;border:1px solid transparent;transition:.15s;user-select:none}
+.gap-pill:hover{transform:translateY(-1px);border-color:var(--text)}
+.gap-pill .ph{font-size:9px;opacity:.7}
+.gap-pill.p0{background:var(--green-bg);color:var(--green);border-color:rgba(63,185,80,.3)}
+.gap-pill.p1{background:var(--blue-bg);color:var(--blue);border-color:rgba(88,166,255,.3)}
+.gap-pill.p2{background:var(--purple-bg);color:var(--purple);border-color:rgba(188,140,255,.3)}
+.gap-pill.po{background:rgba(139,148,158,.12);color:var(--text2);border-color:var(--border)}
+.gap-pill.crit{box-shadow:0 0 0 2px var(--red) inset;font-weight:700}
+.gap-map-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--text2);margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.gap-card.highlight{animation:gh 2.2s ease-out;border-left-width:6px}
+@keyframes gh{0%{box-shadow:0 0 0 0 var(--blue)}30%{box-shadow:0 0 0 4px var(--blue-bg)}100%{box-shadow:0 0 0 0 transparent}}
+/* MD/YAML modal renderer (Шаг 1 TASK-016 фикс) */
+.doc-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.doc-modal.on{display:flex}
+.doc-modal-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);max-width:1100px;width:100%;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.doc-modal-hdr{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--surface)}
+.doc-modal-hdr .dm-icon{font-size:18px}
+.doc-modal-hdr .dm-title{flex:1;font-weight:700;font-size:14px;font-family:'JetBrains Mono',monospace;color:var(--blue);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.doc-modal-hdr .dm-actions{display:flex;gap:8px}
+.dm-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:6px;font-family:inherit;font-size:11px;cursor:pointer;transition:.15s}
+.dm-btn:hover{border-color:var(--blue);background:var(--blue-bg);color:var(--blue)}
+.dm-btn.dm-close{padding:6px 10px;font-size:14px;line-height:1}
+.doc-modal-body{flex:1;overflow-y:auto;padding:24px 28px;font-size:13px;line-height:1.7;color:var(--text)}
+.doc-modal-body h1{font-size:22px;margin:0 0 14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.doc-modal-body h2{font-size:17px;margin:22px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.doc-modal-body h3{font-size:14px;margin:18px 0 8px;color:var(--text)}
+.doc-modal-body h4{font-size:13px;margin:14px 0 6px;color:var(--text2)}
+.doc-modal-body p{margin:8px 0}
+.doc-modal-body ul,.doc-modal-body ol{margin:8px 0 8px 22px}
+.doc-modal-body li{margin-bottom:3px}
+.doc-modal-body code{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--surface2);padding:1px 5px;border-radius:3px;color:var(--text)}
+.doc-modal-body pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;overflow-x:auto;margin:10px 0}
+.doc-modal-body pre code{background:transparent;padding:0;font-size:11px;line-height:1.6}
+.doc-modal-body table{border-collapse:collapse;width:100%;margin:10px 0;font-size:12px}
+.doc-modal-body th,.doc-modal-body td{padding:6px 10px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+.doc-modal-body th{background:var(--surface2);font-weight:600;font-size:11px;color:var(--text2)}
+.doc-modal-body blockquote{margin:10px 0;padding:8px 14px;border-left:3px solid var(--yellow);background:var(--yellow-bg);color:var(--text2);font-size:12px}
+.doc-modal-body a{color:var(--blue);text-decoration:none}
+.doc-modal-body a:hover{text-decoration:underline}
+.doc-modal-body hr{border:none;border-top:1px solid var(--border);margin:20px 0}
+.doc-modal-body strong{color:var(--text)}
+.doc-modal-body em{color:var(--text)}
+.doc-modal-loading{padding:60px 20px;text-align:center;color:var(--text2);font-size:13px}
+.doc-modal-error{padding:30px 20px;background:var(--red-bg);border-left:3px solid var(--red);border-radius:var(--r);margin:20px;color:var(--text)}
+.doc-modal-error h3{color:var(--red);margin-bottom:10px}
+.doc-modal-error code{background:var(--surface);padding:2px 6px;border-radius:3px;font-family:'JetBrains Mono',monospace}
 </style>
 </head>
 <body>
 
+<header class="brand-header">
+  <div class="bh-left">
+    <img src="assets/sign_white.png" alt="Utair" class="bh-logo">
+    <div>
+      <div class="bh-title">ЦУП — AS-IS v2.1 · RCA и оперативная регулярность</div>
+      <div class="bh-meta">Карта потоков данных, decision points · 27 источников · оценка готовности к ИИ-ассистенту</div>
+    </div>
+  </div>
+  <div class="bh-right">
+    <span class="bh-tag bh-tag-method">Методология</span>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 Тёмная</button>
+  </div>
+</header>
+
+<div class="page-wrap">
+
 <div class="header">
   <h1>ЦУП — AS-IS v2.1: RCA по задержкам &amp; оперативное управление регулярностью</h1>
   <div class="sub">Карта потоков данных, сходящихся в decision points человека (диспетчер ЦУП, НС ЦУП, начальник ЦУП). Цель — оценка достаточности данных для развёртывания ИИ-ассистента.<br/><strong>v2.1:</strong> добавлены КД-РД-Б1.041-04 (изм.32) и КК62-26 — DEGR/CVIP/PDTS, KYFO, DCS Astra, t/t*; SLA-таймеры -6ч/-3ч/-2ч/+1ч; новый GAP-10 «несинхронность 3 систем». Сбойная ситуация ≥10 и ERP/РГ-128 вынесены из основной B-петли.</div>
-  <div class="src">источник истины: <a href="../../input2/ЦУП_md/ANALYSIS_AS-IS_RCA_и_Сбойные.md">input2/ЦУП_md/ANALYSIS_AS-IS_RCA_и_Сбойные.md</a> (v2.1)</div>
+  <div class="src">источник анализа: ANALYSIS_AS-IS_RCA_и_Сбойные.md v2.1 — рабочий черновик команды (Nextcloud, не публикуется на портал)</div>
 </div>
 
 <div class="tabs">
@@ -116,7 +243,7 @@ table.dt tr:hover{background:var(--surface)}
   <div class="tab" data-tab="2">Опер. управление регулярностью (B1–B4)</div>
   <div class="tab" data-tab="3">Источники данных</div>
   <div class="tab" data-tab="4">Матрица DP ↔ Data</div>
-  <div class="tab" data-tab="5">AI Readiness &amp; Roadmap</div>
+  <div class="tab" data-tab="5">Copilot Readiness — B-петля</div>
 </div>
 
 <!-- ═══════════════ TAB 0: ОБЗОР ═══════════════ -->
@@ -191,7 +318,7 @@ table.dt tr:hover{background:var(--surface)}
   <div class="section">
     <h2>Связанные артефакты <span class="badge">5 файлов</span></h2>
     <div class="links">
-      <a href="../../input2/ЦУП_md/ANALYSIS_AS-IS_RCA_и_Сбойные.md"><div class="lt">📄 ANALYSIS_AS-IS_RCA_и_Сбойные.md</div><div class="ld">Утверждённый текст AS-IS-анализа: DP, схемы, матрица, рекомендации</div></a>
+      <div class="extlink" title="Файл хранится в Nextcloud — /mnt/c/Users/Budnik_AN/Nextcloud/PDFtoBPMN/input2/ЦУП_md/ANALYSIS_AS-IS_RCA_и_Сбойные.md"><div class="lt">📄 ANALYSIS_AS-IS_RCA_и_Сбойные.md <span class="ext-tag">внешний</span></div><div class="ld">Утверждённый текст AS-IS-анализа: DP, схемы, матрица, рекомендации — хранится в Nextcloud команды, на портал не публикуется</div></div>
       <a href="../data_sources_catalog_TsUP.md"><div class="lt">📊 data_sources_catalog_TsUP.md</div><div class="ld">Каталог 30+ источников данных c MR/доступом/готовностью и phase-плана</div></a>
       <a href="../knowledge_gaps_TsUP.md"><div class="lt">⚠ knowledge_gaps_TsUP.md</div><div class="ld">Реестр 9 пробелов с severity/effort/owner и митигацией</div></a>
       <a href="../ontology_TsUP.yaml"><div class="lt">🧬 ontology_TsUP.yaml</div><div class="ld">Онтология: роли, DP, справочники, события, cross-ref документов</div></a>
@@ -214,7 +341,7 @@ flowchart TD
   subgraph SRC["ИСТОЧНИКИ СОБЫТИЯ"]
     AFTN["MVT / AFTN / SITA<br/>(аэропорт, handling-агент)<br/>факт. вылет/посадка/задержка"]
     KVS["КВС / экипаж<br/>(тел., супервайзер, радио)<br/>состояние ВС, экипажа"]
-    UTG["ДЦ АО Ю-Ти-Джи (Внуково)<br/>тел. (3452) 281100, Модуль OPS<br/>п.1 нарушение ТГО &gt;15 мин<br/>п.2 движение, п.6 прогноз нарушения<br/>п.13–17 неисправности, опоздания паксов"]
+    UTG["ДЦ АО Ю-Ти-Джи Внуково<br/>тел. 3452-281100, Модуль OPS<br/>п.1 нарушение ТГО более 15 мин<br/>п.2 движение, п.6 прогноз нарушения<br/>п.13-17 неисправности, опоздания паксов"]
     OPDO["НС ОПДО САОП ЛД<br/>метео, НОТАМ, режимы"]
     DONO["ДОНО — диспетчер ООНО<br/>наземное обслуживание, трансфер"]
     SPiOU["СПиОУ ЛД<br/>экипажи, резерв, мед.отстранение"]
@@ -324,7 +451,7 @@ flowchart TD
   M2 & M3 & M4 & M5 & M6 & M7 & M8 --> B2Q
   M9 & M10 & M11 & M12 --> B2Q
 
-  B2Q -- "Команды:<br/>• Meridian.Ops (изменения ПП)<br/>• ДЦ Ю-Ти-Джи (148-08)<br/>• ЦУТО ВС (замена/резерв)<br/>• СПиОУ (экипажи)<br/>• ДОНО (паксы, ФАП-82)<br/>• ДУТиЗ (оповещение)<br/>• KYFO (ФАП-82 push)<br/>• СМС «&gt;2ч» / «ВИП»" --> B3Q
+  B2Q -- "Команды:<br/>• Meridian.Ops (изменения ПП)<br/>• ДЦ Ю-Ти-Джи 148-08<br/>• ЦУТО ВС (замена/резерв)<br/>• СПиОУ (экипажи)<br/>• ДОНО (паксы, ФАП-82)<br/>• ДУТиЗ (оповещение)<br/>• KYFO (ФАП-82 push)<br/>• СМС более 2ч / ВИП" --> B3Q
 
   B3Q --> CYCLE["Рейс возвращён в управляемое состояние<br/>(или новая итерация B)"]
 
@@ -483,42 +610,161 @@ flowchart TD
 
 </div>
 
-<!-- ═══════════════ TAB 5: AI READINESS & ROADMAP ═══════════════ -->
+<!-- ═══════════════ TAB 5: COPILOT READINESS — B-ПЕТЛЯ ═══════════════ -->
 <div class="view" id="v5">
 
   <div class="section">
-    <h2>Сильные места и узкие места <span class="badge">2 + 5</span></h2>
-    <div class="callout ok"><strong>Сильные места (можно стартовать сразу):</strong>
-      <ul style="margin:6px 0 0 18px;line-height:1.7">
-        <li>Количественные триггеры (B1, B3) и оптимизации опираются на <code>Meridian.Alliance</code> + AFTN/SITA — машиночитаемые потоки.</li>
-        <li>Цикл RCA на A4 уже структурирован 21-категорийной таксономией задержек (<code>РИ-М1.016 §8.1.2</code>) в ИС «Производственная отчётность».</li>
-        <li>SOP-таблицы взаимодействия (<code>РД-Б8.005</code> табл. 1.x–8.x; <code>КД-РГ-147(148)-08</code> табл. 1–3) дают почти готовую онтологию событий и адресатов.</li>
-      </ul>
+    <h2>Срез B-петли — 19 / 27 источников <span class="badge">скорректировано · TASK-016</span></h2>
+    <div class="callout"><strong>Rule 0:</strong> единого процента «X% готовности» здесь нет намеренно — он маскирует разрыв. Вместо плитки — две цифры одновременно (строгий счёт по <code>§6</code> каталога и расширенный по <code>§1–§4</code>) с полным списком ID и явной маркировкой пробелов. Источник истины: <a href="../data_sources_catalog_TsUP.md" style="color:var(--blue)">data_sources_catalog_TsUP.md</a>.</div>
+    <div class="bl-counts">
+      <div class="bl-col">
+        <h4>§6 строго (что в каталоге явно отнесено к B1/B2) <span class="bn">19 ID + 3 org</span></h4>
+        <div class="ann">Атомарные source-ID, перечисленные в §6 как сходящиеся в B1/B2. Плюс три организационных входа (роли), упомянутых без отдельного ID.</div>
+        <div class="sub">Зелёные (S, green) · 14</div>
+        <div class="src-list">
+          <span class="src-badge g">FEED-AFTN-MVT</span>
+          <span class="src-badge g">FEED-METEO</span>
+          <span class="src-badge g">FEED-SITA</span>
+          <span class="src-badge g">SYS-MER-OPS</span>
+          <span class="src-badge g">SYS-MER-NET</span>
+          <span class="src-badge g">SYS-MER-NAV</span>
+          <span class="src-badge g">SYS-MER-CREW</span>
+          <span class="src-badge g">SYS-CBRS</span>
+          <span class="src-badge g">SYS-LEONARDO</span>
+          <span class="src-badge g">SYS-DCS-ASTRA</span>
+          <span class="src-badge g">SYS-KYFO</span>
+          <span class="src-badge g">SYS-MER-OPS-TT</span>
+          <span class="src-badge g">FEED-LEO-PUSH</span>
+          <span class="src-badge g">FEED-KYFO-PUSH</span>
+        </div>
+        <div class="sub">Жёлтые (SS, yellow) · 4</div>
+        <div class="src-list">
+          <span class="src-badge y">MSG-WA-148</span>
+          <span class="src-badge y">DOC-TRANSFER-LIST</span>
+          <span class="src-badge y">DOC-KYFO-LOG</span>
+          <span class="src-badge y">DOC-FLEET-STATE</span>
+        </div>
+        <div class="sub">Красные (U, red) · 1</div>
+        <div class="src-list">
+          <span class="src-badge r">VOICE-PHONE</span>
+        </div>
+        <div class="sub">Организационные входы (без source-ID)</div>
+        <div class="src-list">
+          <span class="src-badge org">ЦУТО ВС</span>
+          <span class="src-badge org">СПиОУ ЛД</span>
+          <span class="src-badge org">ДУТиЗ</span>
+        </div>
+      </div>
+      <div class="bl-col">
+        <h4>§1–§4 расширенно (все source-ID с DP=B1/B2) <span class="bn">27 ID</span></h4>
+        <div class="ann">К §6 добавлены источники, у которых DP=B1/B2 указан в строках каталога §1–§4, но не вошли в сводную карту §6.</div>
+        <div class="sub">Зелёные · 18 (14 из §6 + 4 добавлено)</div>
+        <div class="src-list">
+          <span class="src-badge g">FEED-AFTN-MVT</span>
+          <span class="src-badge g">FEED-METEO</span>
+          <span class="src-badge g">FEED-SITA</span>
+          <span class="src-badge g">SYS-MER-OPS</span>
+          <span class="src-badge g">SYS-MER-NET</span>
+          <span class="src-badge g">SYS-MER-NAV</span>
+          <span class="src-badge g">SYS-MER-CREW</span>
+          <span class="src-badge g">SYS-CBRS</span>
+          <span class="src-badge g">SYS-LEONARDO</span>
+          <span class="src-badge g">SYS-DCS-ASTRA</span>
+          <span class="src-badge g">SYS-KYFO</span>
+          <span class="src-badge g">SYS-MER-OPS-TT</span>
+          <span class="src-badge g">FEED-LEO-PUSH</span>
+          <span class="src-badge g">FEED-KYFO-PUSH</span>
+          <span class="src-badge g">FEED-AFTN-RSP</span>
+          <span class="src-badge g">DOC-FLT-PLAN</span>
+          <span class="src-badge g">DOC-NOTOC</span>
+          <span class="src-badge g">SYS-PROD-REP</span>
+        </div>
+        <div class="sub">Жёлтые · 8 (4 из §6 + 4 добавлено)</div>
+        <div class="src-list">
+          <span class="src-badge y">MSG-WA-148</span>
+          <span class="src-badge y">DOC-TRANSFER-LIST</span>
+          <span class="src-badge y">DOC-KYFO-LOG</span>
+          <span class="src-badge y">DOC-FLEET-STATE</span>
+          <span class="src-badge y">SYS-OPS-MOD</span>
+          <span class="src-badge y">DOC-MEL</span>
+          <span class="src-badge y">FEED-SMS-2H</span>
+          <span class="src-badge y">FEED-SMS-VIP</span>
+        </div>
+        <div class="sub">Красные · 1</div>
+        <div class="src-list">
+          <span class="src-badge r">VOICE-PHONE</span>
+        </div>
+      </div>
     </div>
-    <div class="callout warn"><strong>Узкие места (требуют донастройки контура):</strong>
-      <ol style="margin:6px 0 0 18px;line-height:1.7">
-        <li>DP A1/A2 — формулировка причины задержки на стыке голосовых каналов: нужен voice-to-text или чек-лист в Meridian.Ops.</li>
-        <li>DP A3 — акты на задержку от ПДС аэропортов разнородны: нужен OCR + классификатор.</li>
-        <li>DP B2 — обоснование выбора сценария не сохраняется (только команды-исполнения): нужен журнал решений.</li>
-        <li>WhatsApp / устные каналы (148-08) не сохраняются.</li>
-        <li>Связи между документами выражены только текстовыми ссылками: нужна явная онтология.</li>
-      </ol>
+    <div class="callout danger"><strong>Ошибочно включались в B-петлю и убраны (это A-петля / B4):</strong>
+      <span class="src-badge r" style="margin-left:6px">SYS-LOTUS</span>
+      <span class="src-badge r">VOICE-RADIO</span>
+      <span class="src-badge r">MAN-LOG-SHIFT</span>
+      <span class="src-badge r">DOC-ACT-DELAY</span>
+      <span class="src-badge r">DOC-ERP-CARDS</span>
+      <span style="display:block;margin-top:8px;font-size:11px">Подтверждено двумя независимыми кросс-чеками (Opus 4.7 / GPT-5.5) по столбцу DP каталога §1–§4. См. <a href="../data_sources_catalog_TsUP.md#6-карта-source--dp" style="color:var(--blue)">§6 карта source→DP</a>.</span>
+    </div>
+    <div class="callout ok"><strong>Возвращены в зелёную зону B-петли:</strong>
+      <span class="src-badge g" style="margin-left:6px">FEED-SITA</span>
+      <span class="src-badge g">DOC-KYFO-LOG</span>
+      <span style="display:block;margin-top:8px;font-size:11px">Оба явно перечислены в §6 для B1/B2 (FEED-SITA через A1+B1 чтение MVT, DOC-KYFO-LOG как контроль ФАП-82 в T+1ч).</span>
     </div>
   </div>
 
   <div class="section">
-    <h2>Knowledge gaps <span class="badge">v2.1 · 10 пробелов</span></h2>
+    <h2>Knowledge gaps · GAP-карта <span class="badge">Severity × Effort · drill-down</span></h2>
+    <div class="callout"><strong>Критпуть PoC «Co-pilot НС ЦУП по B2»:</strong> <span class="gap-pill p1 crit" onclick="goGap('gap03')">GAP-03 <span class="ph">P1</span></span> + <span class="gap-pill p1 crit" onclick="goGap('gap10')">GAP-10 <span class="ph">P1</span></span> + <span class="gap-pill p1 crit" onclick="goGap('gap08')">GAP-08 <span class="ph">P1</span></span>. Расширение с двух до трёх — это вклад кросс-чека: устные приоритеты ДУТиЗ (<code>GAP-08</code>) ломают журнал решений изнутри так же, как отсутствие самого журнала (<code>GAP-03</code>) и рассинхрон трёх систем (<code>GAP-10</code>). Клик по любому пилюле — переход к карточке ниже.</div>
+    <div class="gap-map-wrap">
+      <div class="gap-map">
+        <div class="gmh"></div>
+        <div class="gmh">Effort: S<br/><span style="font-weight:400;text-transform:none;letter-spacing:0">≤2 нед.</span></div>
+        <div class="gmh">Effort: M<br/><span style="font-weight:400;text-transform:none;letter-spacing:0">1–2 мес.</span></div>
+        <div class="gmh">Effort: L<br/><span style="font-weight:400;text-transform:none;letter-spacing:0">&gt;3 мес. / регуляторно</span></div>
+
+        <div class="gmh row">SEV 1</div>
+        <div class="gmc empty"></div>
+        <div class="gmc"><span class="gap-pill p1 crit" onclick="goGap('gap03')">GAP-03 <span class="ph">P1 · крит</span></span></div>
+        <div class="gmc"><span class="gap-pill p2" onclick="goGap('gap01')">GAP-01 <span class="ph">P2</span></span></div>
+
+        <div class="gmh row">SEV 2</div>
+        <div class="gmc"><span class="gap-pill p0" onclick="goGap('gap05')">GAP-05 <span class="ph">P0 · quick win</span></span></div>
+        <div class="gmc">
+          <span class="gap-pill p1" onclick="goGap('gap04')">GAP-04 <span class="ph">P1</span></span>
+          <span class="gap-pill p1" onclick="goGap('gap07')">GAP-07 <span class="ph">P1</span></span>
+          <span class="gap-pill p1 crit" onclick="goGap('gap08')">GAP-08 <span class="ph">P1 · крит</span></span>
+          <span class="gap-pill p1 crit" onclick="goGap('gap10')">GAP-10 <span class="ph">P1 · крит</span></span>
+          <span class="gap-pill p2" onclick="goGap('gap02')">GAP-02 <span class="ph">P2</span></span>
+        </div>
+        <div class="gmc empty"></div>
+
+        <div class="gmh row">SEV 3</div>
+        <div class="gmc empty"></div>
+        <div class="gmc"><span class="gap-pill p2" onclick="goGap('gap09')">GAP-09 <span class="ph">P2</span></span></div>
+        <div class="gmc"><span class="gap-pill po" onclick="goGap('gap06')">GAP-06 <span class="ph">out</span></span></div>
+      </div>
+      <div class="gap-map-legend">
+        <span class="li"><span class="sw" style="background:var(--green)"></span>Phase 0 — quick win</span>
+        <span class="li"><span class="sw" style="background:var(--blue)"></span>Phase 1 — критический путь PoC</span>
+        <span class="li"><span class="sw" style="background:var(--purple)"></span>Phase 2 — после MVP</span>
+        <span class="li"><span class="sw" style="background:rgba(139,148,158,.4)"></span>out — вне MVP</span>
+        <span class="li" style="margin-left:auto"><span class="sw" style="background:transparent;border:2px solid var(--red)"></span>критпуть PoC «Co-pilot B2»</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Knowledge gaps · карточки <span class="badge">v2.1 · 10 пробелов</span></h2>
     <div class="gap-cards">
-      <div class="gap-card sev1"><div class="gn"><span class="gi">GAP-01</span><span class="sev s1">SEV 1</span><span class="eff">L</span><span>Голосовая координация А1/А2 не фиксируется</span></div><div class="gd">Решение принимается на стыке тел./ГГС/радио — без записи. Owner: ЦУП + ИБ + юристы.</div><div class="gr">Митигация: чек-лист в Meridian.Ops + voice-to-text c анонимизацией.</div></div>
-      <div class="gap-card sev2"><div class="gn"><span class="gi">GAP-02</span><span class="sev s2">SEV 2</span><span class="eff">M</span><span>Акты на задержку от ПДС аэропортов разрозненны</span></div><div class="gd">Бумажные/PDF-акты разных а/п не агрегируются.</div><div class="gr">Митигация: OCR-приёмник + классификатор по 21 категории.</div></div>
-      <div class="gap-card sev1"><div class="gn"><span class="gi">GAP-03</span><span class="sev s1">SEV 1</span><span class="eff">M</span><span>Обоснование решения по рейсу (B2) не сохраняется — <strong>главный блокер MVP</strong></span></div><div class="gd">v2.1: 12 категорий входов (8 базовых + 4 из изм.32 — DEGR/CVIP/PDTS, t/t*, KYFO, DCS) + 4 SLA-таймера (-6ч/-3ч/-2ч/+1ч) — нагрузка усилилась.</div><div class="gr">Митигация: журнал решений в Meridian.Ops с полями варианты[]/критерии[12]/SLA-соотнесение/обоснование.</div></div>
-      <div class="gap-card sev2"><div class="gn"><span class="gi">GAP-04</span><span class="sev s2">SEV 2</span><span class="eff">M</span><span>WhatsApp по 148-08 не имеет архива</span></div><div class="gd">Free-text тело сообщений не сохраняется.</div><div class="gr">Митигация: корпоративный мессенджер с архивацией / переход на Модуль OPS как единый канал.</div></div>
-      <div class="gap-card sev2"><div class="gn"><span class="gi">GAP-05</span><span class="sev s2">SEV 2</span><span class="eff">S</span><span>Журнал приёма-передачи смены — бумажный</span></div><div class="gd">Контекст «что было на прошлой смене» — критичен для повторяющихся проблем.</div><div class="gr">Митигация: электронная форма передачи смены в Meridian.Web.</div></div>
-      <div class="gap-card sev3"><div class="gn"><span class="gi">GAP-06</span><span class="sev s3">SEV 3</span><span class="eff">L</span><span>ERP / RG-128 — внесистемный контур</span></div><div class="gd">Действия в кризисе — бумага + обзвон.</div><div class="gr">Митигация: вне scope MVP, отдельный проект цифровизации ERP.</div></div>
-      <div class="gap-card sev2"><div class="gn"><span class="gi">GAP-07</span><span class="sev s2">SEV 2</span><span class="eff">M</span><span>Нет явных связей между документами</span></div><div class="gd">Текстовые ссылки — не граф.</div><div class="gr">Митигация: ontology_TsUP.yaml + cross-reference граф.</div></div>
-      <div class="gap-card sev2"><div class="gn"><span class="gi">GAP-08</span><span class="sev s2">SEV 2</span><span class="eff">M</span><span>Коммерческие приоритеты ДУТиЗ — частично структурированы</span></div><div class="gd">Часто согласуются устно.</div><div class="gr">Митигация: структурный feed «приоритет рейса» в Meridian.Ops.</div></div>
-      <div class="gap-card sev3"><div class="gn"><span class="gi">GAP-09</span><span class="sev s3">SEV 3</span><span class="eff">M</span><span>Триггер «сбойной ситуации» — пороговый <em>(v2.1: фаза 2)</em></span></div><div class="gd">v2.1: «сбойная ситуация» вне B-петли. Этот gap актуален для фазы 2 — встроенных плейбуков КК62-26 / КД-РД-Б1.041-04.</div><div class="gr">Митигация: прогнозный детектор каскадных задержек как handler типовых сценариев плейбука.</div></div>
-      <div class="gap-card sev2" style="border-color:var(--purple)"><div class="gn"><span class="gi">GAP-10</span><span class="sev s2">SEV 2</span><span class="eff">M</span><span><strong>v2.1 (новый)</strong> · Несинхронность АСБ Leonardo ↔ DCS Astra ↔ Meridian.OPS</span></div><div class="gd">При изменении времени рейса в B2 решение распространяется по 3 системам асинхронно — у НС ЦУП нет единой картины «пакс × рейс × ВС». Якорь: КД-РД-Б1.041-04 §10–§14 (изм.32). Соответствует gap-06 в анализе и презентации.</div><div class="gr">Митигация: CDC из 3 систем + событийная шина + сводная карточка рейса в Meridian.Web.</div></div>
+      <div class="gap-card sev1" id="gap01"><div class="gn"><span class="gi">GAP-01</span><span class="sev s1">SEV 1</span><span class="eff">L</span><span>Голосовая координация А1/А2 не фиксируется</span></div><div class="gd">Решение принимается на стыке тел./ГГС/радио — без записи. Owner: ЦУП + ИБ + юристы.</div><div class="gr">Митигация: чек-лист в Meridian.Ops + voice-to-text c анонимизацией.</div></div>
+      <div class="gap-card sev2" id="gap02"><div class="gn"><span class="gi">GAP-02</span><span class="sev s2">SEV 2</span><span class="eff">M</span><span>Акты на задержку от ПДС аэропортов разрозненны</span></div><div class="gd">Бумажные/PDF-акты разных а/п не агрегируются. <strong>DP A3 (постфактум-цикл), не B-петля.</strong></div><div class="gr">Митигация: OCR-приёмник + классификатор по 21 категории.</div></div>
+      <div class="gap-card sev1" id="gap03"><div class="gn"><span class="gi">GAP-03</span><span class="sev s1">SEV 1</span><span class="eff">M</span><span>Обоснование решения по рейсу (B2) не сохраняется — <strong>главный блокер MVP</strong></span></div><div class="gd">v2.1: 12 категорий входов (8 базовых + 4 из изм.32 — DEGR/CVIP/PDTS, t/t*, KYFO, DCS) + 4 SLA-таймера (-6ч/-3ч/-2ч/+1ч) — нагрузка усилилась.</div><div class="gr">Митигация: журнал решений в Meridian.Ops с полями варианты[]/критерии[12]/SLA-соотнесение/обоснование.</div></div>
+      <div class="gap-card sev2" id="gap04"><div class="gn"><span class="gi">GAP-04</span><span class="sev s2">SEV 2</span><span class="eff">M</span><span>WhatsApp по 148-08 не имеет архива</span></div><div class="gd">Free-text тело сообщений не сохраняется.</div><div class="gr">Митигация: корпоративный мессенджер с архивацией / переход на Модуль OPS как единый канал.</div></div>
+      <div class="gap-card sev2" id="gap05" style="border-left-color:var(--green)"><div class="gn"><span class="gi">GAP-05</span><span class="sev s2">SEV 2</span><span class="eff">S</span><span>Журнал приёма-передачи смены — бумажный <strong style="color:var(--green)">· Phase 0 quick win</strong></span></div><div class="gd">Контекст «что было на прошлой смене» — критичен для повторяющихся проблем. <strong>Перемещён из Phase 1 в Phase 0</strong> по результатам кросс-чека — Effort=S, не требует подключения к боевым системам.</div><div class="gr">Митигация: электронная форма передачи смены в Meridian.Web (можно поднять за 1–2 недели как самостоятельную задачу).</div></div>
+      <div class="gap-card sev3" id="gap06"><div class="gn"><span class="gi">GAP-06</span><span class="sev s3">SEV 3</span><span class="eff">L</span><span>ERP / RG-128 — внесистемный контур</span></div><div class="gd">Действия в кризисе — бумага + обзвон.</div><div class="gr">Митигация: вне scope MVP, отдельный проект цифровизации ERP.</div></div>
+      <div class="gap-card sev2" id="gap07"><div class="gn"><span class="gi">GAP-07</span><span class="sev s2">SEV 2</span><span class="eff">M</span><span>Нет явных связей между документами</span></div><div class="gd">Текстовые ссылки — не граф.</div><div class="gr">Митигация: ontology_TsUP.yaml + cross-reference граф.</div></div>
+      <div class="gap-card sev2" id="gap08" style="border-left-color:var(--red)"><div class="gn"><span class="gi">GAP-08</span><span class="sev s2">SEV 2</span><span class="eff">M</span><span>Коммерческие приоритеты ДУТиЗ — устные <strong style="color:var(--red)">· критпуть PoC</strong></span></div><div class="gd">Приоритеты VIP / ПК / стыковок / еврокомпоновки часто согласуются по телефону между ДУТиЗ и НС ЦУП. <strong>Добавлен в критпуть кросс-чеком:</strong> без структурного feed «приоритет рейса» журнал решений B2 (GAP-03) даст пустые поля «критерий» в большинстве случаев.</div><div class="gr">Митигация: структурный feed «приоритет рейса» в Meridian.Ops с обязательными полями VIP/ПК/трансфер/еврокомп.</div></div>
+      <div class="gap-card sev3" id="gap09"><div class="gn"><span class="gi">GAP-09</span><span class="sev s3">SEV 3</span><span class="eff">M</span><span>Триггер «сбойной ситуации» — пороговый <em>(v2.1: фаза 2)</em></span></div><div class="gd">v2.1: «сбойная ситуация» вне B-петли. Этот gap актуален для фазы 2 — встроенных плейбуков КК62-26 / КД-РД-Б1.041-04.</div><div class="gr">Митигация: прогнозный детектор каскадных задержек как handler типовых сценариев плейбука.</div></div>
+      <div class="gap-card sev2" id="gap10" style="border-color:var(--purple);border-left-color:var(--red)"><div class="gn"><span class="gi">GAP-10</span><span class="sev s2">SEV 2</span><span class="eff">M</span><span><strong>v2.1 (новый)</strong> · Несинхронность АСБ Leonardo ↔ DCS Astra ↔ Meridian.OPS</span></div><div class="gd">При изменении времени рейса в B2 решение распространяется по 3 системам асинхронно — у НС ЦУП нет единой картины «пакс × рейс × ВС». Якорь: КД-РД-Б1.041-04 §10–§14 (изм.32). Соответствует gap-06 в анализе и презентации.</div><div class="gr">Митигация: CDC из 3 систем + событийная шина + сводная карточка рейса в Meridian.Web.</div></div>
     </div>
     <div style="margin-top:10px;font-size:11px;color:var(--text2)">Полный реестр — <a href="../knowledge_gaps_TsUP.md" style="color:var(--blue)">knowledge_gaps_TsUP.md</a>.</div>
   </div>
@@ -537,11 +783,11 @@ flowchart TD
   <div class="section">
     <h2>Дорожная карта <span class="badge">5 фаз</span></h2>
     <div class="roadmap">
-      <div class="rm-col p0"><h4>Фаза 0</h4><div class="rm-period">Завершено</div><ul><li>AS-IS зафиксирован</li><li>9 OCR'ed PDF документов</li><li>Анализ + 4 артефакта (этот дашборд)</li></ul></div>
-      <div class="rm-col p1"><h4>Фаза 1</h4><div class="rm-period">2–3 недели</div><ul><li>BPMN AS-IS детализация</li><li>Каталог data sources актуализация</li><li>Онтология + cross-ref</li><li>Закрытие GAP-05 (быстрая победа)</li></ul></div>
-      <div class="rm-col p2"><h4>Фаза 2 — PoC #1</h4><div class="rm-period">4–6 недель</div><ul><li>«Co-pilot диспетчера» (read-only)</li><li>Тестовый стенд на исторических данных</li><li>Структурный чек-лист в Meridian.Ops</li></ul></div>
+      <div class="rm-col p0"><h4>Фаза 0 · Quick wins</h4><div class="rm-period">1–2 недели</div><ul><li>Закрытие <strong>GAP-05</strong> — электронная форма передачи смены в Meridian.Web (Effort=S)</li><li>AS-IS зафиксирован (✓)</li><li>OCR'ed PDF, анализ, артефакты (✓)</li></ul></div>
+      <div class="rm-col p1"><h4>Фаза 1 · Критпуть PoC</h4><div class="rm-period">2–3 недели</div><ul><li>Карточка рейса B2 (read-only, агрегатор 18 зелёных источников §1–§4)</li><li>Закрытие <strong>GAP-03</strong> — журнал решений B2 (12 категорий критериев)</li><li>Закрытие <strong>GAP-10</strong> — CDC/event-bus Leonardo↔DCS↔OPS</li><li>Закрытие <strong>GAP-08</strong> — структурный feed «приоритет рейса» от ДУТиЗ</li><li>Параллельно: GAP-04 (WhatsApp архив), GAP-07 (онтология)</li></ul></div>
+      <div class="rm-col p2"><h4>Фаза 2 — PoC #1</h4><div class="rm-period">4–6 недель</div><ul><li>«Co-pilot диспетчера» (read-only) на закрытом критпути</li><li>Тестовый стенд на исторических данных</li><li>Парсеры жёлтых источников (SYS-OPS-MOD, DOC-MEL, DOC-FLEET-STATE)</li></ul></div>
       <div class="rm-col p3"><h4>Фаза 3 — Pilot</h4><div class="rm-period">4 недели</div><ul><li>Shadow mode в одной смене ЦУП</li><li>Замер метрик KPI</li><li>Обратная связь диспетчеров</li></ul></div>
-      <div class="rm-col p4"><h4>Фаза 4 — PoC #2 (Co-pilot НС ЦУП по B2)</h4><div class="rm-period">6 недель + go/no-go</div><ul><li>Генератор вариантов решения по B2 (с учётом 12 категорий + SLA-таймеров)</li><li>Дизайн-ревью с НС ЦУП</li><li>Закрытие GAP-03 (журнал решений) и GAP-10 (CDC/event-bus 3 систем)</li><li>Формализация в СМК (ДП-М1.003)</li></ul></div>
+      <div class="rm-col p4"><h4>Фаза 4 — PoC #2 (Co-pilot НС ЦУП по B2)</h4><div class="rm-period">6 недель + go/no-go</div><ul><li>Генератор вариантов решения по B2 (12 категорий + SLA-таймеров)</li><li>Закрытие GAP-01 (voice-to-text) и GAP-02 (OCR актов) — Phase 2 ранее</li><li>Формализация в СМК (ДП-М1.003)</li></ul></div>
     </div>
   </div>
 
@@ -558,19 +804,74 @@ flowchart TD
   <div class="section">
     <h2>Артефакты и ссылки</h2>
     <div class="links">
-      <a href="../../input2/ЦУП_md/ANALYSIS_AS-IS_RCA_и_Сбойные.md"><div class="lt">📄 ANALYSIS_AS-IS_RCA_и_Сбойные.md</div><div class="ld">Утверждённый текст AS-IS-анализа (источник истины)</div></a>
       <a href="../data_sources_catalog_TsUP.md"><div class="lt">📊 data_sources_catalog_TsUP.md</div><div class="ld">Каталог 30+ источников с приоритизацией phase 0/1/2</div></a>
-      <a href="../knowledge_gaps_TsUP.md"><div class="lt">⚠ knowledge_gaps_TsUP.md</div><div class="ld">Реестр 9 пробелов с severity/effort/owner</div></a>
+      <a href="../knowledge_gaps_TsUP.md"><div class="lt">⚠ knowledge_gaps_TsUP.md</div><div class="ld">Реестр 10 пробелов с severity/effort/owner</div></a>
       <a href="../ontology_TsUP.yaml"><div class="lt">🧬 ontology_TsUP.yaml</div><div class="ld">Онтология ЦУП: роли, DP, справочники, события</div></a>
       <a href="../bpmn/RCA_AS-IS.bpmn"><div class="lt">🔧 RCA_AS-IS.bpmn</div><div class="ld">BPMN 2.0 — цикл RCA с lanes</div></a>
-      <a href="../bpmn/Disrupt_AS-IS.bpmn"><div class="lt">🔧 Disrupt_AS-IS.bpmn</div><div class="ld">BPMN 2.0 — цикл сбойной ситуации с lanes</div></a>
+      <a href="../bpmn/Operational_Regularity_AS-IS.bpmn"><div class="lt">🔧 Operational_Regularity_AS-IS.bpmn (v2.1)</div><div class="ld">BPMN 2.0 — B-петля с lane «Входы решения (DEGR/CVIP/PDTS, t/t*, KYFO, DCS)»</div></a>
+      <a href="../bpmn/Disrupt_AS-IS.bpmn"><div class="lt">🔧 Disrupt_AS-IS.bpmn (legacy)</div><div class="ld">BPMN 2.0 — цикл сбойной ситуации (фаза 2 / out-of-scope)</div></a>
+      <a href="../reports/cup_zone2_amos_mapping_v1.md"><div class="lt">🛠 cup_zone2_amos_mapping_v1.md</div><div class="ld">AMOS-слой (TASK-014/015): aircraft-centric chain, 9 AMOS-relevant MER, 26 ATA chapters</div></a>
+      <div class="extlink" title="Файл хранится в Nextcloud — /mnt/c/Users/Budnik_AN/Nextcloud/PDFtoBPMN/input2/ЦУП_md/ANALYSIS_AS-IS_RCA_и_Сбойные.md"><div class="lt">📄 ANALYSIS_AS-IS_RCA_и_Сбойные.md <span class="ext-tag">внешний</span></div><div class="ld">Утверждённый текст AS-IS-анализа — рабочий черновик команды, хранится в Nextcloud, не публикуется на портал</div></div>
+      <div class="extlink" title="Файл хранится локально в output/cup_codifier/matching.json (4.4 MB) и не публикуется на портал"><div class="lt">🗂 matching.json <span class="ext-tag">локально</span></div><div class="ld">SSOT IATA-732 ↔ MER ↔ ЦУП (TASK-012/013): 4493 узла, 484 full match, AMOS layer. Доступен в репозитории analytic'а.</div></div>
     </div>
   </div>
 
 </div>
+</div>
+
+<!-- MD/YAML/BPMN preview modal -->
+<div class="doc-modal" id="doc-modal" onclick="if(event.target===this)closeDocModal()">
+  <div class="doc-modal-box">
+    <div class="doc-modal-hdr">
+      <span class="dm-icon" id="dm-icon">📄</span>
+      <span class="dm-title" id="dm-title">—</span>
+      <div class="dm-actions">
+        <a class="dm-btn" id="dm-open-raw" href="#" target="_blank" rel="noopener">Открыть исходник ↗</a>
+        <button class="dm-btn dm-close" onclick="closeDocModal()" title="Закрыть (Esc)">✕</button>
+      </div>
+    </div>
+    <div class="doc-modal-body" id="dm-body">
+      <div class="doc-modal-loading">Загрузка…</div>
+    </div>
+  </div>
+</div>
 
 <script>
-mermaid.initialize({startOnLoad:true,theme:'dark',themeVariables:{darkMode:true,background:'#161b22',primaryColor:'#1c2333',primaryTextColor:'#e6edf3',primaryBorderColor:'#30363d',lineColor:'#8b949e',secondaryColor:'#0d1117',tertiaryColor:'#161b22',fontFamily:'IBM Plex Sans'},flowchart:{useMaxWidth:true,htmlLabels:true,curve:'basis'}});
+// Тема: применить сохранённое значение ДО инициализации mermaid
+(function(){
+  try{
+    const saved=localStorage.getItem('tsup_as_is_theme');
+    if(saved==='dark') document.documentElement.dataset.theme='dark';
+  }catch(e){}
+})();
+function _mermaidVars(theme){
+  if(theme==='dark'){
+    return {theme:'dark',themeVariables:{darkMode:true,background:'#1e293b',primaryColor:'#1c2333',primaryTextColor:'#f1f5f9',primaryBorderColor:'#334155',lineColor:'#94a3b8',secondaryColor:'#0f172a',tertiaryColor:'#1e293b',fontFamily:"Suisse Int'l,Segoe UI,Arial,sans-serif"}};
+  }
+  return {theme:'default',themeVariables:{background:'#ffffff',primaryColor:'#eef1f6',primaryTextColor:'#111820',primaryBorderColor:'#d0d3d4',lineColor:'#737576',secondaryColor:'#f4f5f7',tertiaryColor:'#ffffff',fontFamily:"Suisse Int'l,Segoe UI,Arial,sans-serif"}};
+}
+mermaid.initialize(Object.assign({startOnLoad:true,flowchart:{useMaxWidth:true,htmlLabels:true,curve:'basis'}},_mermaidVars(document.documentElement.dataset.theme||'light')));
+
+function toggleTheme(){
+  const cur=document.documentElement.dataset.theme==='dark'?'dark':'light';
+  const next=cur==='dark'?'light':'dark';
+  document.documentElement.dataset.theme=next;
+  const btn=document.getElementById('themeBtn');
+  if(btn) btn.textContent = next==='dark' ? '☀ Светлая' : '🌙 Тёмная';
+  try{localStorage.setItem('tsup_as_is_theme',next);}catch(e){}
+  document.querySelectorAll('.mermaid').forEach(el=>{
+    if(!el.dataset._src) el.dataset._src = el.textContent;
+    el.innerHTML = el.dataset._src;
+    el.removeAttribute('data-processed');
+  });
+  mermaid.initialize(Object.assign({startOnLoad:false,flowchart:{useMaxWidth:true,htmlLabels:true,curve:'basis'}},_mermaidVars(next)));
+  mermaid.run({querySelector:'.mermaid'});
+}
+// Инициализировать подпись кнопки темы при загрузке
+window.addEventListener('DOMContentLoaded',()=>{
+  const btn=document.getElementById('themeBtn');
+  if(btn && document.documentElement.dataset.theme==='dark') btn.textContent='☀ Светлая';
+});
 document.querySelectorAll('.tab').forEach(t=>{
   t.addEventListener('click',()=>{
     const i=t.dataset.tab;
@@ -579,6 +880,83 @@ document.querySelectorAll('.tab').forEach(t=>{
     t.classList.add('on');
     document.getElementById('v'+i).classList.add('on');
   });
+});
+// GAP-карта drill-down (Шаг 1 TASK-016)
+function goGap(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  el.classList.remove('highlight');
+  void el.offsetWidth;
+  el.classList.add('highlight');
+}
+// MD/YAML/BPMN preview modal (Шаг 1 TASK-016 фикс — рендер вместо raw .md)
+function openDocModal(href, title){
+  const m=document.getElementById('doc-modal');
+  const body=document.getElementById('dm-body');
+  const ttl=document.getElementById('dm-title');
+  const icon=document.getElementById('dm-icon');
+  const raw=document.getElementById('dm-open-raw');
+  raw.href=href;
+  ttl.textContent=title||href.split('/').pop();
+  const lower=href.toLowerCase();
+  const isMd=lower.endsWith('.md');
+  const isYaml=lower.endsWith('.yaml')||lower.endsWith('.yml');
+  const isBpmn=lower.endsWith('.bpmn');
+  icon.textContent=isBpmn?'🔧':(isYaml?'🧬':'📄');
+  m.classList.add('on');
+  body.innerHTML='<div class="doc-modal-loading">Загрузка…</div>';
+  if(isBpmn){
+    body.innerHTML=`
+      <h2>🔧 BPMN-схема</h2>
+      <p><code>${href.split('/').pop()}</code> — это BPMN 2.0 XML, открывается в специализированных редакторах:</p>
+      <ul>
+        <li><strong>Camunda Modeler</strong> (десктоп): <a href="https://camunda.com/download/modeler/" target="_blank" rel="noopener">скачать</a></li>
+        <li><strong>bpmn.io онлайн-просмотрщик</strong>: <a href="https://demo.bpmn.io/new" target="_blank" rel="noopener">demo.bpmn.io</a> — File → Open</li>
+        <li><strong>VS Code</strong>: расширение «BPMN Editor»</li>
+      </ul>
+      <blockquote>Скачать файл — кнопка «Открыть исходник ↗» в шапке.</blockquote>`;
+    return;
+  }
+  fetch(href).then(r=>{ if(!r.ok)throw new Error('HTTP '+r.status); return r.text(); }).then(text=>{
+    if(isMd){
+      const html=marked.parse(text,{breaks:false,gfm:true});
+      body.innerHTML=DOMPurify.sanitize(html);
+    } else if(isYaml){
+      const esc=text.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+      body.innerHTML='<pre><code>'+esc+'</code></pre>';
+    } else {
+      body.innerHTML='<pre>'+text.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))+'</pre>';
+    }
+  }).catch(err=>{
+    body.innerHTML=`
+      <div class="doc-modal-error">
+        <h3>Не удалось загрузить файл</h3>
+        <p>Браузер не смог получить <code>${href}</code> (${err.message}).</p>
+        <p><strong>Причина:</strong> если ты открыл этот HTML двойным кликом (<code>file://</code>), браузер блокирует чтение соседних файлов из соображений безопасности (CORS).</p>
+        <p><strong>Решение:</strong></p>
+        <ul>
+          <li>Запусти <code>python -m http.server 8000</code> в корне репо и открой через <code>http://localhost:8000/docs/dashboards/tsup_as_is_dashboard.html</code> — тогда рендер заработает.</li>
+          <li>Или нажми «Открыть исходник ↗» — файл откроется в новой вкладке как есть (raw markdown).</li>
+        </ul>
+      </div>`;
+  });
+}
+function closeDocModal(){ document.getElementById('doc-modal').classList.remove('on'); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeDocModal(); });
+// Перехватываем клики по ссылкам .md/.yaml/.bpmn
+document.addEventListener('click',e=>{
+  const a=e.target.closest('a[href]');
+  if(!a)return;
+  const href=a.getAttribute('href');
+  if(!href)return;
+  const lower=href.toLowerCase();
+  if(/\.(md|yaml|yml|bpmn)(#|$|\?)/i.test(lower)){
+    if(e.ctrlKey||e.metaKey||e.shiftKey||a.target==='_blank')return;
+    e.preventDefault();
+    const title=a.querySelector('.lt')?a.querySelector('.lt').textContent:(a.textContent||href);
+    openDocModal(href,title);
+  }
 });
 </script>
 

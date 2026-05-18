@@ -169,6 +169,169 @@
 - Почищены устаревшие комментарии «(2028)», «FUTURE STANDARD» в коде и CSS.
 - `hooks.json` → `hooks.json.disabled` (D-036).
 
+### TASK-014 (2026-05-15) — AMOS-layer mapping (paper analysis)
+
+Цель: закрыть разрыв между IATA-732 («кто/этап») и фактической технической
+причиной задержки («какая система ВС отказала») через семантический маппинг
+174 строк зоны 2 кодификатора ЦУП на AMOS APN/таблицы/ATA chapters — без
+подключения к боевой БД AMOS.
+
+**Источники анализа** (статика):
+- `webBI/amos-help/index.html` — TOC из 457 APN (TC EN+RU);
+- `webBI/amos-db-explorer.html` — 324 Oracle-модуля AMOS;
+- `webBI/amos-apn-analytics.md` — 25 used APN (для force-include).
+
+**Артефакты:**
+- `scripts/build_amos_apn_catalog.py` → `output/amos_layer/amos_apn_catalog.json` (90 релевантных APN из 457).
+- `scripts/build_cup_zone2_to_amos.py` → `output/amos_layer/cup_zone2_to_amos.{json,csv}` (175 строк зоны 2: 68 ata_amos / 48 iata732_process / 19 iata732_stakeholder / 29 out_of_scope / 10 section_header / 1 empty; 26 ATA chapters).
+- `scripts/build_mer_amos_sources.py` → `output/amos_layer/mer_amos_sources.{json,csv}` (80 MER: 9 AMOS-relevant + 71 not-AMOS с reason).
+- `docs/reports/cup_zone2_amos_mapping_v1.md` — итоговый отчёт.
+
+**Aircraft-centric chain** (D-038): обращение к AMOS всегда идёт от ВС
+(хвостовой номер) и **обратно** к причине отказа — 6 фиксированных шагов:
+`aircraft (APN 0308) → workorder (APN 1418) → ata_chapter (spec2k) →
+defect_cause (APN 0354) → mel_or_close (APN 0273, опц.) → reliability
+aggregation (APN 0399, опц.)`.
+
+**9 AMOS-relevant MER:** 41 НМЧ (TD), 42 НМЧ (TM), 44 НМЧ (TS), 45 СБОЙ (TA),
+46 НМЧ (TC), 47 СБОЙ (TL), 48 ПРЧ (TV), 51 ПВС (DF), 52 ПВС (DG). Остальные
+71 — handling/pax/cargo/crew/weather/ATFM/security/документы — описаны IATA-732
+без помощи AMOS.
+
+**Анти-цели соблюдены:** физических подключений к AMOS нет, все `_table_hint`
+и `_field_hint` помечены как hint.
+
+### TASK-015 (2026-05-15) — публикация AMOS-слоя в дашборд + актуализация
+
+Цель: вывести результаты TASK-014 в живой дашборд `/info/iata732/` отдельной
+вкладкой и встроить has_amos_source в tooltip Sankey overlay.
+
+**Data merge (Obligations):**
+- `build_matching_json.py` v1.0 → v1.1: новое поле `amos_layer` в `by_mer_code`
+  (relevant, primary_apn, primary_table, primary_field, chain_steps_used,
+  not_amos_reason); поле `has_amos_source` в `by_iata732_node`
+  (57/4 493 узлов IATA-732).
+- `build_cup_overlay_json.py`: новые поля `has_amos_source` (16/56 overlay-узлов
+  Sankey) и `ata_distribution` (агрегация строк зоны 2 ЦУП по ATA chapter
+  для covered узлов).
+- `scripts/build_iata732_data_package_v2.py` — новый скрипт-перепаковщик:
+  собирает zip-пакет v2 (233 KB) из 14 файлов: 7 базовых + 5 AMOS + отчёт +
+  README v2.
+- `output/iata732/iata732_data_package_v2_README.md` — README v2 (8.6 KB):
+  что нового, что в архиве, ключевые цифры, таблица 9 AMOS-relevant MER.
+
+**Frontend (todo/webBI):**
+- `webBI/iata732/static/` синхронизирован: matching.json и cup_overlay.json
+  пересобраны; 3 новых JSON (mer_amos_sources, cup_zone2_to_amos,
+  amos_apn_catalog), 1 MD (cup_zone2_amos_mapping_v1.md), v2 zip + README,
+  v1 zip + README удалены.
+- `index.html`: 4-я вкладка `tab-amos` → `<section id="amos">` с
+  KPI-блоком, Aircraft-centric chain (6 нод), таблицей 9 AMOS-relevant MER,
+  деревом ATA chapters, блоком download-ссылок.
+- `app.js`: 3 новых fetch (mer_amos_sources / cup_zone2_to_amos /
+  amos_apn_catalog), глобал `AMOS = { merSources, zone2, catalog }`,
+  функция `renderAmosLayer()` (KPI + chain + MER table + ATA tree),
+  switchTab('amos'), tooltip Sankey для нод с `has_amos_source` (показывает
+  APN 1418 Workorder + ATA distribution).
+- `style.css` (+178 строк): `.amos-kpi-grid`, `.amos-chain*`,
+  `.amos-mer-table`, `.amos-ata-tree`, responsive до 700px.
+
+**Publish:**
+- `webBI/info.html`: карточка IATA-732 обновлена («Таксономия задержек +
+  AMOS-слой»), добавлена новая карточка в секции AMOS/SAP с прямой ссылкой
+  на отчёт.
+- `webBI/sw.js`: `portal-v2 → portal-v3` (инвалидация SW-кеша).
+
+**Ключевые цифры:**
+- 9 / 80 MER семантически в AMOS · 68 строк зоны 2 → AMOS · 26 ATA chapters
+  покрыты · 57 узлов IATA-732 с `has_amos_source` · 16 overlay-узлов Sankey
+  с AMOS-инфо в tooltip · 90 / 457 APN AMOS Guide релевантны.
+
+**Анти-цели соблюдены:** существующие 3 вкладки (О стандарте/Структура/
+Таксономия) не тронуты кроме одной строки в tooltip Sankey; никаких новых
+зависимостей (ECharts уже подключён); физического подключения к AMOS нет.
+
+**Решения:** D-038 (Aircraft-centric AMOS chain — стандартный lookup-pattern).
+
+### TASK-016 (2026-05-18) — Copilot Readiness дашборды для оперативной смены ЦУП
+
+**Цель:** привести два существующих дашборда ЦУП и один новый мокап к честной картине Rule 0 после кросс-чека двух независимых субагентов (Opus 4.7 / GPT-5.5), которые подтвердили: счёт источников B-петли «27 = 16+8+3» был неверен, критпуть нужно расширить с GAP-03+GAP-10 до +GAP-08, и нужен оперативный shift board, а не одна карточка.
+
+**План:** `.cursor/plans/TASK-016_copilot_readiness_dashboards.md` — три шага, последовательно.
+
+**Результат:**
+
+**Шаг 1 — `docs/dashboards/tsup_as_is_dashboard.html`** (+197/-33 строк, 1 файл):
+- Вкладка `5. AI Readiness & Roadmap` → `5. Copilot Readiness — B-петля`.
+- Блок «Сильные / Узкие места» заменён на «Срез B-петли — 19 / 27 источников» с двумя цифрами одновременно (строгий §6 каталога: 14g/4y/1r + 3 org-входа · расширенный §1–§4: 18g/8y/1r).
+- Каждый source-ID — цветовой бейдж (зелёный/жёлтый/красный по `data_sources_catalog_TsUP.md`).
+- Явные плашки: «убрано из B-петли как A-петля» (SYS-LOTUS, VOICE-RADIO, MAN-LOG-SHIFT, DOC-ACT-DELAY, DOC-ERP-CARDS) и «возвращено в green» (FEED-SITA, DOC-KYFO-LOG).
+- Новый блок «GAP-карта Severity×Effort» — 3×3 grid с drill-down (клик по пилюле скроллит к карточке GAP с подсветкой).
+- Критпуть расширен до GAP-03 + GAP-10 + **GAP-08** (визуально обведён красной рамкой).
+- GAP-05 переразмечен как Phase 0 quick win (зелёная левая граница, отдельной плашкой).
+- GAP-08 переразмечен как критпуть (красная левая граница).
+- Дорожная карта пересобрана: Phase 0 = GAP-05; Phase 1 = критпуть PoC + параллельно GAP-04/07; Phase 2/3/4 уточнены.
+- Добавлены ссылки на `Operational_Regularity_AS-IS.bpmn`, `cup_zone2_amos_mapping_v1.md`, `matching.json`.
+
+**Шаг 2 — cross-repo `todo/webBI/cup-tsup/`** (+177 строк, 3 файла, D-023):
+- KPI-плитка `trace-kpi` в самом верху вкладки «Сводка»: `0 / 533 344 = 0%` с пометкой `⚠ GAP-03`, пояснением Rule 0, ссылкой `подробнее →` на якорь `#gap03` в AS-IS дашборде.
+- Codifier-блок под графиком «Топ-15 причин задержек»: 4 строки маппинга `ЦУП → IATA-732 / MER / AMOS` + явная пометка `⊘ n/a` для категорий без прямого соответствия (ППС М/У, ППС ПОО). Ссылки на `/info/iata732/` и AMOS-отчёт.
+- SW cache bump: `portal-v3 → portal-v4` (инвалидация браузерных кэшей после деплоя).
+
+**Шаг 3 — `docs/dashboards/b2_shift_board_mockup.html`** (новый файл, 491 строка):
+- Standalone HTML без сервера, тёмная тема в стилистике `tsup_as_is_dashboard.html`.
+- Главный экран — **Очередь смены** (Shift Board): 7 фиктивных активных отклонений с SLA-таймерами, severity, GAP-флагами. Клик по строке → drill-down в карточку.
+- **Карточка рейса B2** — 5 панелей (Состояние ВС / Экипаж / Пассажиры и коммерция / Внешний контур / Журнал решений). По умолчанию открыт UT-1805 как самый срочный.
+- Панель «Журнал решений B2» — **пустая форма с явной пометкой ⚠ GAP-03**, демонстрирует, чего сегодня нет в системах. Все поля как `⊘ n/a — поле существует в дизайне, но не пишется`.
+- **Freshness-панель сбоку** — материализация GAP-10: timestamps по 7 системам, плашка `⚠ DESYNC обнаружен` с конкретным расхождением «продано/чек-ин/borda = 168/142/165».
+- Контекст смены с явными отметками GAP-05 (бумажный журнал) и GAP-01 (голос не фиксируется).
+- Блок «Что мог бы добавить co-pilot» — три фазы (0/1/2) с конкретными возможностями.
+- Sticky-баннер сверху и footer Rule 0 disclaimer: «MOCKUP — все данные фиктивные».
+
+**Кросс-чек и расхождения с первичной аналитикой (зафиксировано в плане TASK-016):**
+- Счёт 27 (16/8/3) был неверен — оба агента независимо получили 19 строгих ID + 3 org-входа (§6) или 27 расширенно (§1–§4) с разбивкой 18g/8y/1r.
+- Я (orchestrator) ошибочно включил A-петельные источники в B-петлю — исправлено в Шаге 1.
+- Карточка рейса B2 как первый экран — недостаточный артефакт; Shift Board первичен (Opus 4.7 / GPT-5.5 согласны) — реализовано в Шаге 3.
+- GAP-08 добавлен в критпуть (был GAP-03+GAP-10, стал +GAP-08).
+- AMOS-слой и IATA-732 кодификатор встроены как provenance, не как новые выводы (Шаг 2).
+
+**Предварительные решения (требуют human-подтверждения для перевода в постоянные D-039+):**
+- **D-39 (предв.):** счёт источников B-петли — две цифры одновременно (строгий §6 / расширенный §1–§4). Это правильное представление по Rule 0 — единый KPI «X% green» маскирует разрыв.
+- **D-40 (предв.):** `decision_traceability` как постфактум-метрика на live cup_dashboard — UI-плэйсхолдер до закрытия GAP-03, без правки SQL-схемы.
+
+**Open questions для human:**
+- Q1 — двигаем ли D-39/D-40 в постоянные?
+- Q2 — мокап шага 3 показывать НС ЦУП на ближайшей встрече или ждать переработки по фидбеку?
+
+**Шаг 4 (само-ревью 2026-05-18) — Utair brand + деплой в портал todo:**
+- Самопроверка выявила 4 проблемы: битая ссылка `../../input2/...` (Nextcloud-symlink), GitHub-стиль вместо корпоративного, AS-IS дашборд недоступен на портале, ссылка GAP-03 из cup-tsup — статичный текст-плейсхолдер.
+- В обоих файлах `docs/dashboards/*.html` применён корпоративный Utair brand: палитра (`--utair-blue/red/yellow/green/orange/grey`), шрифт Suisse Intl (через `@font-face` из локальной копии в `docs/dashboards/assets/SuisseIntl-Regular.otf`), синяя sticky-шапка с белым логотипом `utair_sign_white`, опциональный переключатель тёмной темы. Mermaid перерисовывается под выбранную тему.
+- Битая ссылка `ANALYSIS_AS-IS_RCA_и_Сбойные.md` (Nextcloud-черновик 70KB) убрана из кликабельных артефактов, заменена на некликабельный блок с пометкой «внешний · хранится в Nextcloud команды, не публикуется на портал». То же для `matching.json` 4.4MB — пометка «локально». Rule 0 соблюдён (показано откуда), пользователь не получает 404.
+- Полный деплой в портал (cross-repo `todo/`):
+  - `todo/webBI/tsup-as-is/index.html` + `static/` (копии `data_sources_catalog_TsUP.md`, `knowledge_gaps_TsUP.md`, `ontology_TsUP.yaml`, `cup_zone2_amos_mapping_v1.md`, 3 BPMN) — все относительные пути переписаны на `static/...`, шрифт и логотип через общий `/SuisseIntl-Regular.otf` и `/sign_white.png`. Добавлены portal-nav header и хлебные крошки.
+  - `todo/webBI/tsup-b2-mockup/index.html` — то же; кросс-ссылки на md ведут в `/info/tsup-as-is/static/`, ссылка на AS-IS — на `/info/tsup-as-is/`.
+  - `todo/backend/app.py`: роуты `/info/tsup-as-is/` и `/info/tsup-b2-mockup/` + StaticFiles mount по образцу `IATA-732`.
+  - `todo/webBI/info.html`: две карточки в разделе «Производство» (иконки 🧩 для методологии, 📋 для мокапа).
+  - `todo/webBI/cup-tsup/index.html`: ссылка GAP-03 теперь кликабельная `<a href="/info/tsup-as-is/#gap03">` с hover-стилем. Соответствующий CSS обновлён в `cup-tsup/static/style.css` (синий цвет, dashed→solid border на hover).
+  - `todo/webBI/sw.js`: `portal-v5 → portal-v6`.
+- Все 9 затронутых файлов прошли ReadLints без ошибок. Балансы `<div>` тэгов проверены (open=close=298 для AS-IS, 193 для B2). Каждая ссылка `static/...` и `/info/tsup-as-is/static/...` проверена на существование файла.
+
+**Файлы (не закоммичены, ожидают review human):**
+- Obligations:
+  - `.cursor/plans/TASK-016_copilot_readiness_dashboards.md` (новый)
+  - `docs/dashboards/tsup_as_is_dashboard.html` (+197/-33 шаг 1, +brand шаг 4)
+  - `docs/dashboards/b2_shift_board_mockup.html` (новый шаг 3, +brand шаг 4)
+  - `docs/dashboards/assets/` (новая папка: `SuisseIntl-Regular.otf`, `sign_white.png`, `utair_sign_blue_rgb.png`)
+- todo (портал, cross-repo):
+  - `webBI/tsup-as-is/` (новая папка, 5 файлов · index.html + 4 docs)
+  - `webBI/tsup-as-is/static/bpmn/` (3 BPMN-файла)
+  - `webBI/tsup-b2-mockup/` (новая папка, index.html)
+  - `backend/app.py` (+60 строк, 2 новых роута)
+  - `webBI/info.html` (+2 карточки)
+  - `webBI/cup-tsup/index.html` (ссылка GAP-03 → href)
+  - `webBI/cup-tsup/static/style.css` (hover для `.trace-kpi-note-tag`)
+  - `webBI/sw.js` (`portal-v5 → portal-v6`)
+
 ### Блокеры
 - Нет
 

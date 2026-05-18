@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B2 Shift Board · мокап оперативной смены ЦУП</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.0/dist/purify.min.js"></script>
+<style>
+@font-face{font-family:'Suisse Int\'l';src:url('assets/SuisseIntl-Regular.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap}
+:root{
+  --utair-blue:#003594;--utair-blue-dark:#002570;--utair-light-blue:#7ca3dc;--utair-light-blue2:#b4c8e7;
+  --utair-red:#dc2328;--utair-yellow:#ffc332;--utair-green:#008c5f;--utair-orange:#ff6e0a;
+  --utair-black:#111820;--utair-grey:#737576;--utair-light-grey:#d0d3d4;--utair-bg:#f4f5f7;--utair-white:#ffffff;
+  --bg:var(--utair-bg);--surface:var(--utair-white);--surface2:#eef1f6;--surface3:#e2e7ee;
+  --border:var(--utair-light-grey);--text:var(--utair-black);--text2:var(--utair-grey);--text3:#a5a8aa;
+  --blue:var(--utair-blue);--blue-bg:rgba(0,53,148,.08);
+  --green:var(--utair-green);--green-bg:rgba(0,140,95,.10);
+  --yellow:#a66f00;--yellow-bg:rgba(255,195,50,.22);
+  --orange:var(--utair-orange);--orange-bg:rgba(255,110,10,.10);
+  --red:var(--utair-red);--red-bg:rgba(220,35,40,.10);
+  --purple:#7a4cc9;--purple-bg:rgba(122,76,201,.10);
+  --cyan:#0a7a8f;--cyan-bg:rgba(10,122,143,.10);
+  --r:8px;
+}
+[data-theme="dark"]{
+  --utair-bg:#0f172a;--utair-white:#1e293b;--utair-light-grey:#334155;--utair-black:#f1f5f9;--utair-grey:#94a3b8;
+  --surface2:#1c2333;--surface3:#21262d;--text3:#6e7681;
+  --blue-bg:rgba(0,53,148,.18);--green-bg:rgba(0,140,95,.18);
+  --yellow:#ffc332;--yellow-bg:rgba(255,195,50,.16);--red-bg:rgba(220,35,40,.18);
+  --orange-bg:rgba(255,110,10,.18);--purple-bg:rgba(122,76,201,.18);--cyan-bg:rgba(10,122,143,.20);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Suisse Int\'l',-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased}
+.brand-header{background:var(--utair-blue);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.brand-header .bh-left{display:flex;align-items:center;gap:14px;min-width:0}
+.brand-header .bh-logo{height:28px;display:block;flex:0 0 auto}
+.brand-header .bh-title{font-size:1.05rem;font-weight:700;letter-spacing:-.01em;line-height:1.25}
+.brand-header .bh-meta{font-size:.72rem;opacity:.78;margin-top:2px}
+.brand-header .bh-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.brand-header .bh-tag{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:.65rem;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.04em;text-transform:uppercase}
+.brand-header .theme-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:5px 14px;border-radius:20px;cursor:pointer;font-size:.78rem;font-family:inherit;transition:background .2s}
+.brand-header .theme-btn:hover{background:rgba(255,255,255,.28)}
+.page-wrap{padding:18px}
+.mock-banner{position:sticky;top:0;background:linear-gradient(90deg,#7c2d12,#a16207);color:#fff;padding:6px 14px;font-size:12px;font-weight:600;text-align:center;z-index:100;border-radius:6px;margin-bottom:14px;letter-spacing:.3px}
+.mock-banner code{font-family:'JetBrains Mono',monospace;background:rgba(0,0,0,.25);padding:1px 6px;border-radius:3px;font-size:11px}
+.hdr{text-align:center;margin-bottom:18px}
+.hdr h1{font-size:22px;font-weight:700;margin-bottom:4px}
+.hdr .sub{font-size:13px;color:var(--text2);max-width:900px;margin:0 auto}
+.hdr .meta{margin-top:8px;font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+.layout{display:grid;grid-template-columns:1fr 320px;gap:16px;max-width:1480px;margin:0 auto}
+@media(max-width:1100px){.layout{grid-template-columns:1fr}}
+.col-main{display:flex;flex-direction:column;gap:14px;min-width:0}
+.col-aside{display:flex;flex-direction:column;gap:14px}
+.section{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
+.section h2{font-size:14px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.section h2 .badge{font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 7px;border-radius:4px;background:var(--blue-bg);color:var(--blue)}
+.section h2 .badge.warn{background:var(--orange-bg);color:var(--orange)}
+.section h2 .badge.danger{background:var(--red-bg);color:var(--red)}
+.section h2 .badge.ok{background:var(--green-bg);color:var(--green)}
+
+/* ─── Очередь смены ─── */
+.queue{display:grid;gap:6px}
+.queue-hdr{display:grid;grid-template-columns:80px 1fr 100px 110px 70px 90px 80px;gap:8px;padding:8px 12px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;background:var(--surface2);border-radius:6px;font-weight:600}
+.queue-row{display:grid;grid-template-columns:80px 1fr 100px 110px 70px 90px 80px;gap:8px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;align-items:center;font-size:12px;cursor:pointer;transition:.15s;border-left:3px solid var(--text3)}
+.queue-row:hover{border-color:var(--blue);background:var(--surface3)}
+.queue-row.sev-high{border-left-color:var(--red)}
+.queue-row.sev-mid{border-left-color:var(--orange)}
+.queue-row.sev-low{border-left-color:var(--yellow)}
+.queue-row.selected{border-color:var(--blue);background:var(--blue-bg)}
+.q-flight{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--blue)}
+.q-route{font-size:12px}
+.q-route .small{font-family:'JetBrains Mono',monospace;color:var(--text3);font-size:10px}
+.q-ac{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2)}
+.q-status{font-size:11px;color:var(--text2)}
+.q-sev{font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 6px;border-radius:4px;text-align:center;font-weight:700;width:fit-content}
+.q-sev.high{background:var(--red-bg);color:var(--red)}
+.q-sev.mid{background:var(--orange-bg);color:var(--orange)}
+.q-sev.low{background:var(--yellow-bg);color:var(--yellow)}
+.q-sla{font-family:'JetBrains Mono',monospace;font-size:10px;display:flex;flex-direction:column;gap:2px}
+.q-sla .sla-label{color:var(--text3);font-size:9px}
+.q-sla .sla-value{font-weight:700}
+.q-sla .sla-value.due{color:var(--red)}
+.q-sla .sla-value.soon{color:var(--orange)}
+.q-sla .sla-value.ok{color:var(--green)}
+.q-gaps{display:flex;flex-wrap:wrap;gap:3px}
+.q-gap-pill{font-family:'JetBrains Mono',monospace;font-size:9px;padding:1px 5px;border-radius:3px;background:var(--red-bg);color:var(--red);border:1px solid rgba(248,81,73,.3)}
+@media(max-width:1100px){
+  .queue-hdr,.queue-row{grid-template-columns:60px 1fr 90px 100px;font-size:11px}
+  .queue-hdr div:nth-child(n+5),.queue-row div:nth-child(n+5){display:none}
+}
+
+/* ─── Freshness ─── */
+.fresh-list{display:flex;flex-direction:column;gap:6px}
+.fresh-row{display:grid;grid-template-columns:1fr auto;gap:8px;padding:8px 10px;background:var(--surface2);border-radius:6px;border:1px solid var(--border);font-size:12px;align-items:center}
+.fresh-name{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--text)}
+.fresh-name .desc{display:block;font-size:10px;color:var(--text3);font-family:'Suisse Int\'l',-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;font-weight:400;margin-top:2px}
+.fresh-time{font-family:'JetBrains Mono',monospace;font-size:10px;text-align:right;padding:3px 8px;border-radius:4px;font-weight:600}
+.fresh-time.ok{background:var(--green-bg);color:var(--green)}
+.fresh-time.stale{background:var(--yellow-bg);color:var(--yellow)}
+.fresh-time.cold{background:var(--red-bg);color:var(--red)}
+.desync-warn{margin-top:10px;padding:10px 12px;background:var(--red-bg);border:1px solid var(--red);border-radius:6px;font-size:11px;line-height:1.6;color:var(--text)}
+.desync-warn strong{color:var(--red);display:block;margin-bottom:4px;font-size:12px}
+.desync-warn code{font-family:'JetBrains Mono',monospace;background:rgba(0,0,0,.3);padding:1px 5px;border-radius:3px;font-size:10px}
+
+/* ─── B2 Card ─── */
+.b2-card{display:none}
+.b2-card.on{display:block}
+.b2-card-hdr{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px;padding:12px 14px;background:linear-gradient(135deg,var(--blue-bg),var(--purple-bg));border:1px solid var(--blue);border-radius:6px}
+.b2-flight-no{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--blue)}
+.b2-route{font-size:14px;font-weight:600}
+.b2-time{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text2);margin-left:auto}
+.b2-sla-timers{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;width:100%}
+.sla-chip{font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 8px;border-radius:4px;border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;min-width:70px;background:var(--surface2)}
+.sla-chip .chip-label{font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.sla-chip .chip-value{font-weight:700;margin-top:1px}
+.sla-chip.passed{opacity:.4}
+.sla-chip.passed .chip-value{color:var(--green)}
+.sla-chip.active{border-color:var(--orange);background:var(--orange-bg)}
+.sla-chip.active .chip-value{color:var(--orange)}
+.sla-chip.upcoming .chip-value{color:var(--text2)}
+
+.panels{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(max-width:900px){.panels{grid-template-columns:1fr}}
+.panel{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:12px 14px}
+.panel.span2{grid-column:1/-1}
+.panel h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
+.panel h3 .src-tag{font-family:'JetBrains Mono',monospace;font-size:9px;padding:1px 5px;border-radius:3px;background:var(--surface3);color:var(--text3);margin-left:auto;font-weight:500;text-transform:none}
+.panel.gap h3{color:var(--red)}
+.panel.gap{border-left:3px solid var(--red)}
+.field-row{display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:1px dashed var(--border)}
+.field-row:last-child{border-bottom:none}
+.field-row .fl{color:var(--text2)}
+.field-row .fv{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--text);text-align:right}
+.field-row .fv.warn{color:var(--orange)}
+.field-row .fv.bad{color:var(--red)}
+.field-row .fv.ok{color:var(--green)}
+.field-row .fv.empty{color:var(--text3);font-style:italic;font-weight:400}
+.gap-form{display:grid;gap:8px}
+.gap-form .gf-row{display:grid;grid-template-columns:140px 1fr;gap:10px;align-items:start;font-size:11px}
+.gap-form .gf-row .gf-label{color:var(--text2);padding-top:4px}
+.gap-form .gf-row .gf-value{background:var(--surface3);border:1px dashed var(--border);border-radius:4px;padding:6px 10px;font-size:11px;color:var(--text3);font-style:italic;min-height:24px;font-family:'JetBrains Mono',monospace}
+.gap-form .gf-row .gf-value.empty{color:var(--text3)}
+.gap-note{margin-top:10px;padding:8px 10px;background:var(--red-bg);border-left:3px solid var(--red);border-radius:4px;font-size:11px;line-height:1.6;color:var(--text2)}
+.gap-note strong{color:var(--red)}
+
+.empty-card{padding:36px 20px;text-align:center;color:var(--text3);font-size:13px;background:var(--surface2);border-radius:6px;border:1px dashed var(--border)}
+.empty-card .ic{font-size:24px;margin-bottom:8px;color:var(--text2)}
+
+/* ─── Footer disclaimer ─── */
+.footer{max-width:1480px;margin:24px auto 0;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:var(--r);font-size:11px;line-height:1.7;color:var(--text2)}
+.footer strong{color:var(--text)}
+.footer code{font-family:'JetBrains Mono',monospace;background:var(--surface2);padding:1px 5px;border-radius:3px;font-size:10px}
+.footer ul{margin:6px 0 0 18px;line-height:1.8}
+.footer ul li{margin-bottom:2px}
+/* MD/YAML/BPMN modal renderer */
+.doc-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.doc-modal.on{display:flex}
+.doc-modal-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);max-width:1100px;width:100%;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.7)}
+.doc-modal-hdr{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--surface)}
+.doc-modal-hdr .dm-icon{font-size:18px}
+.doc-modal-hdr .dm-title{flex:1;font-weight:700;font-size:14px;font-family:'JetBrains Mono',monospace;color:var(--blue);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dm-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:6px;font-family:inherit;font-size:11px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+.dm-btn:hover{border-color:var(--blue);background:var(--blue-bg);color:var(--blue)}
+.doc-modal-body{flex:1;overflow-y:auto;padding:24px 28px;font-size:13px;line-height:1.7;color:var(--text)}
+.doc-modal-body h1{font-size:22px;margin:0 0 14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.doc-modal-body h2{font-size:17px;margin:22px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.doc-modal-body h3{font-size:14px;margin:18px 0 8px}
+.doc-modal-body p{margin:8px 0}
+.doc-modal-body ul,.doc-modal-body ol{margin:8px 0 8px 22px}
+.doc-modal-body code{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--surface2);padding:1px 5px;border-radius:3px}
+.doc-modal-body pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;overflow-x:auto;margin:10px 0}
+.doc-modal-body pre code{background:transparent;padding:0;font-size:11px}
+.doc-modal-body table{border-collapse:collapse;width:100%;margin:10px 0;font-size:12px}
+.doc-modal-body th,.doc-modal-body td{padding:6px 10px;text-align:left;border-bottom:1px solid var(--border)}
+.doc-modal-body th{background:var(--surface2);font-weight:600;color:var(--text2)}
+.doc-modal-body blockquote{margin:10px 0;padding:8px 14px;border-left:3px solid var(--yellow);background:var(--yellow-bg);font-size:12px}
+.doc-modal-body a{color:var(--blue);text-decoration:none}
+.doc-modal-body strong{color:var(--text)}
+.doc-modal-loading{padding:60px 20px;text-align:center;color:var(--text2);font-size:13px}
+.doc-modal-error{padding:24px;background:var(--red-bg);border-left:3px solid var(--red);border-radius:var(--r);margin:0}
+.doc-modal-error h3{color:var(--red);margin-bottom:10px}
+.doc-modal-error code{background:var(--surface);padding:2px 6px;border-radius:3px;font-family:'JetBrains Mono',monospace}
+</style>
+</head>
+<body>
+
+<header class="brand-header">
+  <div class="bh-left">
+    <img src="assets/sign_white.png" alt="Utair" class="bh-logo">
+    <div>
+      <div class="bh-title">B2 Shift Board · мокап оперативной смены ЦУП</div>
+      <div class="bh-meta">Phase 0 UX-демо для НС ЦУП · все данные фиктивные · TASK-016 Шаг 3</div>
+    </div>
+  </div>
+  <div class="bh-right">
+    <span class="bh-tag">Mockup</span>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 Тёмная</button>
+  </div>
+</header>
+
+<div class="page-wrap">
+
+<div class="mock-banner">⚠ MOCKUP — ВСЕ ДАННЫЕ ФИКТИВНЫЕ · переговорная демка для НС ЦУП · TASK-016 Шаг 3 · файл: <code>docs/dashboards/b2_shift_board_mockup.html</code></div>
+
+<div class="hdr">
+  <h1>B2 Shift Board · мокап оперативной смены ЦУП</h1>
+  <div class="sub">Как мог бы выглядеть Phase 0 «карточка рейса B2» для НС ЦУП. <strong>Никаких live-источников не подключено</strong> — все рейсы, времена и статусы сгенерированы для демонстрации UX. Цель — обсудить с НС ЦУП «такая раскладка вам нужна или иначе устроено».</div>
+  <div class="meta">источник методологии: <a href="../data_sources_catalog_TsUP.md" style="color:var(--blue)">data_sources_catalog_TsUP.md §1–§6</a> · gaps: <a href="../knowledge_gaps_TsUP.md" style="color:var(--blue)">knowledge_gaps_TsUP.md GAP-03/08/10</a> · AS-IS: <a href="./tsup_as_is_dashboard.html" style="color:var(--blue)">tsup_as_is_dashboard.html</a></div>
+</div>
+
+<div class="layout">
+  <!-- ═══ MAIN COLUMN ═══ -->
+  <div class="col-main">
+
+    <!-- ─── Очередь смены ─── -->
+    <div class="section">
+      <h2>Очередь смены — активные отклонения <span class="badge">7 рейсов · сортировка по SLA</span></h2>
+      <div class="queue" id="queue">
+        <div class="queue-hdr">
+          <div>Рейс</div>
+          <div>Маршрут · ВС</div>
+          <div>Статус</div>
+          <div>Ближайший SLA</div>
+          <div>Sev</div>
+          <div>GAP-флаги</div>
+          <div>Действие</div>
+        </div>
+        <!-- 7 фиктивных рейсов -->
+        <div class="queue-row sev-high" data-flight="UT1805" onclick="selectFlight('UT1805')">
+          <div class="q-flight">UT-1805</div>
+          <div class="q-route">МОВ → ТАС <span class="small">12.05 · 16:40Z</span></div>
+          <div class="q-ac">VP-BAG · Б767</div>
+          <div class="q-status">⚠ DESYNC паксов</div>
+          <div class="q-sla"><span class="sla-label">T-2h (трансфер)</span><span class="sla-value due">−0:08</span></div>
+          <div><span class="q-sev high">SEV 1</span></div>
+          <div class="q-gaps"><span class="q-gap-pill">GAP-10</span><span class="q-gap-pill">GAP-08</span></div>
+        </div>
+        <div class="queue-row sev-high" data-flight="UT2202" onclick="selectFlight('UT2202')">
+          <div class="q-flight">UT-2202</div>
+          <div class="q-route">ВНК → СВХ <span class="small">12.05 · 18:25Z</span></div>
+          <div class="q-ac">VQ-BJI · Б737</div>
+          <div class="q-status">НМЧ — MEL 21-32-09</div>
+          <div class="q-sla"><span class="sla-label">T-3h (трансфер)</span><span class="sla-value due">−0:35</span></div>
+          <div><span class="q-sev high">SEV 1</span></div>
+          <div class="q-gaps"><span class="q-gap-pill">GAP-03</span></div>
+        </div>
+        <div class="queue-row sev-mid" data-flight="UT447" onclick="selectFlight('UT447')">
+          <div class="q-flight">UT-447</div>
+          <div class="q-route">СВХ → ЕКТ <span class="small">12.05 · 19:10Z</span></div>
+          <div class="q-ac">VP-BVR · ATR-72</div>
+          <div class="q-status">Резерв экипажа</div>
+          <div class="q-sla"><span class="sla-label">T-6h (DEGR)</span><span class="sla-value soon">+0:42</span></div>
+          <div><span class="q-sev mid">SEV 2</span></div>
+          <div class="q-gaps"><span class="q-gap-pill">GAP-03</span></div>
+        </div>
+        <div class="queue-row sev-mid" data-flight="UT513" onclick="selectFlight('UT513')">
+          <div class="q-flight">UT-513</div>
+          <div class="q-route">ВНК → СОЧ <span class="small">12.05 · 19:55Z</span></div>
+          <div class="q-ac">VQ-BPS · Б737</div>
+          <div class="q-status">Слот ЦБРС перенесён</div>
+          <div class="q-sla"><span class="sla-label">T-2h</span><span class="sla-value soon">+1:18</span></div>
+          <div><span class="q-sev mid">SEV 2</span></div>
+          <div class="q-gaps"></div>
+        </div>
+        <div class="queue-row sev-mid" data-flight="UT608" onclick="selectFlight('UT608')">
+          <div class="q-flight">UT-608</div>
+          <div class="q-route">СВХ → СПТ <span class="small">12.05 · 20:30Z</span></div>
+          <div class="q-ac">VQ-BTH · Б737</div>
+          <div class="q-status">Погода СПТ (METAR)</div>
+          <div class="q-sla"><span class="sla-label">T-3h</span><span class="sla-value soon">+2:04</span></div>
+          <div><span class="q-sev mid">SEV 2</span></div>
+          <div class="q-gaps"></div>
+        </div>
+        <div class="queue-row sev-low" data-flight="UT1108" onclick="selectFlight('UT1108')">
+          <div class="q-flight">UT-1108</div>
+          <div class="q-route">ВНК → НСК <span class="small">12.05 · 21:45Z</span></div>
+          <div class="q-ac">VP-BJP · Б737</div>
+          <div class="q-status">Доп. ФАП-82 (KYFO)</div>
+          <div class="q-sla"><span class="sla-label">T+1h (KYFO)</span><span class="sla-value ok">+3:22</span></div>
+          <div><span class="q-sev low">SEV 3</span></div>
+          <div class="q-gaps"></div>
+        </div>
+        <div class="queue-row sev-low" data-flight="UT3014" onclick="selectFlight('UT3014')">
+          <div class="q-flight">UT-3014</div>
+          <div class="q-route">ВНК → КЖА <span class="small">12.05 · 22:50Z</span></div>
+          <div class="q-ac">VP-BFR · Б737</div>
+          <div class="q-status">CVIP — приоритет</div>
+          <div class="q-sla"><span class="sla-label">T-6h (CVIP)</span><span class="sla-value ok">+4:35</span></div>
+          <div><span class="q-sev low">SEV 3</span></div>
+          <div class="q-gaps"><span class="q-gap-pill">GAP-08</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Карточка рейса B2 ─── -->
+    <div class="section">
+      <h2>Карточка рейса B2 <span class="badge" id="card-flight-badge">не выбран</span></h2>
+
+      <div class="empty-card" id="empty-state">
+        <div class="ic">↑</div>
+        <div>Выбери рейс из очереди выше — откроется карточка B2 с пятью панелями.</div>
+        <div style="margin-top:6px;font-size:11px">По умолчанию выбран UT-1805 (самый срочный SLA).</div>
+      </div>
+
+      <div class="b2-card" id="b2-card">
+        <div class="b2-card-hdr">
+          <div class="b2-flight-no" id="card-fno">UT-1805</div>
+          <div class="b2-route" id="card-route">Москва (ВНК) → Ташкент (ТАС)</div>
+          <div class="b2-time" id="card-time">STD: 12.05 16:40Z · STA: 21:25 LT</div>
+          <div class="b2-sla-timers" id="card-sla">
+            <div class="sla-chip passed"><span class="chip-label">T-6h DEGR</span><span class="chip-value">−5:18</span></div>
+            <div class="sla-chip passed"><span class="chip-label">T-3h transfer</span><span class="chip-value">−2:18</span></div>
+            <div class="sla-chip active"><span class="chip-label">T-2h transfer</span><span class="chip-value">−0:08</span></div>
+            <div class="sla-chip upcoming"><span class="chip-label">T+1h KYFO</span><span class="chip-value">+3:18</span></div>
+          </div>
+        </div>
+
+        <div class="panels">
+          <!-- Panel 1: ВС -->
+          <div class="panel">
+            <h3>Состояние ВС <span class="src-tag">Meridian.OPS · Meridian.NAV</span></h3>
+            <div class="field-row"><span class="fl">Бортовой номер</span><span class="fv">VP-BAG</span></div>
+            <div class="field-row"><span class="fl">Тип ВС</span><span class="fv">Б767-200 (12/168)</span></div>
+            <div class="field-row"><span class="fl">Флаг <code>t/t*</code></span><span class="fv warn">⚠ t* (огранич. двигателей)</span></div>
+            <div class="field-row"><span class="fl">MEL active</span><span class="fv">21-32-09 · до 14.05</span></div>
+            <div class="field-row"><span class="fl">Топливо / запасные</span><span class="fv ok">расч. OK · ZAH/UTAA</span></div>
+          </div>
+
+          <!-- Panel 2: Экипаж -->
+          <div class="panel">
+            <h3>Экипаж <span class="src-tag">Meridian.Crew · СПиОУ</span></h3>
+            <div class="field-row"><span class="fl">КВС / 2П / БИ</span><span class="fv">Иванов / Петров / —</span></div>
+            <div class="field-row"><span class="fl">Раб. время остаток</span><span class="fv ok">8h 42m / 13h</span></div>
+            <div class="field-row"><span class="fl">Резерв на МОВ</span><span class="fv ok">КВС + 2П доступны</span></div>
+            <div class="field-row"><span class="fl">Бортпроводники</span><span class="fv">7 / 7 (полный комплект)</span></div>
+            <div class="field-row"><span class="fl">Медотстранения</span><span class="fv ok">нет</span></div>
+          </div>
+
+          <!-- Panel 3: Пасс./коммерция -->
+          <div class="panel span2">
+            <h3>Пассажиры и коммерция <span class="src-tag">АСБ Leonardo · DCS Astra · KYFO · ДУТиЗ</span></h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+              <div>
+                <div class="field-row"><span class="fl">Чек-ин / продано</span><span class="fv warn">142 / 168 (84%)</span></div>
+                <div class="field-row"><span class="fl">DEGR / CVIP / PDTS</span><span class="fv">3 / 1 / 8</span></div>
+                <div class="field-row"><span class="fl">Трансфер на UT-2202</span><span class="fv warn">14 паксов · стыковка T+1h45m</span></div>
+              </div>
+              <div>
+                <div class="field-row"><span class="fl">Бизнес / эконом</span><span class="fv">8 / 134</span></div>
+                <div class="field-row"><span class="fl">ФАП-82 (KYFO)</span><span class="fv empty">— ожидаем триггер +1h</span></div>
+                <div class="field-row"><span class="fl">Приоритет ДУТиЗ</span><span class="fv bad">⚠ GAP-08 · согласовано устно</span></div>
+              </div>
+              <div>
+                <div class="field-row"><span class="fl">Leonardo: продано</span><span class="fv">168</span></div>
+                <div class="field-row"><span class="fl">DCS Astra: чек-ин</span><span class="fv">142</span></div>
+                <div class="field-row"><span class="fl">Meridian.OPS: borda</span><span class="fv bad">165 <span style="color:var(--text3)">⚠ DESYNC −3</span></span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel 4: Внешний контур -->
+          <div class="panel">
+            <h3>Внешний контур <span class="src-tag">FEED-METEO · SYS-CBRS · NOTAM</span></h3>
+            <div class="field-row"><span class="fl">METAR ВНК</span><span class="fv ok">25011KT 9999 SCT040 +18/+04</span></div>
+            <div class="field-row"><span class="fl">METAR ТАС</span><span class="fv ok">VRB02KT CAVOK +24/+09</span></div>
+            <div class="field-row"><span class="fl">Слот ЦБРС</span><span class="fv ok">подтверждён 16:45Z</span></div>
+            <div class="field-row"><span class="fl">NOTAM по маршруту</span><span class="fv">2 активных · не блокирующие</span></div>
+            <div class="field-row"><span class="fl">Режим а/п назнач.</span><span class="fv ok">обычный</span></div>
+          </div>
+
+          <!-- Panel 5: Журнал решений — GAP-03 -->
+          <div class="panel gap span2">
+            <h3>Журнал решений B2 — обоснование <span class="src-tag">⚠ GAP-03 · поле планируется</span></h3>
+            <div class="gap-form">
+              <div class="gf-row">
+                <div class="gf-label">Варианты, рассмотренные НС ЦУП</div>
+                <div class="gf-value empty">⊘ n/a — поле существует в дизайне, но не пишется</div>
+              </div>
+              <div class="gf-row">
+                <div class="gf-label">Критерии (12 категорий v2.1)</div>
+                <div class="gf-value empty">⊘ n/a — DEGR/CVIP/PDTS, t/t*, MEL, KYFO SLA, экипаж, топливо, слот, погода, трансфер, ФАП-82, ДУТиЗ-приоритет, регуляторика</div>
+              </div>
+              <div class="gf-row">
+                <div class="gf-label">Соотнесение с SLA-таймерами</div>
+                <div class="gf-value empty">⊘ n/a — T-6/T-3/T-2/T+1ч</div>
+              </div>
+              <div class="gf-row">
+                <div class="gf-label">Выбранный сценарий</div>
+                <div class="gf-value empty">⊘ n/a — ждать / заменить ВС / резерв / перенести / отменить / совместить / стыковки / запасной а/д</div>
+              </div>
+              <div class="gf-row">
+                <div class="gf-label">Обоснование (текст)</div>
+                <div class="gf-value empty">⊘ n/a — свободный текст</div>
+              </div>
+              <div class="gf-row">
+                <div class="gf-label">Согласовал с</div>
+                <div class="gf-value empty">⊘ n/a — ДУТиЗ / ЦУТО ВС / СПиОУ / ДОНО / КЦ</div>
+              </div>
+            </div>
+            <div class="gap-note">
+              <strong>⚠ GAP-03 · главный блокер MVP «Co-pilot НС ЦУП по B2».</strong>
+              Эта секция демонстрирует, чего сегодня <em>нет в системах</em> ЦУП.
+              Сейчас НС ЦУП держит варианты, критерии и обоснование <em>в голове</em>, в Meridian.OPS пишется только команда-исполнение.
+              Без расшивки этого пробела copilot не учится — нечему учиться, потому что прошлые решения не сохранены.
+              Митигация — структурный журнал решений в Meridian.OPS с указанными полями (см. <a href="../knowledge_gaps_TsUP.md#gap-03" style="color:var(--blue)">knowledge_gaps_TsUP.md GAP-03</a>).
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ASIDE COLUMN ═══ -->
+  <div class="col-aside">
+
+    <!-- ─── Freshness ─── -->
+    <div class="section">
+      <h2>Freshness источников <span class="badge warn">GAP-10 материализован</span></h2>
+      <div class="fresh-list">
+        <div class="fresh-row">
+          <div class="fresh-name">Leonardo<span class="desc">DEGR/CVIP/PDTS, продажи</span></div>
+          <div class="fresh-time ok">14:32:14Z</div>
+        </div>
+        <div class="fresh-row">
+          <div class="fresh-name">DCS Astra<span class="desc">чек-ин, закрытие</span></div>
+          <div class="fresh-time ok">14:35:02Z</div>
+        </div>
+        <div class="fresh-row">
+          <div class="fresh-name">Meridian.OPS<span class="desc">расстановка, t/t*</span></div>
+          <div class="fresh-time stale">14:18:45Z</div>
+        </div>
+        <div class="fresh-row">
+          <div class="fresh-name">KYFO<span class="desc">ФАП-82 сервисы</span></div>
+          <div class="fresh-time ok">14:33:28Z</div>
+        </div>
+        <div class="fresh-row">
+          <div class="fresh-name">AFTN MVT<span class="desc">факт. вылет/посадка</span></div>
+          <div class="fresh-time ok">14:36:55Z</div>
+        </div>
+        <div class="fresh-row">
+          <div class="fresh-name">FEED-METEO<span class="desc">METAR/TAF/НОТАМ</span></div>
+          <div class="fresh-time ok">14:30:00Z</div>
+        </div>
+        <div class="fresh-row">
+          <div class="fresh-name">ЦБРС<span class="desc">слоты, режимы</span></div>
+          <div class="fresh-time ok">14:34:11Z</div>
+        </div>
+      </div>
+      <div class="desync-warn">
+        <strong>⚠ DESYNC обнаружен</strong>
+        <code>Meridian.OPS</code> последний раз обновлялся <strong>17 секунд назад</strong>, что больше, чем у <code>Leonardo</code> (~5 мин) и <code>DCS Astra</code> (~2 мин).
+        Для рейса UT-1805 это даёт расхождение «продано/чек-ин/borda» = <strong>168 / 142 / 165</strong>.
+        Это и есть GAP-10 в живом виде — у НС ЦУП нет единой картины «пакс × рейс × ВС».
+        Расшивка: CDC из трёх систем (см. <a href="../knowledge_gaps_TsUP.md#gap-10" style="color:var(--blue)">GAP-10</a>).
+      </div>
+    </div>
+
+    <!-- ─── Контекст смены ─── -->
+    <div class="section">
+      <h2>Контекст смены</h2>
+      <div style="font-size:12px;color:var(--text2);line-height:1.7">
+        <div style="margin-bottom:8px"><strong style="color:var(--text)">Дежурный НС ЦУП:</strong> [имя]</div>
+        <div style="margin-bottom:8px"><strong style="color:var(--text)">Диспетчер ЦУП:</strong> [имя]</div>
+        <div style="margin-bottom:8px"><strong style="color:var(--text)">Смена:</strong> 12.05.2026 · 12:00–24:00Z</div>
+        <div style="margin-bottom:8px"><strong style="color:var(--text)">Передача от пред. смены:</strong>
+          <span style="color:var(--red)">⚠ бумажный журнал (GAP-05 · Phase 0 quick win)</span>
+        </div>
+        <div style="margin-bottom:8px"><strong style="color:var(--text)">Голосовая координация:</strong>
+          <span style="color:var(--red)">⊘ не фиксируется (GAP-01)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Что бы дал copilot ─── -->
+    <div class="section">
+      <h2>Что мог бы добавить co-pilot</h2>
+      <div style="font-size:11px;color:var(--text2);line-height:1.7">
+        <div style="padding:6px 0;border-bottom:1px dashed var(--border)">
+          <strong style="color:var(--green)">Phase 0 (read-only):</strong>
+          Собирать карточку B2 автоматически из 18 зелёных источников, считать SLA-таймеры, сигнализировать о DESYNC между системами.
+        </div>
+        <div style="padding:6px 0;border-bottom:1px dashed var(--border)">
+          <strong style="color:var(--blue)">Phase 1 (журнал решений + ДУТиЗ feed):</strong>
+          Предлагать варианты по аналогии с прошлыми решениями смены, подсказывать критерии, проверять регламент.
+        </div>
+        <div style="padding:6px 0">
+          <strong style="color:var(--purple)">Phase 2 (голос + OCR):</strong>
+          Транскрибировать переговоры по ГГС, OCR актов от ПДС а/п, классификация по 21 категории.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <strong>Rule 0 disclaimer.</strong>
+  Этот макет — <strong>переговорная демка</strong> для НС ЦУП. Все рейсы, времена, бортовые номера и статусы сгенерированы. Цель — обсудить, нужен ли такой формат и какие поля в реальности важны.
+  <ul>
+    <li><strong>Зелёные значения</strong> (например, METAR, слоты, KYFO timestamps) — соответствуют источникам, которые сегодня доступны read-only (см. <code>data_sources_catalog_TsUP.md §1–§4</code>, готовность=green). Эти 18 источников могут подключаться без переделки источника.</li>
+    <li><strong>Жёлтые значения с пометкой ⚠</strong> — соответствуют GAP-08 (устные приоритеты ДУТиЗ) и GAP-10 (DESYNC между 3 системами). Они показаны явно, а не «достраиваются» дизайнером.</li>
+    <li><strong>Пустые поля журнала решений</strong> (панель «Журнал решений B2») — это и есть GAP-03 в живом виде. Эти поля сегодня <em>не пишутся</em> ни в Meridian.OPS, ни где-либо ещё. Когда пишутся — поля начнут заполняться.</li>
+    <li>Goalpost для разговора: «такая раскладка вам подходит? Что важно добавить? Что убрать?»</li>
+  </ul>
+  <div style="margin-top:8px;font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace">
+    Связано: <a href="./tsup_as_is_dashboard.html" style="color:var(--blue)">tsup_as_is_dashboard.html</a> (вкладка «Copilot Readiness — B-петля») ·
+    <a href="../knowledge_gaps_TsUP.md" style="color:var(--blue)">knowledge_gaps_TsUP.md</a> ·
+    <a href="../data_sources_catalog_TsUP.md" style="color:var(--blue)">data_sources_catalog_TsUP.md</a>
+  </div>
+</div>
+
+</div>
+
+<script>
+// Демо-данные карточек на 7 рейсов
+const FLIGHTS = {
+  'UT1805': {
+    fno:'UT-1805', route:'Москва (ВНК) → Ташкент (ТАС)', time:'STD: 12.05 16:40Z · STA: 21:25 LT',
+    sla:[{label:'T-6h DEGR',val:'−5:18',cls:'passed'},{label:'T-3h transfer',val:'−2:18',cls:'passed'},{label:'T-2h transfer',val:'−0:08',cls:'active'},{label:'T+1h KYFO',val:'+3:18',cls:'upcoming'}],
+  },
+  'UT2202': {
+    fno:'UT-2202', route:'Москва (ВНК) → Сургут (СВХ)', time:'STD: 12.05 18:25Z · STA: 22:15 LT',
+    sla:[{label:'T-6h DEGR',val:'−4:25',cls:'passed'},{label:'T-3h transfer',val:'−0:35',cls:'active'},{label:'T-2h transfer',val:'+0:25',cls:'upcoming'},{label:'T+1h KYFO',val:'+4:25',cls:'upcoming'}],
+  },
+  'UT447': {
+    fno:'UT-447', route:'Сургут (СВХ) → Екатеринбург (ЕКТ)', time:'STD: 12.05 19:10Z · STA: 21:55 LT',
+    sla:[{label:'T-6h DEGR',val:'+0:42',cls:'active'},{label:'T-3h transfer',val:'+3:42',cls:'upcoming'},{label:'T-2h transfer',val:'+4:42',cls:'upcoming'},{label:'T+1h KYFO',val:'+7:42',cls:'upcoming'}],
+  },
+  'UT513': {fno:'UT-513', route:'Москва (ВНК) → Сочи (СОЧ)', time:'STD: 12.05 19:55Z · STA: 23:05 LT',
+    sla:[{label:'T-6h DEGR',val:'+1:18',cls:'upcoming'},{label:'T-3h transfer',val:'+4:18',cls:'upcoming'},{label:'T-2h transfer',val:'+5:18',cls:'upcoming'},{label:'T+1h KYFO',val:'+8:18',cls:'upcoming'}]},
+  'UT608': {fno:'UT-608', route:'Сургут (СВХ) → Санкт-Петербург (СПТ)', time:'STD: 12.05 20:30Z · STA: 23:40 LT',
+    sla:[{label:'T-6h DEGR',val:'+2:04',cls:'upcoming'},{label:'T-3h transfer',val:'+5:04',cls:'upcoming'},{label:'T-2h transfer',val:'+6:04',cls:'upcoming'},{label:'T+1h KYFO',val:'+9:04',cls:'upcoming'}]},
+  'UT1108': {fno:'UT-1108', route:'Москва (ВНК) → Новосибирск (НСК)', time:'STD: 12.05 21:45Z · STA: 03:30 LT (+1)',
+    sla:[{label:'T-6h DEGR',val:'+3:22',cls:'upcoming'},{label:'T-3h transfer',val:'+6:22',cls:'upcoming'},{label:'T-2h transfer',val:'+7:22',cls:'upcoming'},{label:'T+1h KYFO',val:'+10:22',cls:'upcoming'}]},
+  'UT3014': {fno:'UT-3014', route:'Москва (ВНК) → Кызыл (КЖА)', time:'STD: 12.05 22:50Z · STA: 06:45 LT (+1)',
+    sla:[{label:'T-6h DEGR',val:'+4:35',cls:'upcoming'},{label:'T-3h transfer',val:'+7:35',cls:'upcoming'},{label:'T-2h transfer',val:'+8:35',cls:'upcoming'},{label:'T+1h KYFO',val:'+11:35',cls:'upcoming'}]},
+};
+
+function selectFlight(id){
+  const f=FLIGHTS[id]; if(!f) return;
+  document.getElementById('empty-state').style.display='none';
+  const card=document.getElementById('b2-card'); card.classList.add('on');
+  document.getElementById('card-fno').textContent=f.fno;
+  document.getElementById('card-route').textContent=f.route;
+  document.getElementById('card-time').textContent=f.time;
+  document.getElementById('card-flight-badge').textContent=f.fno;
+  const sla=document.getElementById('card-sla'); sla.innerHTML='';
+  f.sla.forEach(s=>{
+    sla.insertAdjacentHTML('beforeend',`<div class="sla-chip ${s.cls}"><span class="chip-label">${s.label}</span><span class="chip-value">${s.val}</span></div>`);
+  });
+  document.querySelectorAll('.queue-row').forEach(r=>r.classList.toggle('selected', r.dataset.flight===id));
+  // На demo — карточка детально заполнена только для UT-1805. Для остальных — те же 5 панелей структурно, но мы показываем что выбор отрабатывает.
+}
+
+// По умолчанию: открыть UT-1805 (самый срочный)
+window.addEventListener('DOMContentLoaded',()=>{ selectFlight('UT1805'); });
+
+// ─── MD/YAML/BPMN preview modal ───
+function openDocModal(href,title){
+  const m=document.getElementById('doc-modal');
+  const body=document.getElementById('dm-body');
+  const ttl=document.getElementById('dm-title');
+  const icon=document.getElementById('dm-icon');
+  document.getElementById('dm-open-raw').href=href;
+  ttl.textContent=title||href.split('/').pop();
+  const lower=href.toLowerCase();
+  const isMd=lower.includes('.md');
+  const isYaml=lower.includes('.yaml')||lower.includes('.yml');
+  const isBpmn=lower.includes('.bpmn');
+  icon.textContent=isBpmn?'🔧':(isYaml?'🧬':'📄');
+  m.classList.add('on');
+  body.innerHTML='<div class="doc-modal-loading">Загрузка…</div>';
+  if(isBpmn){
+    body.innerHTML='<h2>BPMN-схема</h2><p>Открывается в Camunda Modeler или <a href="https://demo.bpmn.io/new" target="_blank">demo.bpmn.io</a>.</p>';
+    return;
+  }
+  // Извлекаем якорь (если есть) для подсветки соответствующего GAP
+  const cleanHref=href.split('#')[0];
+  const anchor=href.split('#')[1]||'';
+  fetch(cleanHref).then(r=>{ if(!r.ok)throw new Error('HTTP '+r.status); return r.text(); }).then(text=>{
+    if(isMd){
+      const html=marked.parse(text,{breaks:false,gfm:true});
+      body.innerHTML=DOMPurify.sanitize(html);
+      if(anchor){
+        // marked генерит id'ы из заголовков — пытаемся найти и подсветить блок про GAP
+        setTimeout(()=>{
+          const t=anchor.toLowerCase();
+          const heads=body.querySelectorAll('h1,h2,h3,h4');
+          for(const h of heads){
+            if(h.textContent.toLowerCase().replace(/[^a-zа-я0-9-]/g,'').includes(t.replace('-',''))){
+              h.scrollIntoView({behavior:'smooth',block:'start'});
+              h.style.background='rgba(88,166,255,.15)';
+              h.style.padding='4px 8px';
+              h.style.borderRadius='4px';
+              break;
+            }
+          }
+        },80);
+      }
+    } else if(isYaml){
+      const esc=text.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+      body.innerHTML='<pre><code>'+esc+'</code></pre>';
+    }
+  }).catch(err=>{
+    body.innerHTML=`<div class="doc-modal-error"><h3>Не удалось загрузить</h3>
+      <p>Браузер заблокировал чтение <code>${cleanHref}</code>: ${err.message}.</p>
+      <p>Если файл открыт двойным кликом (<code>file://</code>) — Chrome блокирует CORS. Запусти <code>python -m http.server 8000</code> в корне репо и открой через HTTP.</p>
+      <p>Или нажми «Открыть исходник ↗».</p></div>`;
+  });
+}
+function closeDocModal(){ document.getElementById('doc-modal').classList.remove('on'); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeDocModal(); });
+document.addEventListener('click',e=>{
+  const a=e.target.closest('a[href]');
+  if(!a)return;
+  const href=a.getAttribute('href');
+  if(!href)return;
+  if(/\.(md|yaml|yml|bpmn)(#|$|\?)/i.test(href)){
+    if(e.ctrlKey||e.metaKey||e.shiftKey||a.target==='_blank')return;
+    e.preventDefault();
+    openDocModal(href,a.textContent||href);
+  }
+});
+
+// Тема
+(function(){
+  try{
+    const saved=localStorage.getItem('b2_mockup_theme');
+    if(saved==='dark') document.documentElement.dataset.theme='dark';
+  }catch(e){}
+})();
+function toggleTheme(){
+  const cur=document.documentElement.dataset.theme==='dark'?'dark':'light';
+  const next=cur==='dark'?'light':'dark';
+  document.documentElement.dataset.theme=next;
+  const btn=document.getElementById('themeBtn');
+  if(btn) btn.textContent = next==='dark' ? '☀ Светлая' : '🌙 Тёмная';
+  try{localStorage.setItem('b2_mockup_theme',next);}catch(e){}
+}
+window.addEventListener('DOMContentLoaded',()=>{
+  const btn=document.getElementById('themeBtn');
+  if(btn && document.documentElement.dataset.theme==='dark') btn.textContent='☀ Светлая';
+});
+</script>
+
+<!-- MD/YAML/BPMN preview modal -->
+<div class="doc-modal" id="doc-modal" onclick="if(event.target===this)closeDocModal()">
+  <div class="doc-modal-box">
+    <div class="doc-modal-hdr">
+      <span class="dm-icon" id="dm-icon">📄</span>
+      <span class="dm-title" id="dm-title">—</span>
+      <a class="dm-btn" id="dm-open-raw" href="#" target="_blank" rel="noopener">Открыть исходник ↗</a>
+      <button class="dm-btn" onclick="closeDocModal()" title="Закрыть (Esc)">✕</button>
+    </div>
+    <div class="doc-modal-body" id="dm-body"></div>
+  </div>
+</div>
+</body>
+</html>
