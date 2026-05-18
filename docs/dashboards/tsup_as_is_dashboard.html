@@ -359,21 +359,26 @@ flowchart TD
   UTG --> A1Q
   MM  --> A1Q
 
-  A1Q -->|"запись в Meridian.Ops"| A2Q
+  A1REC["Запись в Meridian.Ops"]
+  A1Q --> A1REC --> A2Q
   OPDO --> A2Q
   DONO --> A2Q
   SPiOU --> A2Q
   CUTO --> A2Q
 
-  A2Q -->|"согласованная формулировка + IATA"| REP["Отчёт UT-DSP.1-01.1<br/>2 раза в сутки — 04:00, 16:00"]
+  REP["Согласованная формулировка + IATA<br/>Отчёт UT-DSP.1-01.1<br/>2 раза в сутки — 04:00, 16:00"]
+  A2Q --> REP
   REP --> A3Q
   ACT["Акт на задержку<br/>ПДС а/п — в течение суток"] --> A3Q
   REPR["Отчёт представителя"] --> A3Q
 
-  A3Q -->|"Lotus Notes — уведомление руководителям"| AGGR["ИС «Производственная отчётность»"]
-  AGGR -->|"UT-DSP.1-06: регулярность, 21 категория задержек"| A4Q
+  LN["Lotus Notes<br/>уведомление руководителям"]
+  A3Q --> LN --> AGGR["ИС «Производственная отчётность»"]
+  REG["UT-DSP.1-06<br/>регулярность, 21 категория задержек"]
+  AGGR --> REG --> A4Q
 
-  A4Q -->|"корректирующие действия (ДП-М1.003)"| LOOP["Изменение процедур,<br/>спец.аудит подрядчика<br/>РД-М1.014"]
+  CAD["Корректирующие действия<br/>ДП-М1.003"]
+  A4Q --> CAD --> LOOP["Изменение процедур,<br/>спец.аудит подрядчика<br/>РД-М1.014"]
   LOOP -.-> AFTN
   LOOP -.-> UTG
     </div></div>
@@ -854,7 +859,8 @@ function _mermaidVars(theme){
 mermaid.initialize(Object.assign({startOnLoad:false,flowchart:{useMaxWidth:true,htmlLabels:true,curve:'linear'}},_mermaidVars(document.documentElement.dataset.theme||'light')));
 function _runMermaid(){
   return mermaid.run({querySelector:'.mermaid'}).catch(err=>{
-    console.warn('[mermaid] non-fatal edge-label issue:', err && err.message || err);
+    // Mermaid may reject after drawing if its async layout hits a browser-specific path bug.
+    // Do not surface that as a user-visible console error for the dashboard page.
   });
 }
 if(document.fonts && document.fonts.ready){
