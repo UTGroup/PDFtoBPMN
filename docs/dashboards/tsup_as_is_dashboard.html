@@ -365,17 +365,17 @@ flowchart TD
   SPiOU --> A2Q
   CUTO --> A2Q
 
-  A2Q -->|"Согласованная формулировка<br/>+ IATA-код"| REP["Отчёт UT-DSP.1-01.1<br/>2 раза в сутки — 04:00, 16:00"]
+  A2Q -->|"согласованная формулировка + IATA"| REP["Отчёт UT-DSP.1-01.1<br/>2 раза в сутки — 04:00, 16:00"]
   REP --> A3Q
   ACT["Акт на задержку<br/>ПДС а/п — в течение суток"] --> A3Q
   REPR["Отчёт представителя"] --> A3Q
 
-  A3Q -->|"Lotus Notes — уведомление<br/>руководителям"| AGGR["ИС «Производственная отчётность»"]
-  AGGR -->|"UT-DSP.1-06 — регулярность,<br/>21 категория задержек"| A4Q
+  A3Q -->|"Lotus Notes — уведомление руководителям"| AGGR["ИС «Производственная отчётность»"]
+  AGGR -->|"UT-DSP.1-06: регулярность, 21 категория задержек"| A4Q
 
-  A4Q -->|"Корректирующие действия<br/>ДП-М1.003"| LOOP["Изменение процедур,<br/>спец.аудит подрядчика<br/>РД-М1.014"]
-  LOOP -. "обновление СМК" .-> AFTN
-  LOOP -. "обновление СМК" .-> UTG
+  A4Q -->|"корректирующие действия (ДП-М1.003)"| LOOP["Изменение процедур,<br/>спец.аудит подрядчика<br/>РД-М1.014"]
+  LOOP -.-> AFTN
+  LOOP -.-> UTG
     </div></div>
   </div>
 
@@ -852,10 +852,15 @@ function _mermaidVars(theme){
   return {theme:'default',themeVariables:{background:'#ffffff',primaryColor:'#eef1f6',primaryTextColor:'#111820',primaryBorderColor:'#d0d3d4',lineColor:'#737576',secondaryColor:'#f4f5f7',tertiaryColor:'#ffffff',fontFamily:'Segoe UI,Arial,sans-serif'}};
 }
 mermaid.initialize(Object.assign({startOnLoad:false,flowchart:{useMaxWidth:true,htmlLabels:true,curve:'linear'}},_mermaidVars(document.documentElement.dataset.theme||'light')));
+function _runMermaid(){
+  return mermaid.run({querySelector:'.mermaid'}).catch(err=>{
+    console.warn('[mermaid] non-fatal edge-label issue:', err && err.message || err);
+  });
+}
 if(document.fonts && document.fonts.ready){
-  document.fonts.ready.then(()=>mermaid.run({querySelector:'.mermaid'}));
+  document.fonts.ready.then(_runMermaid);
 }else{
-  window.addEventListener('load',()=>mermaid.run({querySelector:'.mermaid'}));
+  window.addEventListener('load',_runMermaid);
 }
 
 function toggleTheme(){
@@ -871,7 +876,7 @@ function toggleTheme(){
     el.removeAttribute('data-processed');
   });
   mermaid.initialize(Object.assign({startOnLoad:false,flowchart:{useMaxWidth:true,htmlLabels:true,curve:'linear'}},_mermaidVars(next)));
-  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(()=>mermaid.run({querySelector:'.mermaid'}));
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(_runMermaid);
 }
 // Инициализировать подпись кнопки темы при загрузке
 window.addEventListener('DOMContentLoaded',()=>{
