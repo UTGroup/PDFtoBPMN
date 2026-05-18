@@ -234,7 +234,7 @@ table.dt tr:hover{background:var(--surface)}
 <div class="header">
   <h1>ЦУП — AS-IS v2.1: RCA по задержкам &amp; оперативное управление регулярностью</h1>
   <div class="sub">Карта потоков данных, сходящихся в decision points человека (диспетчер ЦУП, НС ЦУП, начальник ЦУП). Цель — оценка достаточности данных для развёртывания ИИ-ассистента.<br/><strong>v2.1:</strong> добавлены КД-РД-Б1.041-04 (изм.32) и КК62-26 — DEGR/CVIP/PDTS, KYFO, DCS Astra, t/t*; SLA-таймеры -6ч/-3ч/-2ч/+1ч; новый GAP-10 «несинхронность 3 систем». Сбойная ситуация ≥10 и ERP/РГ-128 вынесены из основной B-петли.</div>
-  <div class="src">источник анализа: ANALYSIS_AS-IS_RCA_и_Сбойные.md v2.1 — рабочий черновик команды (Nextcloud, не публикуется на портал)</div>
+  <div class="src">источник истины: <a href="../external/ANALYSIS_AS-IS_RCA_и_Сбойные.md">ANALYSIS_AS-IS_RCA_и_Сбойные.md</a> (v2.1)</div>
 </div>
 
 <div class="tabs">
@@ -318,7 +318,7 @@ table.dt tr:hover{background:var(--surface)}
   <div class="section">
     <h2>Связанные артефакты <span class="badge">5 файлов</span></h2>
     <div class="links">
-      <div class="extlink" title="Файл хранится в Nextcloud — /mnt/c/Users/Budnik_AN/Nextcloud/PDFtoBPMN/input2/ЦУП_md/ANALYSIS_AS-IS_RCA_и_Сбойные.md"><div class="lt">📄 ANALYSIS_AS-IS_RCA_и_Сбойные.md <span class="ext-tag">внешний</span></div><div class="ld">Утверждённый текст AS-IS-анализа: DP, схемы, матрица, рекомендации — хранится в Nextcloud команды, на портал не публикуется</div></div>
+      <a href="../external/ANALYSIS_AS-IS_RCA_и_Сбойные.md"><div class="lt">📄 ANALYSIS_AS-IS_RCA_и_Сбойные.md</div><div class="ld">Утверждённый текст AS-IS-анализа: DP, схемы, матрица, рекомендации (источник истины анализа, v2.1)</div></a>
       <a href="../data_sources_catalog_TsUP.md"><div class="lt">📊 data_sources_catalog_TsUP.md</div><div class="ld">Каталог 30+ источников данных c MR/доступом/готовностью и phase-плана</div></a>
       <a href="../knowledge_gaps_TsUP.md"><div class="lt">⚠ knowledge_gaps_TsUP.md</div><div class="ld">Реестр 9 пробелов с severity/effort/owner и митигацией</div></a>
       <a href="../ontology_TsUP.yaml"><div class="lt">🧬 ontology_TsUP.yaml</div><div class="ld">Онтология: роли, DP, справочники, события, cross-ref документов</div></a>
@@ -359,23 +359,23 @@ flowchart TD
   UTG --> A1Q
   MM  --> A1Q
 
-  A1Q -- "запись в Meridian.Ops" --> A2Q
+  A1Q -->|"запись в Meridian.Ops"| A2Q
   OPDO --> A2Q
   DONO --> A2Q
   SPiOU --> A2Q
   CUTO --> A2Q
 
-  A2Q -- "Согласованная формулировка<br/>+ IATA-код" --> REP["Отчёт UT-DSP.1-01.1<br/>(2 раза/сутки 04:00, 16:00)"]
+  A2Q -->|"Согласованная формулировка<br/>+ IATA-код"| REP["Отчёт UT-DSP.1-01.1<br/>2 раза в сутки — 04:00, 16:00"]
   REP --> A3Q
-  ACT["Акт на задержку<br/>(ПДС а/п, в течение суток)"] --> A3Q
+  ACT["Акт на задержку<br/>ПДС а/п — в течение суток"] --> A3Q
   REPR["Отчёт представителя"] --> A3Q
 
-  A3Q -- "Lotus Notes:<br/>уведомление руководителям" --> AGGR["ИС «Производственная отчётность»"]
-  AGGR -- "UT-DSP.1-06: регулярность,<br/>21 категория задержек" --> A4Q
+  A3Q -->|"Lotus Notes — уведомление<br/>руководителям"| AGGR["ИС «Производственная отчётность»"]
+  AGGR -->|"UT-DSP.1-06 — регулярность,<br/>21 категория задержек"| A4Q
 
-  A4Q -- "Корректирующие действия<br/>(ДП-М1.003)" --> LOOP["Изменение процедур,<br/>спец.аудит подрядчика<br/>(РД-М1.014)"]
-  LOOP -.обновление СМК.-> AFTN
-  LOOP -.обновление СМК.-> UTG
+  A4Q -->|"Корректирующие действия<br/>ДП-М1.003"| LOOP["Изменение процедур,<br/>спец.аудит подрядчика<br/>РД-М1.014"]
+  LOOP -. "обновление СМК" .-> AFTN
+  LOOP -. "обновление СМК" .-> UTG
     </div></div>
   </div>
 
@@ -441,24 +441,24 @@ flowchart TD
 
   M1 --> TRG
 
-  B1Q[["DP B1 — Диспетчер ЦУП + смежные<br/>Сбор картины по конкретному<br/>отклонению (≤30 мин)"]]
-  B2Q[["DP B2 — НС ЦУП<br/>Окончательное решение по отклонению<br/>(ждать / заменить ВС / резерв экипажа /<br/>перенести / совместить / отменить /<br/>стыковки / запасной а/д)"]]
+  B1Q[["DP B1 — Диспетчер ЦУП + смежные<br/>Сбор картины по конкретному<br/>отклонению — до 30 мин"]]
+  B2Q[["DP B2 — НС ЦУП<br/>Окончательное решение по отклонению<br/>ждать · заменить ВС · резерв экипажа<br/>перенести · совместить · отменить<br/>стыковки · запасной а/д"]]
   B3Q[["DP B3 — Исполнители<br/>148-08, ЦУТО ВС, СПиОУ,<br/>ДОНО, ДУТиЗ, КЦ, ОКР, ДО ЦУП"]]
-  B4Q[["DP B4 — Иерархическая эскалация<br/>нач. ЦУП / нач. ЛД<br/>(§14.1.4, не ERP)"]]
+  B4Q[["DP B4 — Иерархическая эскалация<br/>нач. ЦУП · нач. ЛД<br/>§14.1.4 — не ERP"]]
 
   TRG --> B1Q
   B1Q --> B2Q
   M2 & M3 & M4 & M5 & M6 & M7 & M8 --> B2Q
   M9 & M10 & M11 & M12 --> B2Q
 
-  B2Q -- "Команды:<br/>• Meridian.Ops (изменения ПП)<br/>• ДЦ Ю-Ти-Джи 148-08<br/>• ЦУТО ВС (замена/резерв)<br/>• СПиОУ (экипажи)<br/>• ДОНО (паксы, ФАП-82)<br/>• ДУТиЗ (оповещение)<br/>• KYFO (ФАП-82 push)<br/>• СМС более 2ч / ВИП" --> B3Q
+  B2Q -->|"Команды<br/>• Meridian.Ops — изменения ПП<br/>• ДЦ Ю-Ти-Джи 148-08<br/>• ЦУТО ВС — замена/резерв<br/>• СПиОУ — экипажи<br/>• ДОНО — паксы, ФАП-82<br/>• ДУТиЗ — оповещение<br/>• KYFO — ФАП-82 push<br/>• СМС более 2ч / ВИП"| B3Q
 
-  B3Q --> CYCLE["Рейс возвращён в управляемое состояние<br/>(или новая итерация B)"]
+  B3Q --> CYCLE["Рейс возвращён в управляемое состояние<br/>или новая итерация B"]
 
-  B2Q -.при превышении компетенции.-> B4Q
-  B4Q -.согласовано.-> B3Q
+  B2Q -. "при превышении компетенции" .-> B4Q
+  B4Q -. "согласовано" .-> B3Q
 
-  classDef v21 fill:#1c2333,stroke:#bc8cff,stroke-width:2px,color:#e6edf3
+  classDef v21 fill:#eef1f6,stroke:#7a4cc9,stroke-width:2px,color:#111820
   class IN21,M9,M10,M11,M12 v21
     </div></div>
   </div>
@@ -811,7 +811,7 @@ flowchart TD
       <a href="../bpmn/Operational_Regularity_AS-IS.bpmn"><div class="lt">🔧 Operational_Regularity_AS-IS.bpmn (v2.1)</div><div class="ld">BPMN 2.0 — B-петля с lane «Входы решения (DEGR/CVIP/PDTS, t/t*, KYFO, DCS)»</div></a>
       <a href="../bpmn/Disrupt_AS-IS.bpmn"><div class="lt">🔧 Disrupt_AS-IS.bpmn (legacy)</div><div class="ld">BPMN 2.0 — цикл сбойной ситуации (фаза 2 / out-of-scope)</div></a>
       <a href="../reports/cup_zone2_amos_mapping_v1.md"><div class="lt">🛠 cup_zone2_amos_mapping_v1.md</div><div class="ld">AMOS-слой (TASK-014/015): aircraft-centric chain, 9 AMOS-relevant MER, 26 ATA chapters</div></a>
-      <div class="extlink" title="Файл хранится в Nextcloud — /mnt/c/Users/Budnik_AN/Nextcloud/PDFtoBPMN/input2/ЦУП_md/ANALYSIS_AS-IS_RCA_и_Сбойные.md"><div class="lt">📄 ANALYSIS_AS-IS_RCA_и_Сбойные.md <span class="ext-tag">внешний</span></div><div class="ld">Утверждённый текст AS-IS-анализа — рабочий черновик команды, хранится в Nextcloud, не публикуется на портал</div></div>
+      <a href="../external/ANALYSIS_AS-IS_RCA_и_Сбойные.md"><div class="lt">📄 ANALYSIS_AS-IS_RCA_и_Сбойные.md</div><div class="ld">Утверждённый текст AS-IS-анализа (источник истины, v2.1)</div></a>
       <div class="extlink" title="Файл хранится локально в output/cup_codifier/matching.json (4.4 MB) и не публикуется на портал"><div class="lt">🗂 matching.json <span class="ext-tag">локально</span></div><div class="ld">SSOT IATA-732 ↔ MER ↔ ЦУП (TASK-012/013): 4493 узла, 484 full match, AMOS layer. Доступен в репозитории analytic'а.</div></div>
     </div>
   </div>
